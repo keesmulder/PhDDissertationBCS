@@ -1,0 +1,1270 @@
+\section{Introduction}
+\label{introduction}
+Circular data are data measured in angles or orientations in two-dimensional space. Examples include directions on a compass ($0^\circ$ - $360^\circ$), time of day ($0$ - $24$ hours) or day of year ($0$ - $365$ days). These data are encountered across behavioral research \citep{Mechsner:2001ff, Gurtman:2009jz} and many other scientific disciplines.
+
+Analysis of circular data requires special statistical methods due to the periodicity of the sample space. For example, the arithmetic mean of the two time points 00:30h and 23:30h would be 12:00h, while the circular mean is 00:00h, which is clearly a preferable central tendency in this case. Several books on circular statistics are available, in particular \citet{pewsey2013circular}, \citet{Mardia2009} and \citet{fisher1995statistical}. 
+
+This paper will focus on the modeling of multi-modal circular data with mixtures with an unknown number of components.  Mixture models often assume the number of mixture components to be known, although this is rarely true in practice. As a solution, the number of mixture components is usually selected by comparing information criteria such as the AIC \citep{Akaike:1974ta} or BIC \citep{Schwarz:1978kf}. Such an approach allows selection of a mixture model with the best-fitting number of components, but entirely ignores our uncertainty about the parameter determining the number of components. 
+
+A more natural and sophisticated approach is to treat the number of modes as unknown, and obtaining the uncertainty around the number of modes jointly with the rest of the analysis. The main contribution of this paper is to provide an algorithm to perform a fully Bayesian mixture model that correctly captures the uncertainty about the number of components, as well as showing its usefulness and interpretability with a real data example.
+
+The motivating example for this paper is a data set on music listening behavior. The data was provided by music service \href{22tracks}{\url{http://www.22tracks.com/}}, and consists of the time of day (on the 24-hour clock) at which a user played a particular song. The songs that are being listened to are also categorized in genres such as `Pop' or `Deep House'. When a user visits the \textit{22tracks} service, they are presented with a genre. The user can then choose to listen to this genre, select a different genre or stop using the service. Reducing the fraction of users that stop using the site is of direct interest to the music service. Currently, the initially presented genre is selected uniformly random over the genres. The aim of our analysis is to determine which genres are listened to most at certain times, so the most relevant genre at a given time can be presented. In addition, a model where parameters can be directly interpreted may allow us to understand what drives music listening behavior.
+
+
+The base distribution for our circular mixture model will be the von Mises distribution, which is commonly used for analysis of circular data and can be considered the circular analogue of the Normal distribution. Von Mises mixture models with a fixed number of modes have been developed previously in a frequentist setting \citep{mooney2003fitting}, for example using the Expectation Maximization (EM) algorithm \citep{McLachlan:P5Bg7scy, Banerjee:2005tk}. Bayesian analysis for this type of model can be performed through Markov chain Monte Carlo (MCMC) sampling \citep{Tierney:1994fc, Besag:1995de}. In particular, the high-dimensional variant of this mixture model has seen some popularity due to several appealing applications such as text mining, which has led to an R package for this model \citep{hornik2014movmf}. Such high-dimensional circular mixtures use the von Mises-Fisher distribution on hyperspheres, with the von Mises as a special case. We will focus on the circular mixture model only. 
+
+The core difficulty in employing MCMC samplers in such applications is that the parameter space is of variable dimension. That is, if there are more components in the mixture model, there are more parameters. Therefore, the usual MCMC approaches do not provide a way to explore the whole parameter space, and we must use a solution such as Reversible jump MCMC \citep{Green:1995ut, Richardson:1997di}. In a reversible jump MCMC sampler, we allow moves between parameter spaces by use of a special case of the Metropolis-Hastings (MH) acceptance ratio \citep{Hastings:1970wm}. This paper provides a detailed account of the adaptation of a reversible jump sampler for von Mises mixtures. 
+
+Three major contributions are made to the field of mixture modeling for circular data. First, this paper presents the first application of the reversible jump sampler to this setting, which allows us to perform inference on the amount of components in the mixture model. Second, a novel split move, which makes use of the trigonometric properties of the von Mises distribution, allows the sampler to move across the parameter space efficiently. Lastly, a simulation study is performed to show that this method performs well in common research scenarios. 
+
+Several alternative approaches for Bayesian modeling of multi-modal circular data could be considered. Most are found in the field of Bayesian non-parametrics, such as Dirichlet process mixture models \citep{Ghosh:2003ds},  log-spline distributions \citep{Ferreira:2008gv} or a family of densities based on non-negative trigonometric sums \citep{FernandezDuran:2016bm}. Such approaches generally have the advantage of making fewer assumptions about the distribution of the data. However, none of these methods provide a way for direct inference on the number of subpopulations (ie. components) making up the mixture, and the parameters in the mixture model with unknown number of components are much more interpretable. 
+
+Therefore, the approach taken in this paper can be seen as a useful in-between step between mixture models with a fixed number of components and non-parametric approaches. Compared to fixed-component mixture models, our approach is more realistic in the uncertainty about the amount of components, allows performing inference about the number of components, but also enables leaving the number of components to be uncertain. In particular, while information criteria based methods also allow selection of the most likely number of components, our approach provides a posterior probability distribution around the number of components, and as such acknowledges that the selected number of components can be wrong. Compared to non-parametric approaches, our approach feature much more interpretable parameters and inference, at the cost of taking more assumptions about the shape of the distribution. Concluding, if the number of components is known or not of interest, a fixed-component mixture model can be preferred for simplicity, while if density estimation is the goal a fully non-parametric approach may be the best choice. If the number of components is not known, of interest, and interpretation of the parameters of subpopulations is of interest, our method aligns the best with these goals.
+
+The paper is organized as follows. Section~\ref{design} describes the model and chosen priors. Section~\ref{implementation} contains the description and implementation of each of the steps involved in sampling the model parameters. In Section~\ref{simulations} the performance of the sampler is investigated in a simulation study. The sampler is applied to the \textit{22tracks} data in Section~\ref{22tracks}. Finally, the results are discussed in Section~\ref{discussion}.
+
+
+\section{Von Mises Mixture Model}
+\label{design}
+
+In this section, the von Mises-based mixture model will be developed. First, its general form will be given. Second, the likelihoods necessary for inference are discussed. Third, priors for this model are shortly discussed. 
+
+\subsection{Von Mises mixture density}
+
+The von Mises distribution is a symmetric, unimodal distribution commonly used in the analysis of circular data. Its density is given by
+\begin{equation}
+f_{VM}(\theta\mid\mu,\kappa) = \frac{1}{2\pi I_0(\kappa)} \exp({\kappa\cos(\theta-\mu)}),
+\end{equation}
+where $\theta \in \mathopen[ 0, 2\pi \mathclose)$ is an angle measured in radians, $\mu \in \mathopen[ 0, 2\pi \mathclose)$ is the mean direction, $\kappa \in \mathopen[ 0, \infty \mathclose)$ is a non-negative concentration parameter and $I_0(\cdot)$ is the modified Bessel function of the first kind and order zero. For an introduction into circular statistics, see \citep{Mardia2009}.
+
+When data consist of observations from multiple subpopulations for which the labels are not observed, the distribution of the pooled observations can be described by a mixture model. For example, times at which people listen to music are expected to coincide with daily events, such as dinner time or the daily commute, which are clustered around certain time points that show up as modes in the data set. 
+
+The density of the pooled observations can be expressed as a mixture
+\begin{equation}
+f(\theta\mid\bm{w},\bm{\mu},\bm{\kappa}) = \sum_{j=1}^{g} w_j f_{VM}(\theta\mid\mu_j,\kappa_j),
+\end{equation}
+where $g \in \mathbb{N}^+$ is the number of components in the mixture, $\bm{\mu}=\{\mu_1,\dotsc,\mu_g\}$ and $\bm{\kappa}=\{\kappa_1,\dotsc,\kappa_g\}$ are vectors of distribution parameters of each von Mises component and weight vector $\bm{w}=\{w_1,\dotsc,w_g\}$ contains the relative size of each component in the total sample. Weights, which are also sometimes called mixing probabilities, satisfy the usual constraints to lie on the simplex, that is $0 \leq w_j \leq 1$ and $\sum^{g}_{j=1}w_j=1$. 
+
+
+\subsection{Likelihood}
+
+
+For a dataset $\bm\theta = \{\theta_1,\dotsc,\theta_N\}$ of observations from a mixture of von Mises components, the likelihood is 
+\begin{equation} \label{mixlik}
+\mathcal{L}(\bm{w}, \bm\mu, \bm\kappa, g \mid \bm\theta) = \prod_{i=1}^N \sum_{j=1}^g w_j f_{VM}(\theta_i\mid\mu_{j},\kappa_{j}),
+\end{equation}
+where it should be noted that the number of components $g$ is treated as an unknown parameter instead of fixed, and that the lengths of $\bm\mu, \bm\kappa$ and $\bm{w}$ depend on $g$. 
+
+In order to perform inference on ($\bm w$, $\bm\mu$, $\bm\kappa$, $g$), it will be convenient to include a latent vector $\bm z = \{z_1, \dotsc, z_N\}$ that encodes the component to which observation $\theta_i$ is attributed. Parameters $z_1, \dotsc, z_N$ are realizations of categorical random variable $Z_1, \dotsc, Z_N$, such that
+\begin{equation}
+P(Z_i = j \mid \bm{w}) = w_j, \qquad (i=1,\dotsc,N; j=1,\dotsc,g).
+\end{equation}
+The reason for introducing this parameter vector is that conditional on $\bm Z$, $\theta_1, \dotsc, \theta_N$ are independent observations from their respective component
+\begin{equation}
+p(\theta_i \mid Z_i = j, \bm \mu, \bm \kappa) = f_{VM}(\theta_i \mid \mu_j, \kappa_j),
+\end{equation}
+where inference for $\mu_j$ and $\kappa_j$ is markedly easier than in the mixture likelihood in Equation~\ref{mixlik}, because it can be done as if the model is simply a single von Mises component. The vector $\bm z$ is called the allocation vector and will be updated as part of the MCMC procedure. With this allocation vector, the expression for the likelihood of the parameters of each component is simply
+\begin{equation}
+\mathcal{L}(\mu_{z_i},\kappa_{z_i} \mid\bm\theta,\bm{z}) = \prod_{i=1}^N f_{VM}(\theta_i\mid\mu_{z_i},\kappa_{z_i}).
+\end{equation}
+
+As per usual in the Bayesian framework, inference will be performed on the posterior distribution, which is given by
+\begin{equation} \label{posterior}
+p(\bm{w},\bm\mu,\bm\kappa,\bm{z}\mid\bm\theta,g) \propto p(\bm{w},\bm\mu,\bm\kappa,\bm{z},g) \mathcal{L}(\bm{w},\bm\mu,\bm\kappa,\bm{z},g\mid\bm\theta), 
+\end{equation}
+where the prior $p(\bm{w},\bm\mu,\bm\kappa,\bm{z}, g)$ will be discussed next.  
+
+\subsection{Prior distributions} \label{prior-distributions}
+
+Although informative priors could be used in practice, we will focus on providing uninformative priors for the parameters of the von Mises components and their weights. The joint prior $p(\bm{w},\bm\mu,\bm\kappa,g)$ is assumed to factor into several independent priors, which will be discussed in turn. 
+
+For the von Mises parameters $\mu_j$ and $\kappa_j$, a conjugate prior \citep{mardia1976bayesian, guttorp1988finding} is used, which is given uninformative prior hyperparameters. For $\mu_j$, this is the circular uniform distribution, which we will write as $p(\mu_j) \sim \mathcal{U}(0, 2\pi),$ where $U(a, b)$ is the uniform distribution from $a$ to $b$.
+
+For $\kappa_j$ this is a constant prior $p(\kappa_j) \propto 1$.  Both priors represent a lack of knowledge about these parameters. A more informative prior for $\kappa_j$ can also be set in the conjugate prior, for example if highly concentrated von Mises distributions are not expected to represent real subpopulations.
+
+The prior for $\bm w$ is the Dirichlet distribution $p(\bm w) = \mathcal{D}(1, 1, \dotsc, 1),$ which assigns equal probability to all combinations of weights.
+
+The prior for the number of components $g$ is chosen as $p(g) \propto \text{geom}(0.05)^N$ such that $p(g) \propto 0.05(1-0.05)^{g N}$. The geometric distribution is raised to the power $N$, the number of observations, as a method for penalizing complexity. While somewhat of a pragmatic choice, this prior performs well in practice. The prior prevents overfitting and can be interpreted as the belief that a parsimonious model is preferred, irrespective of the number of observations. 
+
+
+
+
+\section{Reversible jump MCMC for von Mises Mixtures}
+\label{implementation}
+
+Bayesian inference for the von Mises mixture model will proceed by sampling from the posterior in Equation~\ref{posterior} using MCMC sampling. As mentioned, standard MCMC will not be able to deal with the changing dimensionality in the parameter space after $g$ changes, and therefore we will resort to reversible jump MCMC to solve this issue. 
+
+The reversible jump MCMC algorithm consists of five move types. These moves can be divided into fixed-dimension move types and dimension changing move types. The fixed-dimension moves are the standard moves for MCMC on mixture models. They do not change the component count $g$ and thus do not alter the dimensionality of the parameter space. These moves are
+\begin{enumerate}
+	\item updating the weights $\bm w$;
+	\item updating component parameters ($\bm \mu$, $\bm \kappa$);
+	\item updating the allocation $\bm z$.
+	\newcounter{enumTemp}
+	\setcounter{enumTemp}{\theenumi}
+\end{enumerate}
+When $g$ is known for a mixture of von Mises components, a sampler consisting of just these three moves would be sufficient. 
+
+In many cases however, $g$ is not known and should be estimated as part of the MCMC procedure. This can be achieved by including two more move types, which are the reversible jump move types. They are
+\begin{enumerate}
+	\setcounter{enumi}{\theenumTemp}
+	\item splitting a component in two, or combining two components;
+	\item the birth or death of an empty component.
+\end{enumerate}
+Both of these move types change $g$ by $1$ and update the other parameters ($\bm w$, $\bm \mu$, $\bm \kappa$, $\bm z$) accordingly. In our implementation, the move types 1-5 are performed in order. One complete pass over each of these moves will be called an \emph{iteration} and is the time step of the algorithm. The chosen implementations of these move types will be discussed in detail in the following sections.
+
+\subsection{Updating the weights $w$}
+Weights $\bm{w}$ can be drawn directly from their full conditional distribution $p(\bm{w}\mid\bm\mu,\bm\kappa,\bm{z}, g)$, which is Dirichlet and dependent only on the current allocation $\bm z$. It is given by
+\begin{equation}
+\bm{w}\mid\bm{z} \sim \mathcal{D}(n_1 + 1, ..., n_g + 1),
+\end{equation}
+where $n_j$ is the number of observations allocated to component $j$
+\begin{equation}
+n_j = \sum_{i=1}^N \mathbbm{1}_{z_i = j},
+\end{equation}
+where $\mathbbm{1}$ is an indicator function.
+
+\subsection{Updating component parameters $\mu$ and $\kappa$}
+
+The conditional posterior distribution of each $\mu_j$ is von Mises and given by
+\begin{equation}
+\mu_j \mid \kappa_j, \bm{\theta}_j \sim VM\left(\bar{\theta}_j, R_{j} \kappa_j\right),
+\end{equation}
+where $\bm{\theta}_j$ is the vector of observations currently allocated to component $j$ and $\bar{\theta}_j$ and $R_{j}$ are the mean direction and the resultant length respectively, which can be computed as in \citep[p. 15]{Mardia2009}.
+
+The conditional distribution of $\kappa$ can be expressed as
+\begin{equation}
+f(\kappa_j \mid \mu_j, \bm{\theta}_j) \propto {I_0(\kappa_j)}^{-n_j} \exp\left\{R_{j} \kappa_j \cos\left(\mu_j - \bar{\theta}\right)\right\}.
+\end{equation}
+It is not straightforward to sample from this distribution. The method proposed by \citet{Forbes:2014ju} is applied, which uses a rejection sampler to produce a sample from the full conditional distribution.
+
+\subsection{Updating the allocation $z$}
+Allocation $z_i$ for each observation is sampled based on the relative densities of the components. For observation $i$ this is given by
+\begin{equation}
+P(Z_i = j \mid \theta_i, w_j, \mu_j, \kappa_j) = \frac{w_j f_{VM}(\theta_i \mid \mu_j, \kappa_j)}{\sum^g_{h=1} w_h f_{VM}(\theta_i \mid \mu_h, \kappa_h)}.
+\end{equation}
+This is the categorical or 'multinouilli' distribution, and is simple to sample from.
+
+\subsection{Dimensionality changing moves}
+For the dimensionality changing moves we make use of reversible jump moves which are a special case of a Metropolis-Hastings step \citep{Richardson:1997di}. The goal is to allow the sampler to move from a current state, which we'll denote by $x = (\bm w, \bm \mu, \bm \kappa, \bm z)$, to another state $x',$ which has a different number of dimensions than $x$. 
+
+
+This move is implemented by sampling a random vector $\bm u$ that is independent of $x$, the current state of the sampler. The proposal for a new state $x'$ can then be expressed as an invertible function $x'(x, \bm u)$, to be chosen later, which maps $x$ and $u$ jointly to a proposal $x'$. It is required that the move is designed as a pair, such that there also exists the reverse function $x(x', \bm u)$, which is why the algorithm is called \textit{reversible jump}. Essentially, we develop a bridge between two spaces of different dimension, and as a result are able to change the dimensionality.
+
+Given a random vector $u$ and the invertible function $x'(x, \bm u)$, we can accept or reject the proposal $x'$ using a Metropolis-Hastings (MH) acceptance ratio, which can be written as
+\begin{equation}
+\label{eq:acceptance-prob}
+\text{min} \bigg \{ 1, \frac{p(x' | y)}{p(x | y)} \frac{r_m(x')}{r_m(x)q(\bm u)} \left| \frac{\delta x'}{\delta (x, \bm u)} \right| \bigg \},
+\end{equation}
+where $p(x' \mid y)/p(x \mid y)$ is the ordinary ratio of posterior probability of states $x$ and $x'$, $r_m(x)$ is the probabilty of choosing move type $m$ from state $x$, and $q(\bm u)$ is the density function of $\bm u$, and the final term $ \left| \frac{\delta x'}{\delta (x, \bm u)} \right|$ is the Jacobian that arises from the change of parameter space from ($x$, $\bm u$) to $x'$. 
+
+The reversible jump moves will dictate how to sample proposals for a new state $x'$ given a vector $\bm u$, after which the proposal is accepted or rejected based on the MH ratio just described. The precise form of this MH ratio depends on the move type and the chosen function $x'(x, \bm u)$.  Developing the move types and their associated invertible functions represents a large chunk of the work involved in implementing the reversible jump algorithm for a specific model.   Next, some sensible choices for the von Mises model will be discussed. 
+
+\subsubsection{Split or combine move}
+The split or combine move is designed as a reversible pair, as is required in the reversible jump framework. That is, any proposed split move is associated with a combine move that would undo it. A split move takes one component and replaces it with two new components. Conversely, a combine move joins two existing components into a single component.
+
+Constructing split/combine proposals for reversible jump MCMC samplers can be done using moment matching \citep{Anonymous:c60Je_7X}, where the moments of a combined component are defined to be the sum of the moments of the split components. In the case of von Mises components, this is not straightforward, because the second (linear) moment of a von Mises distribution is mathematically intractable. Rather, trigonometric moments can be used. The first trigonometric moments of a von Mises component with parameters $\mu$ and $\kappa$ are given by $\alpha = E[\cos(\theta)] = \rho\cos(\mu)$ and $\beta = E[\sin(\theta)] = \rho\sin(\mu)$, where the mean resultant length is $\rho = A(\kappa) = I_1(\kappa)/I_0(\kappa)$ and $A(\kappa)$ can be approximated \citep[p. 40]{Mardia2009}. 
+
+To make sure that the trigonometric moments represent a valid von Mises distributions, the point described by $(\alpha, \beta)$ must lie on the unit disc, which means that $-1 \leq \alpha \leq 1$, $-1 \leq \beta \leq 1$, and most importantly
+\begin{equation}
+\label{eq:trigo-constraints}
+\sqrt{\alpha^2 + \beta^2} \leq 1.
+\end{equation}
+This is important for the reversible jump algorithm, because whenever any dimensionality changing move occurs, any new component must also satisfy these constraints.
+
+The constraint of mapping to valid von Mises components, along with the reversibility condition, limit the set of possible moves. However, any move that follows these limitations will be valid in the sense that it will correctly sample from the desired posterior. As long as the limitations are met, we are free to select move types based on computational efficiency, for example. Computational efficiency will be attained when the proposals are likely to be accepted, which in turn is more likely when the proposals are in some sense 'close' to the original components. This will lead the specific choices for the combine and split moves, which will be discussed next. 
+
+\vspace{.4cm}
+
+\textbf{Combine move}
+
+In the combine move, two current components, say $j_1$ and $j_2$, are combined into a single new component $j^*$. The combine move can be obtained from a simple weighted sum of the trigonometric moments. That is, the new combined component has trigonometric moments that are a weighted average between the two components that it stems from.
+
+The parameters of the new component are defined by their trigonometric moments and component weight, $(w_{j^*}, \alpha_{j^*}, \beta_{j^*})$, by computing
+\begin{equation}
+\label{eq:combine}
+\begin{split}
+w_{j^*} &= w_{j_1} + w_{j_2}, \\
+w_{j^*} \alpha_{j^*} &= w_{j_1} \alpha_{j_1} + w_{j_2} \alpha_{j_2}, \\
+w_{j^*} \beta_{j^*} &= w_{j_1} \beta_{j_1} + w_{j_2} \beta_{j_2}. \\
+\end{split}
+\end{equation}
+It can be shown that the $(w_{j^*}, \alpha_{j^*}, \beta_{j^*})$ correspond to a valid von Mises distribution and weight, due to the convexity of the unit disc (for $\alpha_{j^*}, \beta_{j^*}$) and the convexity of the unit interval for the weight $w_{j^*}$.
+
+
+
+\vspace{.4cm}
+
+\textbf{Split move}
+
+In the split move, we start from joint component $j^*$ and split it into two components, $j^1$ and $j^2$. The split move must also conform to \eqref{eq:combine} to fulfill the requirement of reversibility, but we must be more careful than in the combine move to prevent the trigonometric moments falling outside the allowed range. We will solve this by proposing the split components from the largest possible disc that is centered at the trigonometric moments of $j^*$, while being covered by the unit disc. This last property ensures that all proposals are valid.
+
+Next we will discuss how exactly we draw the proposals from  within this disc. We can do this by drawing vector $\bm u$ from
+\begin{equation}
+u_1 \sim \mathcal{U}(0, 0.5) \qquad u_2 \sim \mathcal{U}(0, 2\pi) \qquad u_3 \sim \text{Beta}(2, 1),
+\end{equation}
+where $\text{Beta}(a, b)$ is the beta distribution. After drawing this vector, we can obtain our split components by computing
+\begin{equation}
+\label{eq:split-proposal}
+\begin{aligned}[c]
+\rho_{max} &= (1-\rho_{j^*}) u_3 \\
+w_{j_1} &= w_{j^*} u_1 \\
+\alpha_{j_1} &= \rho_{j^*} - \cos(u_2) \rho_{max} \\
+\beta_{j_1} &= \sin(u_2) \rho_{max},
+\end{aligned}
+\qquad
+\begin{aligned}[c]
+\\
+w_{j_2} &= w_{j^*} (1-u_1) \\
+\alpha_{j_2} &= \rho_{j^*} + \cos(u_2) \rho_{max} w_{j_1} / w_{j_2}, \\
+\beta_{j_2} &= -\sin(u_2) \rho_{max} w_{j_1} / w_{j_2}.
+\end{aligned}
+\end{equation}
+As discussed, different choice are possible, but these were found to perform well in practice. To aid understanding, this procedure is given a visual representation in Figure~\ref{fig:split-proposal}, which will be discussed step by step next.
+
+In step 1 (\ref{fig:split-1}), the  von Mises component $j^*$ is represented by its trigonometric moments $\alpha_{j^*}$ and $\beta_{j^*}$ as an arrow. The two new components' trigonometric moments must fall inside the unit circle, as to satisfy constraint \eqref{eq:trigo-constraints}. To do this, a disc with radius $1 - \rho_{j^*}$ centered at $(\alpha_{j^*}, \beta_{j^*})$ is indicated in grey in the figure, from which the split components will be sampled. %When trigonometric moments of the first new component $j_1$ fall inside this smaller area, it is guaranteed that the moments of the second component will do so as well. 
+
+In step 2 (\ref{fig:split-2}), the first new von Mises component $j_1$ is placed relative to the original component. The random direction $u_2$ determines in what direction the new trigonometric moment of $j_1$ will lie. The trigonometric moments of the proposal $(\alpha_{j_1}, \beta_{j_1})$ are then chosen to lie in this direction, a distance of $u_3 (1 - \rho_{j^*})$ away from $(\alpha_{j^*}, \beta_{j^*})$. 
+
+Step 3 (\ref{fig:split-3}) places the second new von Mises component. Given the original component $j^*$ and the first new component $j_1$, the moments for the second component $j_2$ are placed. They are found in the opposite direction from $(\alpha_{j^*}, \beta_{j^*})$, that is $u_2 + \pi$. The distance is determined depending on the ratio of the two weights. This can be computed as given in \eqref{eq:combine}.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{split_proposal_step1.pdf}
+		\caption{Step 1}
+		\label{fig:split-1}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{split_proposal_step2.pdf}
+		\caption{Step 2}
+		\label{fig:split-2}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{split_proposal_step3.pdf}
+		\caption{Step 3}
+		\label{fig:split-3}
+	\end{subfigure}
+	\caption{Construction of split proposal. Step 1 illustrates the mean resultant vector for the von Mises component to be split. In Step 2, the first split component is determined as a function of random vector $\bm u$. Step 3 shows the first and second split component, where the second split component follows from the combination of trigonometric moments.}
+	\label{fig:split-proposal}
+\end{figure}
+
+The probability of performing a split move as opposed to a combine move $r_m(x)$ is set to $\frac{1}{2}$, independent of the current state of the MCMC sampler. It then follows that the probability of the corresponding combine move $r_m(x') = 1-r_m(x) = \frac{1}{2}$ and their ratio $r_m(x') / r_m(x) = 1$. This can result in an attempted combine move when $g=1$, which is immediately rejected.
+
+The Jacobian for the split move is straightforward to derive, but long in form and given by
+\begin{align*}
+\left| \frac{\delta x'}{\delta (x, u)} \right| =
+&\frac{(R_{j^*}-1)^2 R_{j^*} w_{j^*} (1-2 u_1)^2 u_3}{u_1-1} ~\times \\
+&\left(2 (R_{j^*}-1) R_{j^*} \cos(u_2) u_3 + (1 - 2 R_{j^*}) u_3^2 + R_{j^*}^2 (1 + u_3^2)\right)^{-1/2} ~\times\\
+&\big[ (1 - 2 R_{j^*}) u_1^2 u_3^2 + R_{j^*}^2 (1-2 u_1 + u_1^2 (1+u_3^2)) ~ - \\ &~~ 2 (R_{j^*}-1) R_{j^*} \cos(u_2) (u_1-1) u_1 u_3\big]^{-1/2}.
+\end{align*}
+The inverse of this Jacobian is used for the combine move. 
+
+
+
+\subsubsection{Birth or death move}
+A birth move introduces a new component into the mixture, without assigning any observations to this component. Its inverse, a death move, removes a component that has no observations.
+
+The proposal for a birth move consists of drawing parameters $(w_{j^*}$, $\mu_{j^*}$, $\kappa_{j^*})$ for a new component. They are chosen from a proposal distribution as
+\begin{equation}
+v_{j^*} \sim \mathcal{U}(0, 1) \qquad \mu_{j^*} \sim \mathcal{U}(0, 2\pi) \qquad \kappa_{j^*} \sim \chi^2_{10}.
+\end{equation}
+These parameters are then used to construct vector $\bm u = (v_{j^*}$, $\mu_{j^*}$, $\kappa_{j^*})$. The weights of the other components need to be rescaled such that the sum of weights remains $1$. The new weights are given by $w'_{j} = w_j(1-v_{j^*})$, for $\{ j \in 1, \dotsc, g \}$.
+
+Notably, as no observations are allocated to the newly created component, the likelihood of the data is unaltered by the move. Additionally, as with the split or combine move type, the probability of performing a birth move $r_m(x)$ is set equal to the probability of performing the corresponding death move $r_m(x')$, independent of the state of the MCMC sampler. Therefore, the acceptance probability \eqref{eq:acceptance-prob} can be simplified to
+\begin{equation}
+\text{min} \bigg \{ 1, \frac{p(x')}{p(x)} \frac{1}{q(u)} \left| \frac{\delta x'}{\delta (x, u)} \right| \bigg \}.
+\end{equation}
+
+The Jacobian for a birth move is given by
+\begin{equation}
+\left| \frac{\delta x'}{\delta (x, u)} \right| = (1-w_{j^*})^g.
+\end{equation}
+For a death move, vector $\bm u$ is given by the component parameters of the component that is removed $j^*$, $\bm u = (w_{j^*}, \mu_{j^*}, \kappa_{j^*})$. Its MH acceptance ratio is the inverse of the MH acceptance ratio of the corresponding birth move.
+
+
+\subsection{Label switching}
+When fitting a mixture model with a fixed number of components $g$, label switching \citep{Jasra:2005ho} can occur when, for example, the means of two components are close and by random chance switch order. This can also be seen as an identifiability problem.
+When applying a sampler that can jump between parameter spaces and change the number of components as part of the MCMC chain, label switching is very likely to occur, regardless of the distance between means, because split moves do not define an order for the created components.
+
+A simple method of dealing with label switching is by imposing an identifiability constraint, for example by requiring the means to be ordered. This is a crude method that does not work in the case of circular data, since two means will always be ordered the same way on a circle.
+
+A solution is provided by \citet{Stephens:2000gba} in the form of a post-processing step to define the most likely allocation of sampled parameters to individual components and does not rely on constraints. The second post-processing algorithm featured in the paper is applied to the samples belonging to each specific $g$ separately.
+
+\section{Simulation study}
+\label{simulations}
+
+A simulation study was performed to investigate the relative performance of the MCMC sampler in different scenarios. The sampler was implemented in R \citep{rlanguage} using the $\texttt{circular}$ package \citep{rcircular}. The source code has been made available at \url{https://github.com/pieterjongsma/circular-rjmcmc}.
+
+\subsection{Simulation scenarios}
+
+\begin{figure}
+	\captionsetup[subfigure]{justification=centering}
+	\centering
+	\begin{subfigure}[b]{0.18\textwidth}
+		\includegraphics[width=\textwidth]{scenario_single_component.pdf}
+		\caption{}
+		\label{fig:simulation-scenarios:single}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.18\textwidth}
+		\includegraphics[width=\textwidth]{scenario_two_components_opposite.pdf}
+		\caption{}
+		\label{fig:simulation-scenarios:two-opposite}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.18\textwidth}
+		\includegraphics[width=\textwidth]{scenario_two_components.pdf}
+		\caption{}
+		\label{fig:simulation-scenarios:two}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.18\textwidth}
+		\includegraphics[width=\textwidth]{scenario_three_components.pdf}
+		\caption{}
+		\label{fig:simulation-scenarios:three}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.18\textwidth}
+		\includegraphics[width=\textwidth]{scenario_uniform.pdf}
+		\caption{}
+		\label{fig:simulation-scenarios:uniform}
+	\end{subfigure}
+	\caption{Visualization of simulation scenarios used for investigating sampler performance.}
+	\label{fig:simulation-scenarios}
+\end{figure}
+
+In order to assess the performance in a variety of settings, five true data generating processes were selected to represent either common or particularly difficult mixture datasets to fit. These scenarios are visualised in Figure~\ref{fig:simulation-scenarios} and consist of (\ref{fig:simulation-scenarios:single}) a single von Mises component where $\mu_1 = 0$ and $\kappa_1 = 10$, (\ref{fig:simulation-scenarios:two-opposite}) two von Mises components where $\mu_1 = 0$, $\mu_2 = \pi$ and $\kappa_1 = \kappa_2 = 10$, (\ref{fig:simulation-scenarios:two}) two von Mises components where $\mu_1 = -\pi/6$, $\mu_2 = \pi/6$ and $\kappa_1 = \kappa_2 = 10$, (\ref{fig:simulation-scenarios:three}) three von Mises components where $\mu_1 = -\pi/3$, $\mu_2 = 0$, $\mu_3 = \pi/3$ and $\kappa_1 = \kappa_2 = \kappa_3 = 10$ and (\ref{fig:simulation-scenarios:uniform}) a uniform von Mises component ($\kappa = 0$). Each scenario is simulated with 50, 100, 250, 500, 1000, 2500 and 10,000 observations across 1000 replications.
+
+\subsection{Starting values}
+\label{starting-values}
+The MCMC sampler is initialized with a single component ($g = 1$) and parameters for the component drawn analogous to a birth move
+\begin{equation}
+w = 1 \qquad \mu \sim \mathcal{U}(0, 2\pi) \qquad \kappa \sim \chi^2_{10}.
+\end{equation}
+The observations are all attributed to this single component by setting the allocation vector as $z_i = 1$ for $\{i \in 1,\dotsc,N\}$.
+
+\subsection{Convergence}
+The convergence of a reversible jump MCMC algorithm is difficult to assess using conventional methods such as the inspection of the sampled values of a parameter. Due to the changing dimensionality, the posterior distributions of individual component parameters depend on the component count $g$. The chains for these components are expected to jump with every change of $g$ and would therefore not provide a valid measure of convergence. Instead, the likelihood $p(x \mid \bm \theta)$ is calculated for each iteration of the MCMC chain for which convergence of the posterior probability is assessed visually. All chains, regardless of starting value and variation in replicated data, converged within a burn-in of 10,000 iterations. After the burn-in, the next 5,000 iterations are retained and used to describe the posterior properties of the simulated dataset.
+
+\subsection{Results}
+
+\begin{table}[ht]
+	\caption{Simulation results for each of the scenarios in Figure~\ref{fig:simulation-scenarios} with sample sizes ranging from $n=50$ to $n=10000$. Each row represents 1000 replications. The fraction of replications where the estimated $g$ was equal to the simulated $g$ is given under $g_{MAP} = g_{TRUE}$. In addition, the posterior distribution $p(g \mid \theta)$ is given as the average over all replications.}
+	\label{tab:simulation-results}
+	\centering
+	\begin{tabular}{rrcrrrrrrrrrr}
+		\hline
+		& & & \multicolumn{5}{c}{$p(g \mid \bm{\theta})$} \\
+		Scenario & n & $g_{MAP} = g_{TRUE}$ & $g=1$ & $g=2$ & $g=3$ & $g=4$ & $g\geq5$ \\ 
+		\hline
+		\ref{fig:simulation-scenarios:single} & 50 & 0.40 & 0.29 & 0.29 & 0.21 & 0.12 & 0.10 \\ 
+		& 100 & 0.73 & 0.54 & 0.32 & 0.11 & 0.03 & 0.00 \\ 
+		& 250 & 0.88 & 0.69 & 0.27 & 0.04 & 0.00 & 0.00 \\ 
+		& 500 & 0.94 & 0.72 & 0.25 & 0.03 & 0.00 & 0.00 \\ 
+		& 1000 & 0.96 & 0.76 & 0.22 & 0.02 & 0.00 & 0.00 \\ 
+		& 2500 & 0.99 & 0.82 & 0.17 & 0.01 & 0.00 & 0.00 \\ 
+		& 10000 & 1.00 & 0.85 & 0.14 & 0.01 & 0.00 & 0.00 \\ 
+		\hline
+		\ref{fig:simulation-scenarios:two-opposite} & 50 & 0.12 & 0.00 & 0.10 & 0.15 & 0.16 & 0.59 \\ 
+		& 100 & 0.66 & 0.00 & 0.50 & 0.31 & 0.12 & 0.06 \\ 
+		& 250 & 0.91 & 0.00 & 0.81 & 0.18 & 0.01 & 0.00 \\ 
+		& 500 & 0.88 & 0.00 & 0.77 & 0.21 & 0.01 & 0.00 \\ 
+		& 1000 & 0.81 & 0.00 & 0.71 & 0.27 & 0.02 & 0.00 \\ 
+		& 2500 & 0.71 & 0.00 & 0.63 & 0.34 & 0.03 & 0.00 \\ 
+		& 10000 & 0.58 & 0.00 & 0.54 & 0.44 & 0.02 & 0.00 \\
+		\hline
+		\ref{fig:simulation-scenarios:two} & 50 & 0.30 & 0.05 & 0.23 & 0.29 & 0.21 & 0.22 \\ 
+		& 100 & 0.66 & 0.08 & 0.51 & 0.30 & 0.09 & 0.03 \\ 
+		& 250 & 0.93 & 0.03 & 0.83 & 0.13 & 0.01 & 0.00 \\ 
+		& 500 & 0.97 & 0.01 & 0.85 & 0.13 & 0.01 & 0.00 \\ 
+		& 1000 & 0.98 & 0.00 & 0.86 & 0.13 & 0.01 & 0.00 \\ 
+		& 2500 & 0.98 & 0.00 & 0.89 & 0.11 & 0.00 & 0.00 \\ 
+		& 10000 & 1.00 & 0.00 & 0.94 & 0.06 & 0.00 & 0.00 \\ 
+		\hline
+		\ref{fig:simulation-scenarios:three} & 50 & 0.30 & 0.01 & 0.11 & 0.22 & 0.22 & 0.44 \\ 
+		& 100 & 0.60 & 0.01 & 0.25 & 0.45 & 0.21 & 0.08 \\ 
+		& 250 & 0.84 & 0.00 & 0.15 & 0.78 & 0.07 & 0.00 \\ 
+		& 500 & 0.96 & 0.00 & 0.04 & 0.91 & 0.06 & 0.00 \\ 
+		& 1000 & 0.97 & 0.00 & 0.02 & 0.94 & 0.04 & 0.00 \\ 
+		& 2500 & 0.97 & 0.00 & 0.02 & 0.95 & 0.03 & 0.00 \\ 
+		& 10000 & 0.98 & 0.00 & 0.01 & 0.98 & 0.01 & 0.00 \\
+		\hline
+		\ref{fig:simulation-scenarios:uniform} & 50 & & 0.01 & 0.03 & 0.05 & 0.07 & 0.84 \\ 
+		& 100 &  & 0.15 & 0.25 & 0.25 & 0.17 & 0.18 \\ 
+		& 250 &  & 0.34 & 0.37 & 0.20 & 0.07 & 0.02 \\ 
+		& 500 &  & 0.36 & 0.38 & 0.19 & 0.06 & 0.01 \\ 
+		& 1000 &  & 0.37 & 0.37 & 0.19 & 0.05 & 0.01 \\ 
+		& 2500 &  & 0.37 & 0.38 & 0.19 & 0.05 & 0.01 \\ 
+		& 10000 &  & 0.37 & 0.37 & 0.21 & 0.04 & 0.01 \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+For brevity, this section will be focused on the ability of the sampler to recover the number of components $g$ correctly. In addition, performance of model parameters will be assessed for a subset of simulations.
+
+\subsubsection{Number of components $g$} 
+
+The results for the number of components $g$ of the simulation study are summarized in Table~\ref{tab:simulation-results}. It shows the fraction of replications in which the maximum a posteriori (MAP) estimate of $g$, $g_{MAP}$, which is the posterior mode, was equal to the simulated $g$, $g_{TRUE}$. Furthermore, the posterior distribution of $g$ is given, averaged over all replications. 
+
+
+Results with few observations ($n = 50$) show high uncertainty about the number of components. For these replications, the mode of the posterior distribution for $g$ was rarely equal to the simulated $g$. As expected, the estimation of $g$ then improves with the number of observations. Most scenarios show a near 100\% correct mode $g_{MAP}$ at 1000 observations or more. One exception is scenario \ref{fig:simulation-scenarios:two-opposite} for $n=10000$. Here, $g$ is overestimated and accuracy is seemingly worse than at a smaller sample size. It should be noted that an overestimation of $g$ does not necessarily indicate a problem with the MCMC method. A model with a higher number of components may have a higher likelihood of the data. The chosen prior for $g$ is intended to counter this effect, such that the simpler model is favored. The prior is seemingly not powerful enough for scenario \ref{fig:simulation-scenarios:two-opposite} where $n=1000$ or larger.
+
+
+For the uniform scenario~\ref{fig:simulation-scenarios:uniform}, the column $g_{MAP} = g_{TRUE}$, showing the correspondence between the mode of the posterior distribution and the simulated $g$, has been omitted. Although this data was simulated as a single component with $\kappa = 0$, the interpretation of `true' $g$ of this distribution is ambiguous. For larger datasets, the method favors a small number of components, as expected. 
+
+\subsubsection{Parameter estimates}
+
+\begin{table}
+	\centering
+	\caption{Parameter estimates for scenario~\ref{fig:simulation-scenarios:three} with parameters $\mu_1 = -1.05$, $\mu_2 = 0$, $\mu_3 = 1.05$ and $\kappa_1 = \kappa_2 = \kappa_3 = 10$.}
+	\label{table:simulation-results-2}
+	\begin{tabular}{rrrrrrrrrrr}
+		n & $\hat{\mu}_1$ & $\hat{\mu}_2$ & $\hat{\mu}_3$ & $\hat{\kappa}_1$ & $\hat{\kappa}_2$ & $\hat{\kappa}_3$ \\
+		\hline
+		50    & -0.99 & 0.01 & 1.02 & 183.7 & 82.0 & 192.9 \\
+		100   & -1.04 & 0.00 & 1.07 & 161.8 & 62.6 & 133.9 \\
+		250   & -1.05 & -0.01 & 1.05 & 31.6 & 34.7 & 17.8 \\
+		500   & -1.05 & 0.00  & 1.06 & 11.9 & 8.0  & 10.6 \\
+		1000  & -1.05 & 0.00  & 1.05 & 10.7 & 8.2  & 10.5 \\
+		2500  & -1.04 & 0.01  & 1.04 & 10.0 & 9.7 & 10.1 \\
+		10000 & -1.04 & 0.00  & 1.04 & 10.0 & 9.7  & 10.0 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+Results for the recovery of the von Mises parameters $\bm \mu$ and $\bm \kappa$, are summarized for scenario~\ref{fig:simulation-scenarios:three} in Table~\ref{table:simulation-results-2}. To obtain these estimates, only the MCMC states with three components are retained, so that $g=3$ as in the data generating process of scenario~\ref{fig:simulation-scenarios:three}. For each simulated data set, MAP estimates for $\hat{\bm\mu}$ and $\hat{\bm\kappa}$, are computed by estimating the posterior modes from the MCMC sample. Then, these MAP estimates are averaged over all simulated datasets and presented.
+
+The estimates of component parameters for scenario~\ref{fig:simulation-scenarios:three} show that in general the method is able to recover the true parameter estimates without bias, even with small sample size ($n=50$). The concentration parameter $\bm \kappa$ is overestimated with small samples, but estimates are reasonable for samples where $n \geq 500$.  The concentration parameter of the central component, $\kappa_2$, is systematically underestimated in this scenario. Most likely, the central is assigned some observations that belong to its two neighbors, and as a result is estimated as less concentrated than the true data generating process. 
+
+\section{Illustration}
+\label{22tracks}
+As a motivating example, we will apply the reversible jump MCMC sampler to a dataset of listening behavior, made available by \textit{22tracks}. This data  will first be described and visualized in Section~\ref{22tracks:dataset}. Then, results from applying the sampler to the data are discussed in Section~\ref{22tracks:results}.
+
+
+
+\subsection{Dataset}
+\label{22tracks:dataset}
+
+The data provided by \textit{22tracks} contain metrics of all users of the service over the span of one week (January 4-10, 2016). The data consist of the time of day (00:00h to 23:59h) at which a user played a particular song, categorized by the genre this song was in. In this paper, a subset of the data is used as an illustration. These consist of all observations categorized under one of three genres that were selected arbitrarily. The genres are Indie Electronic, Relax and Deep House. Figure~\ref{fig:kernel-dens} shows kernel density estimates of each genre. It can be seen that  depending on the genre, the data features a different number of modes, although determining the precise number of modes is difficult without running the mixture model.
+
+
+\begin{figure}
+	\captionsetup[subfigure]{justification=centering}
+	\centering
+	\begin{subfigure}[b]{0.31\textwidth}
+		\includegraphics[width=\textwidth]{genre_2.pdf}
+		\caption{Indie Electronic\\($n = 11,393$)}
+		\label{fig:kernel-dens:2}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.31\textwidth}
+		\includegraphics[width=\textwidth]{genre_3.pdf}
+		\caption{Relax\\($n = 10,657$)}
+		\label{fig:kernel-dens:3}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.31\textwidth}
+		\includegraphics[width=\textwidth]{genre_1.pdf}
+		\caption{Deep House\\($n = 4,757$)}
+		\label{fig:kernel-dens:1}
+	\end{subfigure}
+	\caption{Kernel density estimates of observations for analyzed \textit{22tracks} genres, using a von Mises kernel with $\kappa = 200$. The period of the circle is 24 hours.}
+	\label{fig:kernel-dens}
+\end{figure}
+
+
+The first goal of this analysis is to estimate the genre that is most likely to be selected at any given time. Supposedly, users listen to the genres available on the \textit{22tracks} service at different times of day. For example, Pop might be a genre that users listen to throughout the day while Deep House is preferred during the night. Quantifying this behavior is valuable for the music service, as it allows them to present the most appropriate genres to users when they visit the site at a particular time. 
+
+The second goal is to understand music listening behavior through the parameters of our mixture components, as the times at which we listen to music are a reflection of life in our society. The mixture components are then interpreted as a subpopulation of observations that correspond to a certain category of music listening, such as listening while working, during transit, or while dancing.
+
+\subsection{Results}
+\label{22tracks:results}
+
+We apply the mixture model to each genre separately, with starting values as described in Section~\ref{starting-values}, using a burn-in of 10,000 iterations and retaining the next 100,000 iterations for inference. The posterior distributions for component count $g$ are summarized in Table~\ref{tab:posterior-g}. The posteriors are quite different, with the Deep House genre showing a notably higher estimated component count, which is in accordance with the data as displayed in Figure~\ref{fig:kernel-dens}.
+
+\begin{table}[ht]
+	\caption{Posterior probability of component counts $p(g)$ for selected \textit{22tracks} genres.}
+	\centering
+	\begin{tabular}{lrrrrrrrr}
+		\hline
+		& \multicolumn{8}{c}{$g$}\\
+		Genre & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 \\
+		\hline
+		Indie Electronic & 0.01 & 0.52 & 0.36 & 0.10 & 0.01 & 0.00 & 0.00 & 0.00 \\
+		Relax & 0.00 & 0.25 & 0.55 & 0.18 & 0.02 & 0.00 & 0.00 & 0.00 \\
+		Deep House & 0.00 & 0.00 & 0.00 & 0.02 & 0.30 & 0.37 & 0.28 & 0.03 \\
+		\hline
+	\end{tabular}
+	\label{tab:posterior-g}
+\end{table}
+
+
+To obtain estimates for the other parameters $\bm w$, $\bm \mu$ and $\bm \kappa$, only the samples for which $g = g_{MAP}$ are used. For Deep House, these are samples where $g=6$, for Indie Electronic $g=2$ and for Relax $g=3$. The parameters have been summarized in Table~\ref{tab:22tracks}, ordered by the weights $\bm w$. 
+
+The Indie Electronic genre shows two broad components spanning most of the day. One is centered at the middle of the day (14:15h) and one is centered in the evening (21:13h), most likely corresponding to listening while working and listening at home during the evening. The components have a small concentration, suggesting only slight preference for these times. Such broad components are necessary, because listening occurs throughout the day. Similarly, the Relax genre is given three components with small concentration. 
+
+For the Deep House genre, six components provided the best fit. The first three components are broad and similar to the components found for the other genres. The central times are later in the day, as one might expect for this type of music. The sampler was also able to detect and fit the strong concentrations of observations at 10:41h, 04:27h and 12:58h. It is unlikely that these patterns have been created by actual users. More likely, they indicate a special attribute of the data. For example, a computer bot instead of an actual person could have triggered a large amount of plays in a short time span. Although this does not tell us anything about the behavior of actual users, it is still an interesting property that the sampler detects quite well. In fact, such a component has direct financial implications for this business, as such plays can be rejected to save costs. 
+
+Compared to a kernel density model, this provides a much simpler and more interpretable summary of the data. The posterior distribution also provides uncertainty around all of these estimates, although these are not shown here for brevity. 
+
+\begin{table}[ht]
+	\centering
+	\caption{Estimated component parameters for individual genres in \textit{22tracks} data. LB and UB indicate the lower and upper bound of the 95\% density of the data density of this von Mises component. Components have been ordered according to their respective weights.}
+	\label{tab:22tracks}
+	\begin{tabular}{lrrrrcc}
+		\hline
+		& & \multicolumn{3}{c}{} & \multicolumn{2}{c}{95\% density} \\
+		Genre & $j$ & $\hat{w_j}$ & $\hat{\mu_j}$ & $\hat{\kappa_j}$ & LB & UB \\
+		\hline
+		Indie Electronic & 1 & 0.72 & 3.73 (14:15h) & 0.89 & 1.04 (03:58h) & 0.15 (00:33h) \\
+		& 2 & 0.28 & 5.55 (21:13h) & 0.72 & 2.77 (10:36h) & 2.05 (07:50h) \\
+		\hline
+		Relax & 1 & 0.54 & 4.11 (15:43h) & 1.20 & 1.63 (06:15h) & 0.31 (01:11h) \\
+		& 2 & 0.33 & 5.49 (20:59h) & 0.85 & 2.78 (10:37h) & 1.93 (07:22h) \\
+		& 3 & 0.13 & 3.09 (11:49h) & 1.75 & 1.10 (04:12h) & 5.09 (19:27h) \\
+		\hline
+		Deep House & 1 & 0.30 & 3.99 (15:15h) & 2.07   & 2.25 (08:35h) & 5.74 (21:55h) \\
+		& 2 & 0.28 & 6.04 (23:04h) & 1.64   & 3.95 (15:05h) & 1.85 (07:03h) \\
+		& 3 & 0.17 & 5.13 (19:36h) & 1.59   & 2.99 (11:27h) & 0.98 (03:45h) \\
+		& 4 & 0.10 & 2.79 (10:41h) & 33.81  & 2.45 (09:23h) & 3.13 (11:59h) \\
+		& 5 & 0.08 & 1.16 (04:27h) & 635.81 & 1.09 (04:09h) & 1.24 (04:45h) \\
+		& 6 & 0.07 & 3.40 (12:58h) & 648.16 & 3.32 (12:41h) & 3.47 (13:16h) \\
+		\hline
+	\end{tabular}
+\end{table}
+
+
+\section{Discussion}
+\label{discussion}
+We have presented a method for Bayesian inference of von Mises mixture distribution. Previous work has assumed the number of components to be known, which is an assumption we have relaxed by employing the reversible jump MCMC algorithm. The main contributions included a novel set of dimensionality changing moves based on the trigonometric properties of the von Mises distribution. In addition, the performance of the method was investigated in a simulation study. Generally, the method performed well. An illustration was provided on music listening behavior, showing the interpretation of this method.
+
+
+Results of the simulation study showed that the estimation of the number of components $g$ was accurate for the majority of the simulated sample sizes, so the proposed split and combine moves successfully move between parameter spaces. In one scenario (\ref{fig:simulation-scenarios:two-opposite}), $g$ is overestimated at a very large sample count ($n=10000$). In this case the proposed prior for $g$ appears insufficient. A different choice of prior might be able to counter this effect and seems a topic for further investigation. It should be noted that although undesirable, an overfitted mixture is not necessarily problematic in application. The estimation of parameters $\bm w$, $\bm \mu$ and $\bm \kappa$ of the individual components is not directly affected and these parameters remain interpretable. Furthermore, the component weights allow us to gauge the relative importance of each component.
+
+
+Application to the \textit{22tracks} data provides an example for the interpretation of reversible jump MCMC sampler output. It should be noted that the observation counts in the \textit{22tracks} data were higher than what showed the most accurate estimation of the simulated component count in the simulation study and as such we did not infer much from the estimated $g$. Because the parametric von Mises model is easy to interpret, one can compare the results with intuition. The estimated component parameters $\bm \mu$ and $\bm \kappa$ in the provided example seem reasonable as they indicate listening to occur during daytime and in the evening. 
+
+
+In conclusion, the method presented in this paper provide a reversible jump MCMC sampler that is shown to perform well on simulated data as well as a real world example.
+\begin{thebibliography}{}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Agostinelli%
+		\ \BBA {} Lund%
+	}{%
+		Agostinelli%
+		\ \BBA {} Lund%
+	}{%
+		{\protect \APACyear {2013}}%
+	}]{%
+		rcircular}
+	\APACinsertmetastar {%
+		rcircular}%
+	\begin{APACrefauthors}%
+		Agostinelli, C.%
+		\BCBT {}\ \BBA {} Lund, U.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{2013}{}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{R} package \texttt{circular}: Circular Statistics
+		(version 0.4-7)} {{R} package \texttt{circular}: Circular statistics (version
+		0.4-7)}{\BBCQ}\ [\bibcomputersoftwaremanual].
+	\newblock
+	\APACaddressPublisher{CA: Department of Environmental Sciences, Informatics and
+		Statistics, Ca' Foscari University, Venice, Italy. UL: Department of
+		Statistics, California Polytechnic State University, San Luis Obispo,
+		California, USA}{}.
+	\newblock
+	\begin{APACrefURL} \url{https://r-forge.r-project.org/projects/circular/}
+	\end{APACrefURL}
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Akaike%
+	}{%
+		Akaike%
+	}{%
+		{\protect \APACyear {1974}}%
+	}]{%
+		Akaike:1974ta}
+	\APACinsertmetastar {%
+		Akaike:1974ta}%
+	\begin{APACrefauthors}%
+		Akaike, H.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{1974}{}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{A new look at the statistical model identification}}
+	{{A new look at the statistical model identification}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{IEEE transactions on automatic
+		control}{19}{6}{716--723}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		A~Mooney%
+		, Helms%
+		\BCBL {}\ \BBA {} Jolliffe%
+	}{%
+		A~Mooney%
+		\ \protect \BOthers {.}}{%
+		{\protect \APACyear {2003}}%
+	}]{%
+		mooney2003fitting}
+	\APACinsertmetastar {%
+		mooney2003fitting}%
+	\begin{APACrefauthors}%
+		A~Mooney, J.%
+		, Helms, P\BPBI J.%
+		\BCBL {}\ \BBA {} Jolliffe, I\BPBI T.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{2003}{{\APACmonth{01}}}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Fitting mixtures of von Mises distributions: a case
+			study involving sudden infant death syndrome}} {{Fitting mixtures of von
+			Mises distributions: a case study involving sudden infant death
+			syndrome}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Computational Statistics {\&} Data
+		Analysis}{41}{3-4}{505--513}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Banerjee%
+		, Dhillon%
+		, Ghosh%
+		\BCBL {}\ \BBA {} Sra%
+	}{%
+		Banerjee%
+		\ \protect \BOthers {.}}{%
+		{\protect \APACyear {2005}}%
+	}]{%
+		Banerjee:2005tk}
+	\APACinsertmetastar {%
+		Banerjee:2005tk}%
+	\begin{APACrefauthors}%
+		Banerjee, A.%
+		, Dhillon, I\BPBI S.%
+		, Ghosh, J.%
+		\BCBL {}\ \BBA {} Sra, S.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{2005}{}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Clustering on the Unit Hypersphere using von
+			Mises-Fisher Distributions}} {{Clustering on the Unit Hypersphere using von
+			Mises-Fisher Distributions}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Journal of machine Learning
+		research}{6}{Sep}{1345--1382}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Besag%
+		, Green%
+		, Higdon%
+		\BCBL {}\ \BBA {} Mengersen%
+	}{%
+		Besag%
+		\ \protect \BOthers {.}}{%
+		{\protect \APACyear {1995}}%
+	}]{%
+		Besag:1995de}
+	\APACinsertmetastar {%
+		Besag:1995de}%
+	\begin{APACrefauthors}%
+		Besag, J.%
+		, Green, P.%
+		, Higdon, D.%
+		\BCBL {}\ \BBA {} Mengersen, K.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{1995}{{\APACmonth{02}}}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Bayesian computation and stochastic systems}}
+	{{Bayesian computation and stochastic systems}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Statistical science}{10}{1}{3--41}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Brooks%
+		, Giudici%
+		\BCBL {}\ \BBA {} Roberts%
+	}{%
+		Brooks%
+		\ \protect \BOthers {.}}{%
+		{\protect \APACyear {2003}}%
+	}]{%
+		Anonymous:c60Je_7X}
+	\APACinsertmetastar {%
+		Anonymous:c60Je_7X}%
+	\begin{APACrefauthors}%
+		Brooks, S\BPBI P.%
+		, Giudici, P.%
+		\BCBL {}\ \BBA {} Roberts, G\BPBI O.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{2003}{}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Efficient construction of reversible-jump Markov chain
+			Monte Carlo proposal distributions}} {{Efficient construction of
+			reversible-jump Markov chain Monte Carlo proposal distributions}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Journal of the Royal Statistical Society: Series B
+		(Statistical Methodology)}{65}{1}{3--55}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Fern{\'a}ndez-Dur{\'a}n%
+		\ \BBA {} Mercedes Gregorio-Dom{\'\i}nguez%
+	}{%
+		Fern{\'a}ndez-Dur{\'a}n%
+		\ \BBA {} Mercedes Gregorio-Dom{\'\i}nguez%
+	}{%
+		{\protect \APACyear {2016}}%
+	}]{%
+		FernandezDuran:2016bm}
+	\APACinsertmetastar {%
+		FernandezDuran:2016bm}%
+	\begin{APACrefauthors}%
+		Fern{\'a}ndez-Dur{\'a}n, J\BPBI J.%
+		\BCBT {}\ \BBA {} Mercedes Gregorio-Dom{\'\i}nguez, M.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{2016}{{\APACmonth{02}}}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Bayesian analysis of circular distributions based on
+			non-negative trigonometric sums}} {{Bayesian analysis of circular
+			distributions based on non-negative trigonometric sums}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Journal of Statistical Computation and
+		Simulation}{86}{16}{3175--3187}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Ferreira%
+		, Ju{\'a}rez%
+		\BCBL {}\ \BBA {} Steel%
+	}{%
+		Ferreira%
+		\ \protect \BOthers {.}}{%
+		{\protect \APACyear {2008}}%
+	}]{%
+		Ferreira:2008gv}
+	\APACinsertmetastar {%
+		Ferreira:2008gv}%
+	\begin{APACrefauthors}%
+		Ferreira, J\BPBI T\BPBI A\BPBI S.%
+		, Ju{\'a}rez, M\BPBI A.%
+		\BCBL {}\ \BBA {} Steel, M\BPBI F\BPBI J.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{2008}{{\APACmonth{06}}}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Directional log-spline distributions}} {{Directional
+			log-spline distributions}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Bayesian Analysis}{3}{2}{297--316}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Fisher%
+	}{%
+		Fisher%
+	}{%
+		{\protect \APACyear {1995}}%
+	}]{%
+		fisher1995statistical}
+	\APACinsertmetastar {%
+		fisher1995statistical}%
+	\begin{APACrefauthors}%
+		Fisher, N\BPBI I.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYear{1995}.
+	\newblock
+	\APACrefbtitle {Statistical analysis of circular data} {Statistical analysis of
+		circular data}.
+	\newblock
+	\APACaddressPublisher{}{Cambridge: Cambridge University Press}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Forbes%
+		\ \BBA {} Mardia%
+	}{%
+		Forbes%
+		\ \BBA {} Mardia%
+	}{%
+		{\protect \APACyear {2014}}%
+	}]{%
+		Forbes:2014ju}
+	\APACinsertmetastar {%
+		Forbes:2014ju}%
+	\begin{APACrefauthors}%
+		Forbes, P\BPBI G\BPBI M.%
+		\BCBT {}\ \BBA {} Mardia, K\BPBI V.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{2014}{{\APACmonth{06}}}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{A fast algorithm for sampling from the posterior of a
+			von Mises distribution}} {{A fast algorithm for sampling from the posterior
+			of a von Mises distribution}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Journal of Statistical Computation and
+		Simulation}{85}{13}{2693--2701}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Ghosh%
+		, Jammalamadaka%
+		\BCBL {}\ \BBA {} Tiwari%
+	}{%
+		Ghosh%
+		\ \protect \BOthers {.}}{%
+		{\protect \APACyear {2003}}%
+	}]{%
+		Ghosh:2003ds}
+	\APACinsertmetastar {%
+		Ghosh:2003ds}%
+	\begin{APACrefauthors}%
+		Ghosh, K.%
+		, Jammalamadaka, R.%
+		\BCBL {}\ \BBA {} Tiwari, R.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{2003}{{\APACmonth{02}}}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Semiparametric Bayesian Techniques for Problems in
+			Circular Data}} {{Semiparametric Bayesian Techniques for Problems in Circular
+			Data}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Journal of Applied Statistics}{30}{2}{145--161}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Green%
+	}{%
+		Green%
+	}{%
+		{\protect \APACyear {1995}}%
+	}]{%
+		Green:1995ut}
+	\APACinsertmetastar {%
+		Green:1995ut}%
+	\begin{APACrefauthors}%
+		Green, P\BPBI J.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{1995}{{\APACmonth{12}}}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Reversible jump Markov chain Monte Carlo computation
+			and Bayesian model determination}} {{Reversible jump Markov chain Monte Carlo
+			computation and Bayesian model determination}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Biometrika}{82}{4}{711--732}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Gurtman%
+	}{%
+		Gurtman%
+	}{%
+		{\protect \APACyear {2009}}%
+	}]{%
+		Gurtman:2009jz}
+	\APACinsertmetastar {%
+		Gurtman:2009jz}%
+	\begin{APACrefauthors}%
+		Gurtman, M\BPBI B.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{2009}{{\APACmonth{07}}}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Exploring Personality with the Interpersonal
+			Circumplex}} {{Exploring Personality with the Interpersonal
+			Circumplex}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Social and Personality Psychology
+		Compass}{3}{4}{601--619}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Guttorp%
+		\ \BBA {} Lockhart%
+	}{%
+		Guttorp%
+		\ \BBA {} Lockhart%
+	}{%
+		{\protect \APACyear {1988}}%
+	}]{%
+		guttorp1988finding}
+	\APACinsertmetastar {%
+		guttorp1988finding}%
+	\begin{APACrefauthors}%
+		Guttorp, P.%
+		\BCBT {}\ \BBA {} Lockhart, R\BPBI A.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{1988}{}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {Finding the location of a signal: A Bayesian analysis}
+	{Finding the location of a signal: A bayesian analysis}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Journal of the American Statistical
+		Association}{83}{402}{322--330}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Hastings%
+	}{%
+		Hastings%
+	}{%
+		{\protect \APACyear {1970}}%
+	}]{%
+		Hastings:1970wm}
+	\APACinsertmetastar {%
+		Hastings:1970wm}%
+	\begin{APACrefauthors}%
+		Hastings, W\BPBI K.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{1970}{{\APACmonth{04}}}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Monte Carlo sampling methods using Markov chains and
+			their applications}} {{Monte Carlo sampling methods using Markov chains and
+			their applications}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Biometrika}{57}{1}{97--109}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Hornik%
+		\ \BBA {} Gr{\"u}n%
+	}{%
+		Hornik%
+		\ \BBA {} Gr{\"u}n%
+	}{%
+		{\protect \APACyear {2014}}%
+	}]{%
+		hornik2014movmf}
+	\APACinsertmetastar {%
+		hornik2014movmf}%
+	\begin{APACrefauthors}%
+		Hornik, K.%
+		\BCBT {}\ \BBA {} Gr{\"u}n, B.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{2014}{}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {movMF: An R package for fitting mixtures of von
+		Mises-Fisher distributions} {movmf: An r package for fitting mixtures of von
+		mises-fisher distributions}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Journal of Statistical Software}{58}{10}{1--31}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Jasra%
+		, Holmes%
+		\BCBL {}\ \BBA {} Stephens%
+	}{%
+		Jasra%
+		\ \protect \BOthers {.}}{%
+		{\protect \APACyear {2005}}%
+	}]{%
+		Jasra:2005ho}
+	\APACinsertmetastar {%
+		Jasra:2005ho}%
+	\begin{APACrefauthors}%
+		Jasra, A.%
+		, Holmes, C\BPBI C.%
+		\BCBL {}\ \BBA {} Stephens, D\BPBI A.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{2005}{{\APACmonth{02}}}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Markov chain Monte Carlo methods and the label
+			switching problem in Bayesian mixture modeling}} {{Markov chain Monte Carlo
+			methods and the label switching problem in Bayesian mixture
+			modeling}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Statistical science}{20}{1}{50--67}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Mardia%
+		\ \BBA {} El-Atoum%
+	}{%
+		Mardia%
+		\ \BBA {} El-Atoum%
+	}{%
+		{\protect \APACyear {1976}}%
+	}]{%
+		mardia1976bayesian}
+	\APACinsertmetastar {%
+		mardia1976bayesian}%
+	\begin{APACrefauthors}%
+		Mardia, K\BPBI V.%
+		\BCBT {}\ \BBA {} El-Atoum, S.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{1976}{}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Bayes}ian inference for the von Mises-Fisher
+		distribution} {{Bayes}ian inference for the von mises-fisher
+		distribution}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Biometrika}{63}{1}{203--206}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Mardia%
+		\ \BBA {} Jupp%
+	}{%
+		Mardia%
+		\ \BBA {} Jupp%
+	}{%
+		{\protect \APACyear {2009}}%
+	}]{%
+		Mardia2009}
+	\APACinsertmetastar {%
+		Mardia2009}%
+	\begin{APACrefauthors}%
+		Mardia, K\BPBI V.%
+		\BCBT {}\ \BBA {} Jupp, P\BPBI E.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYear{2009}.
+	\newblock
+	\APACrefbtitle {{Directional Statistics}} {{Directional Statistics}}.
+	\newblock
+	\APACaddressPublisher{}{Wiley}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		McLachlan%
+		\ \BBA {} Krishnan%
+	}{%
+		McLachlan%
+		\ \BBA {} Krishnan%
+	}{%
+		{\protect \APACyear {2007}}%
+	}]{%
+		McLachlan:P5Bg7scy}
+	\APACinsertmetastar {%
+		McLachlan:P5Bg7scy}%
+	\begin{APACrefauthors}%
+		McLachlan, G.%
+		\BCBT {}\ \BBA {} Krishnan, T.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYear{2007}.
+	\newblock
+	\APACrefbtitle {{The EM algorithm and extensions}} {{The EM algorithm and
+			extensions}}.
+	\newblock
+	\APACaddressPublisher{}{John Wiley {\&} Sons}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Mechsner%
+		, Kerzel%
+		, Knoblich%
+		\BCBL {}\ \BBA {} Prinz%
+	}{%
+		Mechsner%
+		\ \protect \BOthers {.}}{%
+		{\protect \APACyear {2001}}%
+	}]{%
+		Mechsner:2001ff}
+	\APACinsertmetastar {%
+		Mechsner:2001ff}%
+	\begin{APACrefauthors}%
+		Mechsner, F.%
+		, Kerzel, D.%
+		, Knoblich, G.%
+		\BCBL {}\ \BBA {} Prinz, W.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{2001}{{\APACmonth{11}}}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Perceptual basis of bimanual coordination}}
+	{{Perceptual basis of bimanual coordination}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Nature}{414}{6859}{69--73}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Pewsey%
+		, Neuh{\"a}user%
+		\BCBL {}\ \BBA {} Ruxton%
+	}{%
+		Pewsey%
+		\ \protect \BOthers {.}}{%
+		{\protect \APACyear {2013}}%
+	}]{%
+		pewsey2013circular}
+	\APACinsertmetastar {%
+		pewsey2013circular}%
+	\begin{APACrefauthors}%
+		Pewsey, A.%
+		, Neuh{\"a}user, M.%
+		\BCBL {}\ \BBA {} Ruxton, G\BPBI D.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYear{2013}.
+	\newblock
+	\APACrefbtitle {Circular statistics in R} {Circular statistics in r}.
+	\newblock
+	\APACaddressPublisher{}{Oxford University Press}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		{R Core Team}%
+	}{%
+		{R Core Team}%
+	}{%
+		{\protect \APACyear {2015}}%
+	}]{%
+		rlanguage}
+	\APACinsertmetastar {%
+		rlanguage}%
+	\begin{APACrefauthors}%
+		{R Core Team}.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{2015}{}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {R: A Language and Environment for Statistical Computing}
+	{R: A language and environment for statistical computing}{\BBCQ}\
+	[\bibcomputersoftwaremanual].
+	\newblock
+	\APACaddressPublisher{Vienna, Austria}{}.
+	\newblock
+	\begin{APACrefURL} \url{https://www.R-project.org/} \end{APACrefURL}
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Richardson%
+		\ \BBA {} Green%
+	}{%
+		Richardson%
+		\ \BBA {} Green%
+	}{%
+		{\protect \APACyear {1997}}%
+	}]{%
+		Richardson:1997di}
+	\APACinsertmetastar {%
+		Richardson:1997di}%
+	\begin{APACrefauthors}%
+		Richardson, S.%
+		\BCBT {}\ \BBA {} Green, P.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{1997}{}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{On Bayesian Analysis of Mixtures with Unknown Number of
+			Components}} {{On Bayesian Analysis of Mixtures with Unknown Number of
+			Components}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Journal of the Royal Statistical Society: Series B
+		(Statistical Methodology)}{59}{4}{731--792}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Schwarz%
+	}{%
+		Schwarz%
+	}{%
+		{\protect \APACyear {1978}}%
+	}]{%
+		Schwarz:1978kf}
+	\APACinsertmetastar {%
+		Schwarz:1978kf}%
+	\begin{APACrefauthors}%
+		Schwarz, G.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{1978}{{\APACmonth{03}}}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Estimating the Dimension of a Model}} {{Estimating the
+			Dimension of a Model}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{The Annals of Statistics}{6}{2}{461--464}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Stephens%
+	}{%
+		Stephens%
+	}{%
+		{\protect \APACyear {2000}}%
+	}]{%
+		Stephens:2000gba}
+	\APACinsertmetastar {%
+		Stephens:2000gba}%
+	\begin{APACrefauthors}%
+		Stephens, M.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{2000}{{\APACmonth{01}}}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Dealing with label switching in mixture models}}
+	{{Dealing with label switching in mixture models}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{Journal of the Royal Statistical Society: Series B
+		(Statistical Methodology)}{62}{4}{795--809}.
+	\PrintBackRefs{\CurrentBib}
+	
+	\bibitem [\protect \citeauthoryear {%
+		Tierney%
+	}{%
+		Tierney%
+	}{%
+		{\protect \APACyear {1994}}%
+	}]{%
+		Tierney:1994fc}
+	\APACinsertmetastar {%
+		Tierney:1994fc}%
+	\begin{APACrefauthors}%
+		Tierney, L.%
+	\end{APACrefauthors}%
+	\unskip\
+	\newblock
+	\APACrefYearMonthDay{1994}{{\APACmonth{12}}}{}.
+	\newblock
+	{\BBOQ}\APACrefatitle {{Markov chains for exploring posterior distributions}}
+	{{Markov chains for exploring posterior distributions}}.{\BBCQ}
+	\newblock
+	\APACjournalVolNumPages{The Annals of Statistics}{22}{4}{1701--1728}.
+	\PrintBackRefs{\CurrentBib}
+	
+\end{thebibliography}
+
+

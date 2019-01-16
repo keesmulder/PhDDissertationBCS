@@ -1,0 +1,603 @@
+\section{Introduction}
+
+Crime analysis is concerned with understanding and predicting crime by evaluating core aspects of crimes such as their location, time, targets, offenders and the availability of guardians. When tasked with understanding or predicting whether a certain crime is likely to occur, one must know where the crime is to occur, but also at what time of the day. Burglaries, for example, are less likely to occur in the evening. Temporal variation, such as the hour of day, contributes more to the overall variation in crime likelihood than any other type of variation \citep{felson2003simple}. However, in the crime analysis literature the temporal dimension is routinely ignored \citep{ratcliffe1998aoristic, ratcliffe2000aoristic}.
+
+A central difficulty of the temporal dimension is that most crime times are not directly observed. That is, when a crime is recorded, the victim is often uncertain of when the crime occured exactly, but is only able to say that the crime happened after start time $\ts$ and before some end time $\te$. Therefore, one is left with a set of intervals of time $(\ts, \te)$ in which the crime occurred. Figure \ref{exdat} shows three examples of such intervals. This type of crime time data where the exact time is not known is called \textit{aoristic data}, with the interval $(\ts, \te)$ called an  \textit{aoristic interval}. Using such data severely complicates crime time analysis: if only the start times are used, the analysis is biased towards estimating crimes as happening too early, while using the end times gives estimates that are too late.
+
+\begin{figure}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/interval_example-1} 
+
+\end{knitrout}
+\caption{Example of three aoristic intervals representing possible crime times, which are 2 AM - 10 AM (red), 8 AM - 12 AM (green), and 10 PM - 12 PM (blue). } \label{exdat}
+\end{figure}
+
+A more sophisticated approach to deal with aoristic data is what \citet{ashby2013comparison} call \textit{aoristic analysis} \citep{ratcliffe1998aoristic, ratcliffe2000aoristic}. This method consists of giving each observation a total weight of 1, and spreading this weight out over the length of the interval. Thus, for a crime that took place in the interval 15:00 - 18:00, the hours in this interval each get a weight of $1/3$ from this observation. Therefore, the more certainty that a crime occured within a certain hour, the more probability is assigned to it. Then, the weights of all aoristic intervals are averaged within some chosen unit of time (e.g. an hour) to get an estimate of the proportion of crimes occuring during that unit of time. Because the weight is called the \textit{aoristic fraction}, we will refer to this approach as the \textit{aoristic fraction method} to distinguish it from other aoristic data analysis methods. Details for the aoristic fraction method are given in Section \ref{afmethod}.
+
+The goal in  aoristic analyses is to obtain an estimated \textit{crime time density}, that is, a mathematical function $\hat{p}(t)$ that takes in an interval of time and returns the proportion of crimes that will happen in that interval. If the estimate is good, we know well when crimes will happen. It should be noted that we can find estimated crime time densities at an aggregate level, or if additional predicting covariates are available, the estimated crime time density conditional on these covariates. This last approach is particularly valuable for purposes of imputing the crime time, so that it can be used in further analysis.
+
+From a statistical point of view, this crime time density is an estimate of a probability density function. In fact, the hope of any aoristic analysis is to approach the true probability density function of crime times, so we can evaluate any aoristic method by seeing whether it comes close to the true crime time density.
+
+
+
+Currently available methods, such as the one described by \citet{ashby2013comparison}, have several major drawbacks. The drawbacks we will address here are that the currently available methods (a) systematically overrepresent the variance of the data, (b)  are not built on a solid statistical foundation so that they do not provide valid statistical inference about the true distribution of crime times, (c) do not take into account model uncertainty caused by small samples, (d) can not  be embedded  in a larger statistical model, (e) split time in categories which leads to arbitrary choices, and (f) do not allow mixing aoristic data with data where times are directly observed. These drawbacks limit both predictive performance as well as the use of these models for understanding patterns in crime. In this work, methods will be developed which are easier to use, built on a more solid statistical foundation, and which can be embedded in a larger model. This method is rooted in circular statistics, which is the branch of statistics that deals with periodical sample spaces, such as the 24-hour clock in this case. It should be noted that all examples and discussion will be based on aoristic data on the 24-hour clock, but all methods are equally applicable to other time periods, such as weeks, months and years.
+
+Throughout this paper, these drawbacks will be expanded on and addressed. The rest of this paper will be structured as follows. In Section \ref{aodata}, a general introduction to aoristic data will be given. The Aoristic Fraction method and its drawbacks will be addressed in Section \ref{afmethod}. Section \ref{param} will provide a way to estimate parametric statistical models using aoristic data, while Section \ref{dpm} will add a non-parametric Bayesian method to these approaches, which is more realistic for multimodal crime time data. Section \ref{applications} will show how this method can be applied to several problems in crime time analysis. Finally, \ref{discussion} has some concluding remarks.
+
+
+
+
+
+
+\section{Aoristic data} \label{aodata}
+
+Aoristic data are temporal data that contain intervals ($\ts, \te$) instead of having all observed time points. Such data arises in crime analysis when crimes happen while the victim is not present. For some types of crime close to all records are aoristic, such as for the bike thefts analyzed in \citet{ashby2013comparison} or property theft, such as burglaries. For other crimes, a combination of directly observed times (e.g. caught red-handed) and aoristic intervals is observed. This mixed data type can be a problem for some aoristic analysis methods, such as the aoristic fraction method described in the next section.
+
+Importantly, aoristic data or temporal data refers here to the time of the day, the day of the week, month, or year. To be precise, this is the cyclic, or periodical, aspect of time. Time can also be viewed linearly, for example by making statements about crime increasing in a certain area over time, or using a time series model for the changing frequency of crime, or including year as a covariate in a model for crime. Such analyses can be combined with the aoristic methods under consideration, but are not the focus of this work.
+
+The main issue of observing intervals of time instead of directly observing time points is that descriptive or inferential analysis methods are generally developed for directly observed data, so they do not allow intervals as inputs. Therefore, the aoristic data must be dealt with, either through a pragmatic solution or a specialized analysis method for it.
+
+Simple ways to deal with aoristic data include ignoring the aoristic data, taking only the start points of the intervals, the end points, mid points, or a random point in the interval, which are compared in \citet{ashby2013comparison}. Removing all aoristic intervals from the data set is wasteful and often leaves us with little to no data. Using start times of the interval will clearly cause us to expect crime earlier than it really happens, while taking the end times of the interval will lead to estimates that are too late. Taking the mid-points is a better solution, but this means that we allege to know the true crime time, and as such overestimates our certainty in our analyses. Sampling a random point (uniformly) in the interval is the most valid amongst these pragmatic options, but can cause the results to depend on the random sampling. Therefore, the aforementioned aoristic fraction method is often recommended, which will be examined in the following section.
+
+The aoristic data problem can also be seen as a missing data problem, where the crime times are not completely missing but rather partially observed.  In this view, the random sampling approach essentially amounts to single imputation of missing data with the distribution of the data uniform in the interval. Single imputation is generally not recommended \citep{van2018flexible}. Commonly used missing data analysis methods use multiple imputations, and do not impute a data point uniformly from its possible places, but use the rest of the data to estimate the distribution of the missing data points, and draw imputations from this distribution. A multiple imputation approach could be a possible solution for aoristic data, but it difficult to define the crime time density within an aoristic interval based on the other aoristic intervals. Therefore, we will focus on other solutions.
+
+Before we continue with an investigation of aoristic analysis methods, it is helpful to consider two ways in which aoristic data makes it more difficult to learn about the true crime time density.
+
+First, the uncertainty about the location of the true crime time in the interval also means increased uncertainty in any statistical model that incorporates it. Therefore, making decisions using aoristic data requires a larger sample size than using known times. However, in this case it is still possible to create aoristic analysis methods that do not introduce any systematic bias in the estimated crime time density.
+
+However, a systematic unobserved preference within the interval can cause bias which can not be solved, although this has not yet been investigated in previous work on aoristic analysis. To see this, note that the true crime time may have a tendency to be located near either the beginning or the end of the interval. For example, if offenders observe their victims, and strike when they leave their property, true crime times will have a tendency to occur in the beginning of the interval. If the unobserved true crime time is $\ttrue$, then we can also think about the start time $\ts$ as the true value minus some difference, or $\ts = \ttrue - \dlnoi$, and the end time $\te$ as the true time plus some difference, $\te = \ttrue + \dunoi.$ Note that the differences $\dlnoi$ and $\dunoi$ are also unobserved (unless they are zero). If for some interval $\dlnoi$ is larger than $\dunoi$ or vice versa, there is no problem because these will cancel out on average. However, if one is larger than another on average over the whole dataset, then any estimate of $\ttrue$ is systematically biased with no way for the crime analyst to detect this. From the missing data viewpoint, this is similar to the concept of missing not at random (MNAR), in that there is no information in our current dataset that can solve this issue. The only solution is to introduce outside information into the analysis, such as prior knowledge about the intervals or a sufficiently sized known-time dataset. Due to this difficulty, throughout this work we will follow other work on aoristic analysis in taking the assumption that $\dlnoi$ and $\dunoi$ have the same average, that is, the true crime time is equally likely to be near the start or the end of the interval.
+
+As a final unrelated note, temporal data (including aoristic data) is usually treated by splitting times into broad categories,  such as hours ('15:00 - 16:00'), three or four groups (such as 'evening') \citep{pereira2016temporal} or dichotomous splits ('5 AM - 5 PM') \citep{felson2003simple}. While easy to perform, categorization requires the crime analyst to choose the amount of categories and where to place cutpoints, a choice which can influence the resulting conclusions. In addition, categorization treats adjacent categories, say '15:00 - 16:00' and '16:00 - 17:00', as being just as distant as, say, '15:00 - 16:00' and '02:00 - 03:00'. Certainly, we should be able to `borrow information' from adjacent categories, which is especially relevant if there is limited data. In fact, from a statistical viewpoint, we can. Therefore, we will employ continuous methods throughout, because they do not pose signficant additional challenge in either statistical or computational methods.
+
+\section{Aoristic Fraction method} \label{afmethod}
+
+The aoristic fraction method is a descriptive method for aoristic data discussed in \citet{ratcliffe1998aoristic}, which is similar various other methods that have been described over time \citep{gottlieb1994crime, rayment1995spatial, brown1998regional}. It can be described as a circular histogram that is created from aoristic intervals. While the random point method would sample a value from the uniform distribution within each interval ($\ts$, $\te$), the aoristic fraction method keeps this uniform distribution and treats it as a building block for the histogram.
+
+The aoristic fraction method uses the aoristic function, which is a function that captures the information in the data, as an approximation of the crime time density. The final analysis takes the form of a plot of this function, either directly on a 24-hour clock such as one displayed in Figure \ref{aof_ex}, which shows both the observed aoristic intervals and the resulting aoristic function, or on a map such as generated by the \texttt{R} package \texttt{aoristic} \citep{kikuchi2015package}. To compute the aoristic function, for each observation $i$ we take the interval $(\ts_i, \te_i)$ and compute the length of the interval $\te_i - \ts_i.$ Then we give all values within the observed interval weight $\frac{1}{\te_i - \ts_i},$ so that shorter intervals have more weight. Finally, we sum these weights up for all observed intervals to obtain the estimated crime time density. Mathematically, we can write this function at time $t$ as
+\begin{equation}
+\hat{p}_{AF}(t) = \wavg \frac{I(\te_i < t < \ts_i)}{\te_i - \ts_i}
+\end{equation}
+where $I(\te_i < t < \ts_i)$ an indicator function, which is 1 if $t$ is in aoristic interval $i$, and 0 otherwise.
+
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.5\linewidth}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/aof_example-1} 
+
+\end{knitrout}
+\caption{} \label{aof_small}
+\end{subfigure}%
+\begin{subfigure}[b]{0.5\linewidth}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/aof_example_big-1} 
+
+\end{knitrout}
+\caption{} \label{aof_big}
+\end{subfigure}%
+\caption{Two examples of observed aoristic intervals (grey, inside circle) and the output of the aoristic fraction method (green, outside circle) denoting the estimate of the crime time density. Left, a small data with four observations. Right, a more realistic dataset with 30 observed intervals.} \label{aof_ex}
+\end{figure}
+
+The aoristic function serves as estimate of the probability density at each time point of a crime occuring. That is, if the true crime times are distributed such that a crime at time point $t$ has probability density $p(t),$ then the aoristic fraction method is an estimate of this, which we called $\hat{p}_{AF}(t).$ This estimate can then be used to make decisions, perhaps by calculating the expected percentage of crimes that will occur within a certain time frame. For example, the proportion of crimes expected to occur between 18:00 and 19:00 is $\hat{p}(18 < t < 19) = \int_{18}^{19} \hat{p}_{AF}(t) dt = 0.069,$ so $6.9\%$. This type of information is directly useful in crime prevention, such as in police resource allocation through the timing of police shifts.
+
+While this method has several appealing properties, a major problem of the aoristic fraction method is that it systematically overestimates the variance of the crime time density. This means that any estimate derived from these methods is systematically biased towards crime times that are more spread out over the 24-hour clock. Here, this will be explained through an example, but this fact can also be proven mathematically, which is done in Appendix \ref{proofvar}.
+
+Suppose there is a neighbourhood where burglaries mostly take place in the afternoon, say, between 11:00 and 16:00. However, we are not able to observe the crime times as the victims are almost never present. Victims will provide us with the start time $\ts$ they left their premises, for example leaving for work, and the end time $\te$ when they returned. For illustration, we have sampled true crime times and intervals, computed the aoristic function and have plotted these together in Figure \ref{overvarex}. Due to the fact that most work schedules are similar, we will obtain a large amount of observations that have intervals roughly similar to (8:00, 19:00). However, this means that the aoristic fraction method will give a large amount of weight to the time frames 8:00 - 11:00 and 16:00 - 19:00, which there were very few true crime times in that region.
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.5\linewidth}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/overvarex_circ-1} 
+
+\end{knitrout}
+\caption{} \label{overvarex_circ}
+\end{subfigure}%
+\begin{subfigure}[b]{0.5\linewidth}
+\centering
+\vfill
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/overvarex_lin-1} 
+
+\end{knitrout}
+\caption{} \label{overvarex_lin}
+\end{subfigure}%
+\caption{Example of how the aoristic fraction method overestimates the variance. The simulated true crime times are displayed as the blue histogram, while the approximation to this distribution is plotted as the dark green aoristic function.} \label{overvarex}
+\end{figure}
+
+A final way to think of the aoristic function is that if we represent each aoristic interval by the uniform distribution on that interval, the aoristic function is the average of these uniform distributions at some time point $t$. This implies that we know nothing about where in the interval the data point is most likely to lie. That is, we do not think any point in the interval is more likely than another. However, the whole point of analyzing the dataset is to decide which crime times are more likely than others, and we are usually able to do this. Therefore, the uniform distribution on the aoristic interval is at odds with what we purport to do in our analysis.
+
+Concluding, the aoristic fraction method is an appealing descriptive method, because its plot shows at a glance what the data looks like, but it does not allow us to infer the true crime time density. While descriptive statistics tells us something about the data, inferential statistics attempt to estimate the form of the true data generating process, which is generally the ultimate goal of crime analysis and prediction. The shortcomings of the descriptive aoristic fraction method  motivate us to develop an inferential analysis method which treats the aoristic intervals as a missing data problem. That is, the true crime times are unknown, but we will try to use as much information as possible to understand where in the interval the true crime time is most likely to be.
+
+\section{Statistical models for aoristic data} \label{param}
+
+In this section, inferential statistical methods will be developed for aoristic data. A crime analyst is using data to learn something about the world, and draws conclusions based on some statistical model. Initially, we are uncertain about the parameters in this statistical model, but as more data comes in we learn more about the parameters of the model and estimate them with more certainty.
+
+In order to perform statistical inference on aoristic data, we need to set up some statistical model to learn, as well as some way to learn about them. In the next section we will shortly recap statistical models for temporal data, and in the section thereafter we will present a method to deal with the aoristic property of the data.
+
+\subsection{Circular data models} \label{ref}
+
+Statistical models for circular data, such as the temporal data under consideration here, have been developed in the field of circular statistics \citep{fisher1995statistical, mardia2009directional, pewsey2013circular}.
+Circular data can consist of measurements in angles, directions, or times on the 24-hour clock, for example. This type of data can be found throughout discliplines, such as life sciences \citep{mardianew}, behavioural biology \citep{bulbert2015danger}, cognitive psychology \citep{kaas2006haptic}, bioinformatics \citep{mardia2008multivariate}, political science \citep{gill2010} and environmental sciences \citep{lagona2016regression, lagona2015hidden, arnold2006recent}. Circular data differ from linear data in the sense that circular data are measured in a periodical sample space. For example, an angle of $1^{\circ}$ is quite close to an angle $359^{\circ},$ although linear intuition suggests otherwise. Similarly, times on the 24-hour clock have 23:59 and 0:01 being close to one another, while the numerical representation suggests otherwise. As a result, models for circular data must be different from linear models, such as the Normal distribution.
+
+A natural analogue of the Normal distribution for circular data is the von Mises distribution \citep{von1918ganzzahligkeit}, which can be written as the probability density
+\begin{equation} \label{vmeq}
+p(t \mid \mu, \kp) = \frac{1}{2\pi I_0(\kp)} \exp\left\{\kp \cos(t - \mu)\right\},
+\end{equation}
+where $t$ is a circular observation, such as a crime time, $\mu$ is the mean direction parameter, $\kp$ is a concentration parameter, and $I_0(\cdot)$ is the modified Bessel function of the first kind and order zero. This is a unimodal, symmetric model for circular data which will be used as a building block for more complex models throughout this work.
+
+In order to perform statistical inference, we use the data to estimate population values for $\mu$ and $\kp$. In addition, we are always interested in quantifying the uncertainty in our estimates (caused by our limited sample size), which might be given as a standard error in frequentist inference or as the posterior distribution in Bayesian inference. Either way, in order to do this, the likelihood function is used, which will be discussed in the following section.
+
+\subsection{Aoristic Likelihood} \label{aolik}
+
+The information contained in the data is usually entered into the statistical model through the likelihood function. The likelihood function of the von Mises distribution can be specified as
+\begin{equation}
+L(\bphi \mid \bt ) = \prod_{i = 1}^n p(t_i \mid \mu, \kp),
+\end{equation}
+where \( \mu\) and \(\kp\) are the aforementioned parameters of the von Mises distribution, and \( p(t_i \mid \mu, \kp) \) is the von Mises density given in \ref{vmeq}, which could also be replaced by any other density if we so desire. Usually, we would algebraically or numerically optimize this likelihood function to obtain maximum likelihood estimates  (MLEs), which can be plugged into the von Mises density to obtain an estimate of the crime time density. However, this formulation supposes all crime times are directly observed.
+
+In order to adapt the likelihood for aoristic data, some ideas from the survival analysis literature can be used. In survival analysis, data are usually \textit{right-censored}, where it is known that an event takes place after a certain time, but not exactly when. Aoristic data, then, is \textit{interval-censored}, where an event has taken place after a certain time, as well as before some later time, but where in this is interval the event took place is not known. Interval-censored data analysis is considered in medical statistics \citep{klein2013handbook}, and two specialized books exist as well \citep{sun2007statistical, chen2012interval}.
+
+Based on theory for interval-censored data, we can define an aoristic version of the likelihood of the von Mises distribution, by writing
+\begin{align}
+L( \mu, \kp \mid \bta ) &= \prod_{i = 1}^n \int_{\ts_i}^{\te_i} \frac{p(t \mid \mu, \kp)}{\te_i - \ts_i} dt \\
+&= \prod_{i = 1}^n \frac{1}{\te_i - \ts_i}  \int_{\ts_i}^{\te_i}  p(t \mid \mu, \kp) dt \\
+&= \prod_{i = 1}^n \frac{F(\te_i \mid \mu, \kp) - F(\ts_i \mid \mu, \kp)}{\te_i - \ts_i},
+\end{align}
+where \( F(t \mid \mu, \kp) \) is the cumulative distribution function (CDF) of the von Mises distribution. The computation of this aoristic likelihood is somewhat more complicated, but still feasible. To get estimates for $\mu$ and $\kp$, this aoristic likelihood is optimized numerically to get maximum likelihood estimates. This approach can be simplified somewhat by filling in the unbiased estimator for $\mu$ which is given in \ref{aoproof}, so that the aoristic likelihood only needs to be optimized for $\kp.$ It should be noted that if a different circular data model is desired, one can simply use the desired distribution in place of the cumulative distribution function of the von Mises distribution.
+
+This aoristic likelihood correctly takes into account the uncertainty introduced by the aoristic intervals, but does not overestimate the spread of the crime time density as the aoristic fraction method does. This is shown in Figure \ref{aolikeex}, where it can be seen that estimated crime time density from the aoristic likelihood (red) can correctly recover the true distribution of crime times (blue histogram), while the aoristic fraction method (green) fails. Note that the blue histogram containing the true burglary times is never observed, as we only obtain aoristic intervals. Still, the aoristic likelihood recovers the shape of the true crime time distribution.
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.5\linewidth}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/aolikeex-1} 
+
+\end{knitrout}
+\caption{} \label{aolikeex_circ}
+\end{subfigure}%
+\begin{subfigure}[b]{0.5\linewidth}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/aolikeex_lin-1} 
+
+\end{knitrout}
+\caption{} \label{aolikeex_lin}
+\end{subfigure}%
+\caption{Example of how the von Mises model estimated by the aoristic likelihood (red) correctly reconstructs the true distribution of the crime times (blue histogram), while the aoristic fraction method (green) does not.} \label{aolikeex}
+\end{figure}
+
+
+Besides maximum likelihood estimates, one might be interested in obtaining an uncertainty around these estimates, perhaps in the form of a confidence interval or credible interval. Often, these can be obtained by deriving standard errors, but this is difficult due to the mathematical form of the aoristic likelihood. Therefore, one must resort to resampling methods, such as bootstrapping \citep{bootbook}, or Bayesian approaches such as MCMC sampling to obtain the uncertainty around the maximum likelihood estimates.
+
+
+
+
+We implemented bootstrapping using the R package \texttt{boot} \citep{bootmanual}. The final results give an estimated mean of 13:16, with bootstrap confidence interval (CI) computed as (13:12, 13:21). Throughout the paper, we will write give bootstrap confidence intervals between parentheses after a maximum likelihood estimate, ie. MLE (Lower Bound, Upper Bound). The concentration parameter has an estimated value of 8.16 (7.64, 8.75). The true values under which the data was sampled are a true mean direction of 13:15 and a true  concentration parameter of 8, so even though the data was made aoristic, the aoristic likelihood approach is able to precisely recover the true values using aoristic data.
+
+
+\subsection{Data augmentation} \label{dataaug}
+
+The aoristic likelihood approach is the most appealing method for most simple applications such as fitting a single unimodal distribution on a set of aoristic intervals. However, to compute our uncertainty in these estimates (such as through standard errors), or to incorporate this into more complex models, it can be beneficial to employ data augmentation strategies, such as for the nonparametric models discussed in the following section. Data augmentation is also the standard way to deal with missing data in Bayesian inference \citep{gelman2003bayesian}.
+
+Data augmentation strategies \citep{tanner1987calculation, gelfand1990sampling, van2001art} make use of the fact that a statistical model implies a certain probability density $p(t \mid \bphi)$ for any crime time $t$. Therefore, if we have our statistical model, we could sample the aoristic crime times from their intervals according to this probability density, which is the current estimated crime time density. For example, in the burglary example, the sampled values for each aoristic interval could come from a von Mises distribution truncated at the ends of the interval (for details of two ways to do this, see Appendix \ref{rejsampling}). The issue with this strategy is that the statistical model can only be estimated if the data are imputed, but the data are imputed using the statistical model, leading to circular reasoning. Therefore, such an approach usually involves some sort of iterative method, starting with the crime times uniformly sampled in the aoristic intervals, then estimating the statistical model, sampling the crime times again according to the new model, estimating the model again with the new data points, and so on until some sort of convergence.
+
+The advantage of the data augmentation approach is that in each iteration, estimating the statistical model can be performed with off-the-shelf algorithms made for directly observed data. The disadvantage of this approach is that the resulting algorithm will require some sort of iterative updating, which can require more computational effort, as well as depending on random sampling. It is therefore recommended to use data augmentation only when necessary due to the computational complexity of a chosen model, such as in the following section.
+
+\section{Nonparametric models} \label{dpm}
+
+While the aoristic likelihood approach works well for somewhat simple models, crime time data often displays more complex patterns which are not captured by such models. Crime is governed by a dynamic complex system, society, where many unobserved and unknown factors contribute to why a crime occurs at exactly a certain time at exactly a certain place. As a result, crime times might not follow a simple unimodal distribution. For example, burglaries are known to occur either while victims are away during the day, or are asleep during the night, which would be a multimodal distribution. In addition, crime time densities are often skewed or violate distributional assumptions in some other way.
+
+If the crime time density does not follow the distributional assumptions of the von Mises distribution, for example, these crime times might be a good fit for a nonparametric statistical model that does not make any assumption on the shape of the data distribution. Nonparametric models for interval censored data were first investigated in \citet{turnbull1974nonparametric, turnbull1976empirical}, but such models are not applicable to aoristic data. Therefore, we will apply  Dirichlet process mixture models, which will be discussed next.
+
+\subsection{Dirichlet Process Mixture models}
+
+Among the most appealing nonparametric models are Dirichlet process mixture (DPM) models \citep{ferguson1973bayesian, antoniak1974mixtures, neal2000markov} found in the field of Bayesian nonparametrics \citep{hjort2010bayesian}. For an introduction, see \citet[ch. 23]{gelman2003bayesian}.  DPM models are very flexible statistical models that are able to capture any underlying true distribution. Due to the increasing feasibility of computation for DPM models, they have seen an enormous increase in popularity over the last 20 years. Therefore, we believe that they represent a very promising approach for crime time modeling. A technical treatment of DPM models is beyond the scope of this paper, but we will recap some of its relevant properties here.
+
+First, Dirichlet process models can fit any data distribution. This means that whether the true crime time density is multimodal, peaked, flat, or irregularly distributed in some other way, the DPM model will be able to learn this pattern after enough data, and thus give a good estimate of the true crime time density. Conceptually, this is true because the DPM model defines a prior over all possible probability distributions on the circle. Therefore, fear that our chosen statistical model does not fit the data is much less of a concern for such models. This is a property that this method shares with the aoristic fraction method, but without the attached issues discussed in Section \ref{afmethod}.
+
+Second, among the most appealing properties of the DPM model for crime time analysis is that we can not only compute an estimate of the probability of a crime happening in any desired time interval, but moreover we can compute the uncertainty around this estimate. For example, after running the DPM model, we might say the estimated probability of a crime happening between 13:17 and 14:04 is $8.4\%.$ This is already very useful, but the model also provides us a $95\%$ credible interval, which  might be, say, $(0.4\%, 19.4\%).$ Because this interval is quite wide, we can conclude that more data are required to give a more precise estimate, but that the true probability of crime happening in this interval is unlikely to be larger than $19.4\%.$ This is important, because it allows us to know when our predictions are unreliable because we have based them on too little data.
+
+Third, because the DPM model is still a statistical model, it can be extended and connected to other statistical models. For example, DPM models can be embedded in hierarchical model \citep{teh2005sharing}, dynamic models \citep{ren2008dynamic}, spatial models \citep{duan2007generalized} or regression models \citep{chib2010additive}. This would not be possible with the aoristic fraction method, for instance. Temporal and spatial analyses of crime are often said to be too separated in crime analysis \citep{grubesic2008spatio}, which we could address by developing a statistical model for the temporal aspects.
+
+The DPM model takes the form of a mixture model with a varying number of components. As a result, we must choose some base distribution which serves as a building block for the DPM model. The base distribution is often chosen for computational convenience, because the resulting DPM is so flexible that it is not very sensitive to the choice of base distribution. More important is that the base distribution must be assigned a prior, as in any Bayesian analysis. This prior can indeed influence the resulting analysis if the sample size is small, but reasonable choices are available.
+
+Dirichlet processes have been employed for circular data in a handful of papers, but none of them have treated aoristic data. \citet{hernandez2016hierarchical} develops a Dirichlet process using the projected Normal distribution as the base distribution and applies this to small area estimation. \citet{mcvinish2008semiparametric} develop a Dirichlet process model based on triangular distributions on the circle. DPM models have also been used to overcome problems in circular regression \citep{ghosh2003semiparametric, george2006semiparametric}. Several other papers in this field have approached this in varying ways \citep{nunez2015bayesian}.
+
+We will use the von Mises distribution as the base distribution, with an uninformative prior on the parameters. Details of the model are given in Appendix \ref{dpmdetails}. The computation of DPM models tends to be relatively computationally intensive, and still requires us to choose a solution for the aoristic property of our data. Two approaches for computation of our DPM model with aoristic data will be discussed next.
+
+\subsubsection{Augmented sampler}
+
+The main problem to deal with when applying the DPM model is the fact that there are aoristic observations. If there were no aoristic observations, then a von Mises based Dirichlet Process could be performed. Therefore  Dirichlet process models for interval-censored data were first investigated in the successive substitution sampling of \citet{doss1994bayesian}, which represents an application of the data augmentation strategy as discussed in Section \ref{dataaug}.
+
+A technical issue arises here that is unique to aoristic data. Usually, data augmentation strategies for censored observations sample values by direct rejection. That is, a candidate is sampled from the full distribution, and if it falls in the required interval, it is accepted. If not, the process is repeated until acceptance. However, aoristic data might include both large and small intervals. If an aoristic interval is small, the probability of acceptance can also become very small, so a large number of candidates must be sampled before acceptance. In such cases, an alternative envelope rejection sampling method is used.  Therefore, the sampling algorithm is chosen adaptively. That is, the rejection probability is estimated, and if it is too small (for example acceptance probability below $10\%$), we will use the envelope rejection sampler. For details, see Appendix \ref{rejsampling}.
+
+\subsubsection{Marginal sampler}
+
+An alternative to the augmented sampler is to use the aoristic likelihood discussed in Section \ref{aolik} directly. It can simply be substituted in wherever the likelihood is used in the DPM computation. The downside here compared to the augmented sampler is each iteration of the algorithm takes a significantly larger amount of time. The upside is that the marginal sampler requires fewer random sampling steps and allows a larger set of priors than the augmented sampler. For most situations however, the augmented sampler will perform better and should be used.
+
+\section{Applications} \label{applications}
+
+This section will provide several applications of our method. Apart from results that directly stem from our approaches to estimating the crime time density, we will also show several further calculations that can be made which may be of interest. It should be noted that all of these analyses can simply be performed using the \texttt{R} package \href{https://github.com/keesmulder/aoristicinference}{aoristicinference}.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Ashby \& Bowers data}
+
+In \citet{ashby2013comparison}, the authors exemplify the aoristic fraction method by aoristic data obtained on bike theft in London. This paper provides a fantastic example dataset, because the authors have painstakingly gone through CCTV footage of the subway station under consideration to determine the true crime times for each of the police reports. This means that this dataset has the rare property that it is both ecologically valid, as well as having the true crime time $\ttrue$ available. Therefore, this dataset is an excellent opportunity to compare different methods.
+
+The data consists of 242 aoristic intervals, each with an attached $\ttrue.$ The data are broadly unimodal, with most bike thefts taking place in the afternoon. The aoristic intervals are quite large, in this case, with a mean of 8.93 hours. Some intervals were larger than 24 hours, which are removed for this illustration, along with instances where $\ttrue$ was outside the aoristic interval (which occurs most likely due to reporting errors by the victim).
+
+It should be noted that the original dataset contains 263 observations, of which 21 crime times were known precisely due to being caught in the act, for instance. These were not analyzed previously, but both the aoristic likelihood method and the DPM model can use a mix of known times and aoristic data.
+
+The results for the three methods considered in Sections \ref{afmethod}, \ref{param} and \ref{dpm} are displayed in Figure \ref{ab_dpm_plot}. Because the data are mostly unimodal, the three methods can be seen to be broadly in agreement. All three options give a unimodal estimated crime time density, although the aoristic fraction method gives a more jagged estimate of the crime time density, as well as having a higher variance. The aoristic likelihood estimates the mean at 14:27 (13:48, 15:10), with concentration 2.15 (1.77, 2.67). In the fit of the DPM model it can be seen that an uncertainty around the crime time density is also provided, which would become smaller if more data would be obtained.
+
+
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.4\linewidth}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/dpmplot-1} 
+
+\end{knitrout}
+\caption{} \label{dpmplot_circ}
+\end{subfigure}%
+\begin{subfigure}[b]{0.6\linewidth}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/dpmplot_lin-1} 
+
+\end{knitrout}
+\caption{} \label{dpmplot_lin}
+\end{subfigure}%
+\caption{Three different models run on the data of \citet{ashby2013comparison}. The 242 aoristic intervals are not displayed, but the true theft times are displayed as the blue histogram.  The estimated crime time densities, which attempt to fit this histogram, are the aoristic fraction method (green), the maximum likelihood estimate of a von Mises distribution fit with the Aoristic Likelihood (yellow), and the Dirichlet Process Mixture model and its credible interval (red solid line, with 80\% credible interval red and dashed).} \label{ab_dpm_plot}
+\end{figure}
+
+
+
+
+An advantage of the DPM model, as mentioned previously, is that it is possible to compute the proportion of crimes happen within a certain time frame along with its uncertainty. In particular, \citet{ashby2013comparison} focus on the proportion of crime times occuring during each of three police shifts: (7:00 - 15:00), (15:00 - 23:00), and (23:00 - 07:00). During the morning shift, the model suggests estimates 40.4\% of the bike thefts to occur during it, with a credible interval (CI) of (19.5\%,  58.8\%). The evening shift expects to obtain 35.7\% with CI (17.5\%, 59.4\%), with the night shift is estimated to have 16.5\% with CI (2.7\%, 46.2\%). Although it is clear that most bike thefts at this location occur during the morning and evening shift, the main conclusion to be drawn from this analysis is the uncertainty in our conclusions from the model is much larger than previous analyses have made it out to be. The cause for this can be found in the fact that the aoristic intervals provide less information than precise times, so the `effective sample size' is much lower than the 242 observations we appeared to have.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Montgomery Crime data}
+
+The city of Montgomery is among several cities to publish open data of crimes in the city that includes a start and end date. This dataset was obtained from the \href{https://data.montgomerycountymd.gov/Public-Safety/Crime/icn6-v9z3}{Montgomery Open Crime Data} website. The dataset contains 44299 observations of crimes in Montgomery observed in the years 2016 - 2018. Many crime types are provided, but we will focus on two types of property crime, theft from building and burglary, as these are the most interesting aoristic data points. Crimes missing start or end times are removed, while those with start and end times that exactly equal or up to 2 minutesn apart are treated as observed crime times. All others are treated as aoristic.
+
+For this type of data, the Aoristic Fraction approach is a good way to obtain an initial descriptive analysis of the data. Figure \ref{mont_plots} shows the results of all three methods for the two crime types in the Montgomery data. Note that a true evaluation of which approach performs best here is not possible as the true crime times are not known.
+
+'Theft from building', defined\footnote{https://ucr.fbi.gov/nibrs/2011/resources/nibrs-offense-definitions} as \textit{'A theft from within a building which is either open to the general public or where the offender has legal access'}, is broadly unimodal, with a peak around 15:00. All three methods perform reasonably well. The aoristic likelihood method is able to fully capture the shape of this distribution, with an estimated mean direction of 15:30 (15:20, 15:40), with concentration 1.12 (1.07, 1.17). The DPM model fits the data slightly better, and is fairly certain about the distribution due to the size of the dataset.
+
+For 'burglary', defined\footnote{https://ucr.fbi.gov/nibrs/2011/resources/nibrs-offense-definitions} as \textit{'The unlawful entry into a building or other structure with the intent to commit a felony or a theft'}, the distribution is bimodal, with one peak in the middle of the night (around 3:00), and another around lunchtime at 13:00. These times correspond to times when properties are most likely left unattended. In this case, the aoristic likelihood fails to fit the data well because it attempts to fit a unimodal density to the bimodal dataset, and as a result gives a uniform result, with concentration 0 (0, 0.07). The DPM model still captures the distribution adequately.
+
+
+
+
+
+
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.4\linewidth}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/larc_plotc-1} 
+
+\end{knitrout}
+\end{subfigure}%
+\begin{subfigure}[b]{0.6\linewidth}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/larc_plotl-1} 
+
+\end{knitrout}
+\end{subfigure}\newline%
+\begin{subfigure}[b]{0.4\linewidth}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/Burg_plotc-1} 
+
+\end{knitrout}
+\end{subfigure}%
+\begin{subfigure}[b]{0.6\linewidth}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/Burg_plotl-1} 
+
+\end{knitrout}
+\end{subfigure}%
+\caption{The three methods discussed in this paper applied to two crime types, theft from building and burglary. The methods displayed are the aoristic fraction method (green), the maximum likelihood estimate of a von Mises distribution fit with the Aoristic Likelihood (yellow), and the Dirichlet Process Mixture model and its credible interval (red solid line, with 80\% credible interval red and dashed).} \label{mont_plots}
+\end{figure}
+
+
+\subsection{Montly crime time trends}
+
+The DPM model can also provide inference for any function of the parameters of the model, which allows a wealth of further analyses. As an example, we show how to investigate seasonal changes in crime times. First, we run the DPM model separately for each month, giving a non-parametric fit along with the uncertainty around this fit. Second, we compute the mean direction of the resulting crime time density for 1000 MCMC samples from the DPM model, giving us an estimate of the mean direction for this month as well as the uncertainty around it. Then, this is plotted in Figure \ref{month_plot}, where the black line provides the estimated mean crime time for each month, and the grey area provides the uncertainty around this, which was obtained as a credible interval from the mean direction in each of the MCMC samples. From it, we can conclude that there seems to be a general trend of slightly earlier burglary times during the summer, although the uncertainty around this trend is still fairly large.
+
+\begin{figure}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/monthplots-1} 
+
+\end{knitrout}
+\caption{Median burglary time from Dirichlet Process Model plotted as it changes per month (black line), and its confidence interval (grey area).} \label{month_plot}
+\end{figure}
+
+
+
+\section{Discussion} \label{discussion}
+
+In this paper, we have developed novel methods for dealing with aoristic data in crime analysis and beyond. Three methods were presented. The aoristic fraction method is a descriptive method for which major downsides have been established, primarily a systematic overestimation of the variance of the crime time density. We have shown how the aoristic likelihood method provides a solid method for fitting unimodal crime times, using all information contained in the aoristic data.
+
+The Dirichlet Process Mixture model provides a natural extension of these models, allowing us to fit any crime time distribution regardless of the number of modes or the shape of the distribution. This is an appealing property that this model shares with the aoristic fraction method, but as opposed to that method the DPM model is built on a solid statistical foundation. This provides the DPM three main advantages. First, it uses all information in the data. Second, it provides measures of uncertainty in our model and conclusions. Third, it can be extended and connected to other statistical models.
+
+Choosing between aoristic likelihood methods and nonparametric approaches is a choice made dependent on the specific crime type under investigation. Some crime types are fit well with a symmetric unimodal model, and for these, the aoristic likelihood approach is simpler, faster, more interpretable and easier. However, if the crime time density for this crime type is bimodal or otherwise differently distributed, the DPM model provides an extremely flexible extension that is able to adapt to any shape of the data distribution.
+
+A major hurdle in employing aoristic analyses is the complexity of implementing the computational methods, so that crime analysts are usually not inclined to incorporate aoristic analyses in their workflow, as evidenced by several authors mentioning the importance of aoristic methods without implementing any. To address this, analyses in this work have been implemented in an easy to use \texttt{R} package, \href{https://github.com/keesmulder/aoristicinference}{aoristicinference}. It provides introductions and user guides, so that users not familiar with the details of the statistical methods in this work should also be able to use the methods.
+
+A strongly related method to the aoristic fraction method is what is called \textit{Interstitial Crime Analysis} (ICA) \citep{gill2014interstitial}. Interstitial Crime Anaysis is a technique not for unknown time but unknown location. For example, \citet{newton2014above} use this technique to estimate the proportion of thefts that occurs between any two metro stations of the London Underground. From a statistical perspective, this method suffers from the same problems as the aoristic fraction method. In fact, Appendix \ref{proofreal} is a proof of why the variance will be systematically overestimated, with the minor difference that ICA is usually done on a categorical sample space. Therefore, a future investigation into an "Interstitial Likelihood" could prove fruitful.
+
+A limitation of any aoristic analysis method is that if the true crime times are systematically more likely situated toward the start or end of the intervals, our analysis will be biased. This is strongly related to the assumption of independence of the intervals and the true crime times. That is, in reality the intervals can depend on the crime time, for example if an offender waits until they see their chosen victim leave their house. This could also happen if offenders and victims both follow a fixed pattern, for example if burglaries are usually in the afternoon, while the victims are always gone during working hours, and thus provide intervals close to working hours. It is impossible to infer such behaviours from a fully aoristic dataset, akin to the problem of Missing Not At Random (MNAR) missing data. However, one might attempt to test this assumption if a sufficiently sized known-time dataset is available. Then, it could be checked whether the known-time and aorisitic datasets produce differrent crime time densities. If so, we are indeed violating our assumptions. So long as this is not the case, our method extracts the most information from a set of (partly) aoristic data, given the constraints we have.
+
+With these tools for addressing aoristic data, future work should focus on combining these methods with spatial analyses, in particular point process models as in \citet{wang2014modeling}. A combined spatio-temporal model that uses aoristic data to their fullest extent would provide a powerful tool for understanding both when and where crimes occur, as well as for predictive policing.
+
+\section{Acknowledgements}
+
+This work was supported by a ------ grant awarded to ------ from ----- (------).
+
+The authors are grateful to Matthew Ashby for providing the data from \citet{ashby2013comparison}.
+
+
+
+
+\newpage
+
+\appendix
+
+
+
+\section{Proof of variance overestimation using the aoristic fraction method} \label{proofvar}
+
+
+The fact that the variance of the data in density estimation methods such as the aoristic fraction method can be proven mathematically. First, for familiarity, this will be done for the linear case, where the data lies on the real line. Second, we will show the same proof for circular interval censored data, such as aoristic data.
+
+\subsection{Data on the real line} \label{proofreal}
+
+Here, we will show that for data on the real line using a density estimate based on the interval-censored histogram (ICH) method, essentially the linear analogue of the aoristic fraction method, leads to an overestimate of the variance in the linear case.
+
+Let $X \in \mathbb{R}$ be a random variable with some unknown distribution, but where $E[X] = \mu$ and $\text{Var}[X] = \sigma^2$. This $X$ is not directly observed, but rather we observe an interval $(a, b),$ knowing $a \leq x \leq b$. We can expand the bounds as $a = x - \dli$ and $b = x + \dui,$ where $\dli$ is the distance between the start of the interval and the unobserved true $x$, and $\dui$ the distance further from $x$ to the end of the interval. Note that $\dli$ and $\dui$  are random variables themselves, with unknown distribution. A core assumption that we will make is that $\dli$ and $\dui$ have the same distribution. Then, we also assume that the expected difference between $x$ and an interval bound is $E[\dli] = E[\dli] > 0.$ That is, the data are actually censored. As a result, $E[\dui - \dli] = 0$.
+
+
+The procedure under investigation is to estimate the unknown density $p(x)$ by the interval-censored histogram, which is an average of uniform distributions for each interval, that is $$\ich{x} = \wavg \frac{\myival}{b_i - a_i},$$  where $I(\cdot)$ is the indicator function. The question we will evaluate is whether the variance of this density, which we will call $\hat{\sigma}^2_{ICH},$ overestimates the true variance $\sigma^2$ of $X$. Thus, the question is whether $E[\hat{\sigma}^2_{ICH}] > \sigma^2.$
+
+First, we will need the expectation to produce an estimate of the variance. Note that our estimate of the expected value of $X$ using the ICH density is
+\begin{align}
+\hat\mu &= \int_{\mathbb{R}} x ~ \ich{x} dx \\
+&= \int_{\mathbb{R}} x \wavg \frac{\myival}{b_i - a_i} dx \\
+&= \wavg  \int_{a_i}^{b_i} x dx
+= \wavg \frac{b_i - a_i}{2} \\
+&= \wavg x_i + \frac{\dui - \dli}{2},
+\end{align}
+where the last form is not observed, but helps us realise that if we take the expectation of the unknown interval lengths, $\frac{E[\dui] - E[\dli]}{2} = 0.$ Then, $\hat\mu = \bar{x} = \wavg x_i.$ So, if $\dli$ and $\dui$ have the same expectation, the estimate $\hat\mu$ is an unbiased estimator of $\mu$.
+
+For simplicity, we will assume that the data are centered so that $\hat\mu = 0.$ Then, we can create an unbiased estimator of $\sigma^2$ by
+\begin{align}
+\hat{\sigma}^2_{ICH} &= \left(1 - \frac{1}{n} \right) \text{Var}[X] = \left(1 - \frac{1}{n} \right) E[X^2] \\
+&= \int_{\mathbb{R}} x^2 \wavgmn \frac{\myival}{b_i - a_i} dx \\
+&= \wavgmn \frac{1}{3} \frac{b_i^3 - a_i^3}{b_i - a_i}
+= \frac{1}{3} \wavgmn a_i^2 + a_i b_i + b_i^2
+\end{align}
+Then, expanding the bounds, and taking the expectation over $\dli$ and $\dui,$
+\begin{align}
+E_\dli [E_\dui [\hat{\sigma}^2_{ICH}]] &=  E_\dli \left[ E_\dui \left[ \frac{1}{3} \wavgmn 3 x_i^2 - 2\dli x_i + \dli^2 + \dui x_i - \dli \dui + 2 \dui x_i + \dui^2 \right] \right] \\
+ &= \frac{1}{3} \left\{ \wavgmn 3 x_i^2 +  E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli \dui \right] \right]  \right\} \\
+ &= \left\{ \wavgmn x_i^2  \right\}   + \frac{1}{3} \left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right] \right] \right\}.
+\end{align}
+We can recognize that $\wavgmn{x_i^2}$ is simply an unbiased estimator of the variance. Therefore, taking the expectation over $x$,
+\begin{align}
+E_x[E_\dli [E_\dui [\hat{\sigma}^2_{ICH}]]] &= E_x\left[ \wavgmn x_i^2 \right] +  \frac{1}{3}\left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right]\right] \right\} \\
+&= \sigma^2 +  \frac{1}{3}\left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right] \right] \right\}
+\end{align}
+However, note that  $\dli^2 + \dui^2 - \dli\dui \geq 0,$ with equality if and only if $\dli = \dui = 0,$ which would mean there was no interval-censoring. Because the second term is positive, we have that the variance is overestimated by $\hat{\sigma}^2_{ICH},$ that is, it is biased upwards. From this last equation, it is clear that the upwards bias depends on the distribution of $\dli$ and $\dui.$ Specifically, the bias is $E[\hat{\sigma}^2_{ICH} - \sigma] =   \frac{1}{3}\left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right]\right] \right\}.$
+
+\subsection{Aoristic data} \label{aoproof}
+
+\newcommand{\hrho}{\hat\rho_{AF}}
+
+In the circular case, let $\theta \in [0, 2\pi)$ be a circular random variable, which again  is not directly observed, but rather only up to an interval $a_i \leq \theta \leq b_i,$ with again $a = \theta - \dli$ and $b = \theta + \dui.$ This time, the intervals are assumed to be bounded on the semicircle, that is $\dli \in [0, \pi),$ and $\dui \in [0, \pi).$ Again, assume that $\dli$ and $\dui$ have some unknown distribution.
+
+The distribution of $\theta$ is unknown, but let's assume it has a population mean direction $\mu$. An unbiased estimator of $\mu$ is given by $\bar\theta = \text{atan2}(\sum_{i=1}^n \sin(\theta_i), \sum_{i=1}^n \cos(\theta_i))$ \citep{mardia2009directional}. For aoristic data, an unbiased estimator of $\mu$ is
+\begin{equation}
+\tilde\theta = \text{atan2} \left( \sum_{i=1}^n \sin(a_i) + \sin(b_i), \sum_{i=1}^n \cos(a_i) + \cos(b_i) \right).
+\end{equation}
+This is equal to taking the mean direction of the midpoints of the aorisitic intervals. To show that this is unbiased, taking the expectation over the distribution of $\dli$ and $\dui,$ we obtain
+\begin{align}
+E_{\dli, \dui} \left[\sum_{i=1}^n \cos(a_i) + \cos(b_i)\right] &= \sum_{i=1}^n \cos(\theta_i) E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right] \\
+E_{\dli, \dui} \left[\sum_{i=1}^n \sin(a_i) + \sin(b_i)\right] &= \sum_{i=1}^n \sin(\theta_i) E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right].
+\end{align}
+Note that this last term $E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right]$ is the same for both components. Also, for any constant $q > 0$ we have $\text{atan2}(qs, qc) = \text{atan2}(s, c).$ So, if we set $q = E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right] > 0,$ we can see $\text{atan2}(q \sum_{i=1}^n \sin(\theta_i), q \sum_{i=1}^n \cos(\theta_i)) = \bar\theta,$ which is an unbiased estimator of $\mu$.
+
+The population variance is given by $1 - \rho$, where $\rho = \int_0^{2\pi} \cos(\theta - \mu) p(\theta) d\theta$ is the population resultant length. If we center data by subtracting the mean direction estimate  $\tilde\theta$ such that the mean direction is zero, then we simply have $\rho = \int_0^{2\pi} \cos\theta p(\theta) d\theta,$ with an unbiased estimator being $\wavg \cos\theta_i.$
+
+The aoristic fraction method leads us to estimate the resultant length as
+\begin{align}
+\hrho &= \int_0^{2\pi} \cos\theta  ~ \hat{p}_{AF}(\theta) d\theta \\
+&= \int_0^{2\pi} \cos\theta \wavg \frac{\myival}{b_i - a_i} d\theta \\
+&= \wavg  \frac{1}{b_i - a_i}  \int_{a_i}^{b_i} \cos\theta d\theta \\
+&= \wavg  \frac{\sin b_i - \sin a_i}{b_i - a_i} \\
+&= \wavg  \frac{\sin(\theta_i + \dui) - \sin(\theta_i - \dli)}{b_i - a_i} \\
+&= \wavg  \frac{\sin \theta_i \cos\dui + \cos \theta_i \sin\dui - \sin \theta_i \cos\dli + \cos \theta_i \sin\dli}{b_i - a_i}.
+\end{align}
+Then, taking the expectation over $\theta,$ $\dli$ and $\dui,$ recalling $E[\sin\theta] = 0,$ this gives
+\begin{align}
+E[\hrho] &= \wavg \frac{E[\sin \theta_i] E[\cos\dui] + E[\cos \theta_i] E[ \sin\dui] - E[\sin \theta_i] E[\cos\dli] + E[\cos \theta_i] E[\sin\dli]}{E[\dli] + E[\dui]} \\
+&= \wavg \frac{E[\cos \theta_i] E[\sin\dui] + E[\cos \theta_i] E[\sin\dli]}{E[\dli] + E[\dui]}  \\
+&= \wavg \rho  \frac{E[\sin\dli] + E[\sin\dui]}{E[\dli] + E[\dui]}.
+\end{align}
+Then, set the distributions of $\dli$ and $\dui$ equal again to the distribution of some $\delta$, to get
+\begin{align}
+E[\hrho]&= \wavg \rho  \frac{E[\sin\delta_i]}{E[\delta_i]}.
+\end{align}
+Finally, if $0 < \delta < \pi,$ that is, there is interval censoring, we know that $\sin\delta < \delta,$ so $\frac{E[\sin\delta_i]}{E[\delta_i]} < 1,$ and the bias is
+\begin{equation}
+E[\hrho - \rho] = \wavg \rho  \frac{E[\sin\delta_i]}{E[\delta_i]} - \rho  = \left(\wavg  \frac{E[\sin\delta_i]}{E[\delta_i]} - 1\right) \rho < 0.
+\end{equation}
+Therefore, the estimate of the resultant length given by the aoristic fraction method $\hrho$ is biased downwards, so that the circular variance $1 - \hrho$ is biased upwards.
+
+\newpage
+
+\section{Von Mises based Dirichlet Process Mixture model} \label{dpmdetails}
+
+We propose to use a von Mises based Dirichlet Process mixture (DPM) model. The von Mises DPM model on circular observation $\theta_i \in [0, 2\pi)$ can be written as
+\begin{align}
+\theta_i \mid (\mu_i, \kp_i) &\sim \mathcal{M}(\mu_i, \kp_i) \\
+(\mu_i, \kp_i) \mid G  &\sim G \\
+G &\sim \text{DP}(P_0, \alpha).
+\end{align}
+The base distribution $P_0$ is the conjugate prior for the von Mises distribution, that is
+\begin{equation}
+p(\mu, \kp \mid \mu_0, R_0, n_0) \propto [I_0(\kp)]^{-n_0} \exp\left\{ R_0 \kp \cos(\mu - \mu_0)\right\},
+\end{equation}
+where $\mu_0$ is the prior mean, $R_0$ is the prior resultant length, and $n_0$ is somewhat like a prior sample size.
+
+Because this prior is conjugate, the posterior has the same form, which is
+\begin{equation}
+p(\mu, \kp \mid \mu_n, R_n, m) \propto [I_0(\kp)]^{-m} \exp\left\{ R_n \kp \cos(\mu - \mu_n)\right\},
+\end{equation}
+where, setting $S_n = \sumin \sin(\theta_i) + R_0 \sin(\mu_0)$ and $C_n =  \sumin \cos(\theta_i) + R_0 \cos(\mu_0),$  the posterior mean direction is $\mu_n = \text{atan2} \left(S_n, C_n\right)$, the posterior resultant length is given by $R_n = \sqrt{C_n^2 + S_n^2},$ and the posterior sample size is $m = n + n_0$.
+
+For computation, we also require the prior predictive distribution of a data point $\tilde{y}$.  It is given by
+\begin{align}
+p(\tilde{y}\mid \mu_0, R_0, n_0) &= \int_{0}^\infty \int_0^{2\pi} p(\mu, \kp \mid \mu_0, R_0, n_0) \mathcal{M}(\tilde{y} \mid \mu, \kp) d\mu d\kp \\
+&= \frac{1}{C}  \frac{1}{(2\pi)^{n_0}} \int_{0}^\infty \frac{I_0(R_p\kp)}{I_0(\kp)^{n_p}} d\kp
+\end{align}
+where $p(\mu, \kp \mid \mu_0, R_0, n_0)$ is the base distribution $P_0$, $ \mathcal{M}(\tilde{y} \mid \mu, \kp)$ is the probability density function of the von Mises distribution, $R_p = \sqrt{\left(\cos{\tilde{y}} + R_0 \cos \mu_0 \right)^2 + \left(\sin{\tilde{y}} + R_0 \sin \mu_0 \right)^2},$ $n_p = n_0 + 1,$ and
+\begin{equation}
+C = (2\pi)^{1 - n_0} \int_{0}^\infty \frac{I_0(R_0\kp)}{I_0(\kp)^{n_0}} d\kp
+\end{equation}
+is the normalizing constant of the base distribution $P_0$.
+
+To obtain a Dirichlet process that is uninformative with regards to the mean direction, we must take $R_0 = 0$ so that the terms with $\mu_0$ disappear in the posterior computations. If we want a non-informative prior to limit the  influence of the prior, this suggests setting $R_0 = 0,$ $n_0 = 1,$ and $\mu_0$ any value, as it is irrelevant now. The downside of such an approach is that it puts most weight on components that have low concentration, an issue which is addressed in Appendix \ref{margprior}.
+
+Computation was implemented using the R package \href{https://cran.r-project.org/web/packages/dirichletprocess/index.html}{dirichletprocess} \citep{dirichletprocesspackage}, to which methods for circular data and aoristic data were contributed. This package uses the Gibbs sampling schemes from \citet{neal2000markov}.
+
+\newpage
+
+\section{Rejection sampling aoristic data} \label{rejsampling}
+
+A computational issue arises in rejection sampling for aoristic data because it will tend to contain both very small and larger intervals. Usually, data augmentation will use direct rejection sampling, such as in \citet{doss1994bayesian}. This direct rejection algorithm will attempt to sample a value $t$ from interval $(a, b)$ which has distribution $p(t \mid \bphi, a, b) \propto p(t \mid \bphi) I(a < t < b), $  where $\bphi$ are the parametrs of the distribution and $I(\cdot)$ is the indicator function. This algorithm can be summarized as follows.
+\begin{enumerate}
+\item Sample a value $t^\ast \sim p(t \mid \bphi).$ \label{stepone}
+\item If $a < t < b,$ set $t = t^\ast.$ Otherwise, go back to step \ref{stepone}.
+\end{enumerate}
+However, if we have a very small interval, say (17:18, 17:21), the algorithm will perform have very low acceptance probability and thus perform badly. This is because the acceptance probability of the direct rejection algorithm is $\int_{a}^{b} p(t \mid \bphi) dt$ which can be quite small for small intervals.
+
+An alternative is to use envelope rejection sampling \citep{gilks1992adaptive}, which can be summarized as follows.
+\begin{enumerate}
+\item Compute the maximum value of the distribution $p(t \mid \bphi)$ within the interval, that is $m = \max_{t : a < t < b} p(t \mid \bphi).$
+\item Sample a value $t^\ast \sim U[a, b],$ that is from the uniform distribution between $a$ and $b$.\label{samplestep}
+\item Sample $u \sim U[0, 1].$ If $um < p(t^\ast \mid \bphi),$ set $t = t^\ast.$ Otherwise, go back to step \ref{samplestep}.
+\end{enumerate}
+This algorithm has rejection probability $m(b - a) - \int_{a}^{b} p(t \mid \bphi) dt.$ This should make it clear that the envelope rejection and  direct rejection will often perform differently in terms of acceptance probability.
+
+For this reason, we employ a adaptive strategy for the sampling. A final issue is that the acceptance probability is generally not available in closed form and costly to compute. Therefore, we approximate the distribution by a Normal distribution. For the von Mises distribution with mean direction $\mu$ and concentration $\kp$, we can approximate it by a Normal distribution $N(\mu, \frac{1}{\kp}).$ If the approximated acceptance probability for direct rejection is smaller than some number, say $10\%,$ we switch to the envelope rejection strategy.
+
+\newpage
+
+\section{Prior independent of $\mu_0$} \label{margprior}
+
+In the Dirichlet Process, we have $\{\mu, \kp\} \sim DP(\alpha P_0).$ The base measure $P_0$ is the conjugate prior for the von Mises distribution, that is
+\begin{equation}
+p(\mu, \kp \mid \mu_0, R_0, n_0) \propto [I_0(\kp)]^{-n_0} \exp\left\{ R_0 \kp \cos(\mu - \mu_0)\right\}.
+\end{equation}
+As $R_0$ gets closer to $n_0$, more weight is given to higher $\kp,$ so more concentrated components, in the direction of $\mu_0$. Note that the prior mean direction $\mu_0$ is irrelevant if $R_0 = 0,$ so a common prior undecided about $\mu_0$ has $R_0 = 0, n_0 = 1.$
+
+However, we would like to put prior mass on more concentrated components, while remaining undecided on $\mu_0$. A prior with this property can be obtained by integrating out $\mu_0$, which results in the prior
+\begin{align}
+p(\mu, \kp \mid R_0, n_0)  &\propto \int_0^{2\pi} [I_0(\kp)]^{-n_0} \exp\left\{ R_0 \kp \cos(\mu - \mu_0)\right\} d\mu_0
+= \frac{I_0(R_0 \kp)}{I_0(\kp)^{n_0}}.
+\end{align}
+This prior, however, will lead to heavily increased computational burden, because it  is no longer conjugate.
+
+To regain conjugacy, the sampler can be augmented by taking $\mu_0 \sim U(0, 2\pi),$ so $p(\mu_0) = 1 / (2\pi).$ Then, sampling $\mu_0$ each time, the base measure, averaged over $\mu_0$, will be
+\begin{align}
+E_{\mu_0}[p(\mu, \kp \mid \mu_0, R_0, n_0)]
+&= \int_0^{2\pi} p(\mu, \kp \mid \mu_0, R_0, n_0) p(\mu_0) d\mu_0 \\
+&= \int_0^{2\pi} [I_0(\kp)]^{-n_0} \exp\left\{ R_0 \kp \cos(\mu - \mu_0)\right\} \frac{1}{2\pi} d\mu_0 \\
+&\propto p(\mu, \kp \mid R_0, n_0).
+\end{align}
+This last one is exactly as required. Therefore, the $\mu_0$ can be simply randomly sampled uniformly over the circle in each iteration, and filled into the conjugate model.
+
+An alternative is to marginalize the posterior summary statistics $\mu_n, R_n, m$ over the uniform distribution on $\mu_0.$ We obtain $E_{\mu_0}[\mu_n] = \bar\theta,$ and $E_{\mu_0}[m] = n + n_0,$ with $R_n$ being the average distance of the points on a circle with center $(\sumin \cos(\theta_i), \sumin \sin(\theta_i))$ and radius $R_0.$ This is given by
+\begin{align}
+E_{\mu_0}[R_n] &= \frac{1}{2\pi} \int_{0}^{2\pi} \sqrt{R_0^2 + R^2 + 2 R_0 R \cos(t)} dt \\
+&= \frac{2 [R_0 + R]}{\pi}  E_2\left( \frac{2 \sqrt{R_0 R}}{R_0 + R} \right)
+\end{align}
+where $R$ is the resultant length of the data, and $E_2(\cdot)$ is the complete elliptic integral of the second kind. There is no closed form available for this last integral, but efficient algorithms are available.
+
+A final option is introduce a data dependence in the prior by setting \(\mu_0 = \bar{\theta}\) if there is data, and \(\mu_0 \sim U[0, 2\pi)\) if there is not. This prior can be set in terms of posterior parameters \(\mu_n, R_n, m\) because if $\mu_0 = \bar\theta$ , we have  $\mu_n = \bar\theta$, $R_n = R_0 + R,$ and $m = n_0 + n.$ The data dependence in this prior is sometimes seen as problematic in the Bayesian community \citep{darnieder2011bayesian}, but the ease of use by setting this in the posterior parameters and conjugacy while allowing for more concentrated priors makes it an appealing alternative.
+
+
+

@@ -1,0 +1,645 @@
+\section{Introduction} \label{intro}
+
+Eye movements are commonly used to study aspects of cognition and its development \citep{itti2001computational, henderson2003human}. Eye movements consist of point fixations and movements between fixations called saccades. In particular, eye movements are of paramount importance in studying the top-down division of attention. For a review, see \citet{rayner2009eye}.
+
+In eye movement research, a major quantity of interest is the \textit{saccade direction}, the angle between two consecutive fixations. For example, one topic of interest using saccade directions investigates the existence of general directional biases \citep{tatler2009prominence}, such as a preference for saccades along the horizontal axis \citep{foulsham2008turning} or a preference for leftward saccades \citep{foulsham2013leftward}. Another topic of interest is eye movement behaviour when reading \citep{rayner2009eye}. Furthermore, distributions of eye movement directions are used to assess the closeness of algorithms to human performance on a variety of eye movement tasks, such as visual search \citep{najemnik2008eye} and saccadic decision making \citep{tatler2017latest, engbert2015spatial, le2016introducing}.
+
+Previously, it has been difficult to directly analyze a sample of saccade directions. One pragmatic solution to the difficulty of analyzing saccade directions is categorizing the angles in a number of general directions, such as in \citet{foulsham2008turning}. However, such analyses have reduced power, provide less precise interpretation, and require arbitrary selection of a method of categorization.
+
+A natural model of saccade directions can be obtained by viewing saccade directions as circular data, that is, data measured in angles. Circular data differ from linear data in the sense that circular data are measured in a periodical sample space. For example, an angle of $1^{\circ}$ is quite close to an angle $359^{\circ},$ although linear intuition suggests otherwise. Circular data are frequently encountered in scientific fields as diverse as life sciences \citep{mardianew}, behavioural biology \citep{bulbert2015danger}, cognitive psychology \citep{kaas2006haptic}, bioinformatics \citep{mardia2008multivariate}, political sciences \citep{gill2010} and environmental sciences \citep{arnold2006recent}. In this study, a model will be developed that leans on the field of circular statistics \citep{fisher1995statistical, mardia2009directional, pewsey2013circular} to provide satisfying inference for saccade direction data.
+
+\begin{figure}
+  \begin{subfigure}[t]{0.5\linewidth}
+    \centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/movmffit-1} 
+
+\end{knitrout}
+    \caption{Von Mises mixtures through \texttt{movMF}.}\label{scd_fit:movmf}
+  \end{subfigure}%
+  \begin{subfigure}[t]{0.5\linewidth}
+   \centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/powbatfit-1} 
+
+\end{knitrout}
+    \caption{Proposed method.}\label{scd_fit:flexcircmix}
+  \end{subfigure}
+  \label{scd_fit}
+  \caption{A comparison of two approaches of analyzing saccade direction. Each colored distribution represents a single component of the mixture model. }
+\end{figure}
+
+Previously, \citet{van2016infants}  used mixtures of von Mises distributions to model saccade direction data, using the R  package \href{https://cran.r-project.org/web/packages/movMF/index.html}{\texttt{movMF}} \citep{hornik2014movmf}. The \href{https://cran.r-project.org/web/packages/movMF/index.html}{\texttt{movMF}} package was developed in the more general case for von Mises-Fisher mixtures of distributions on \(p-\)dimensional hyperspheres, with circular mixtures resulting as a special case.  The van Renswoude saccade direction data and the von Mises mixture fit are displayed in Figure \ref{scd_fit:movmf}. It can be seen that the peakedness of the data is not captured well.  The peaked mixture model in Figure \ref{scd_fit:flexcircmix} is the final model to be introduced in this work. It naturally incorporates peakedness and requires fewer parameters.  It can clearly be seen that using the von Mises mixture approach for  saccade direction data is not a natural fit, and as such has major drawbacks.
+
+In this paper, four major drawbacks of analyzing saccade directions using the von Mises mixture method of \citet{hornik2014movmf} will be addressed. First, the \texttt{movMF} approach provides estimates for the parameters of the model by using the Expectation-Maximization (EM) algorithm, but no measure of their uncertainty, such as confidence intervals or standard errors. Second, it can be seen that saccade direction distributions are very often sharp-peaked or flat-topped distributions, which are not directly modeled by this approach. Instead, the mixture model will deal with peaked data by fitting multiple components on a single mode, which precludes interpretation of the component parameters. Third, because the mixture model deals with peakedness by fitting multiple components for a single mode, it is impossible to compare variances of components, which is something of interest in many saccade direction studies, such as in \citet{van2016infants}. Fourth, there is often a desire to fix component means (or other parameters) to pre-specified values, in order to improve power, which is not possible currently.
+
+The model that will be developed in this paper for saccade direction data has two main characteristics. First, it will be a mixture of circular distributions. Second, it will employ flexible distributions in order to naturally model sharp-peaked and flat-topped components. Inference will be developed in a frequentist framework through an EM-algorithm and the bootstrap, and in a Bayesian framework through MCMC sampling. In order to speed up the required computations, a new distribution will be introduced that mimics the behaviour of the symmetric density introduced in \citet{jones2012inverse}.
+
+As a motivating example, this study will rely on saccade direction data which was previously published on in \citet{van2016infants}. The main interest in this work is in describing behavioural differences in free-viewing between adults and infants (see also \citet{aslin2007s}). The data consists of 12367  saccades from adults and 4832 saccades from infants. For details on data collection, see \citet{van2016infants}. This data is plotted in Figure \ref{scd_ex}. Because the hypotheses of interest inform the development of the model, they will be revisited here. First, the researchers are interested in reaffirming a horizontal bias, that is, there are more saccade directions along the horizontal axis than the vertical axis. Second, infants are expected to have larger variance in their saccade directions. Third, the researchers are interested in the difference in the horizontal bias of infants and adults. For all of these hypotheses, currently one would be limited to descriptive analyses. The methods developed in this paper will allow full statistical inference. The methods are available in the \texttt{R} package \texttt{flexcircmix}, freely available on GitHub.
+
+The structure of this paper will proceed as follows. In Section \ref{sec:model}, the base distribution of the mixture model will be discussed, and the Power Batschelet distribution will be introduced. Inference for the resulting mixture model will be discussed in Section \ref{sec:infer}. The method will be illustrated on both synthetic data and the van Renswoude data in Section \ref{sec:ill}. Finally, some concluding remarks will be given in Section \ref{sec:discussion}.
+
+
+
+
+
+
+\begin{figure}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/polar_hist-1} 
+
+\end{knitrout}
+\centering \vspace{-1.5cm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/cartesian_hist-1} 
+
+\end{knitrout}
+\caption{Plots of the example data. The top plot provides the data in polar coordinates. The bottom plot shows the data on the real line, where the left and right sides of the plot represent the same point on the circle.}
+\label{scd_ex}
+\end{figure}
+
+\section{Family of Batschelet Distributions}
+\label{sec:model}
+
+In this section, we will introduce Batschelet-type distributions. First, the Inverse Batschelet distribution of \citet{jones2012inverse} will be recapped. Then, this approach will be adapted into the Power Batschelet distribution. Lastly, a note on computing the circular variance for such distributions will be given.
+
+\subsection{Inverse Batschelet distribution}
+
+The Inverse Batschelet distribution is a peaked or flat-topped circular distribution. It is constructed by modifying a base distribution, for which the von Mises distribution will be used. The von Mises distribution can be seen as a circular analogue to the normal distribution. In the following, it will be introduced shortly.
+
+Denote the unit circle by \(\mathbb{S}^1,\) and the set of observed angles (in radians) by \(\bth = \theta_1, \dots, \theta_n,\) with \(\theta_i \in \mathbb{S}^1.\) For notational simplicity, we assume \(\theta \in [-\pi, \pi).\) The von Mises distribution is given by
+\begin{equation}
+\mathcal{M} (\theta \mid \mu, \kappa) = \left[ 2 \pi I_0 (\kappa) \right]^{-1} \exp \left\{ \kappa \cos (\theta - \mu) \right\},
+\end{equation}
+where \( \theta \) is the observed angle, \( \mu \in [-\pi, \pi)\) is the mean direction, \( \kappa \in \mathbb{R}^+ \) is a concentration parameter and \( I_0(\cdot) \) is the modified Bessel function of the first kind and order zero. Note that this density is periodic, so \( \mathcal{M} (\theta \mid \mu, \kappa) = \mathcal{M} (\theta + 2 k \pi \mid \mu, \kappa), ~ \forall ~ k \in \mathbb{Z}.\) Various von Mises densities are displayed in Figure \ref{scd_fit:movmf} as the separate components of the mixture.
+
+Clearly, saccade directions tend to follow more peaked densities than the von Mises density. Two approaches to incorporate peakedness in the model are the Jones-Pewsey distribution \citep{jones2005family} and the Inverse Batschelet distribution \citep{jones2012inverse}. Both options have the von Mises distribution as a special case. However, the latter is of somewhat simpler form and allows for more peaked distributions, so it will be employed here.
+
+The core idea of the peaked densities developed in \citet{batschelet1981circular} is that given a circular density \(f (\theta), \) a new distribution emerges if we take \(f (\tau(\theta)) \) for some bijective function \( \tau \) which maps the circle onto itself. We will refer to all distributions obtained by this construction as \textbf{Batschelet distributions}, possibly with a prefix relating to the specific bijective function  \(\tau\) used. Attention will be limited to using the von Mises density as the base distribution \(f\), such that we will work in practice with \(f_\kappa (\tau(\theta - \mu)), \) with \( \kappa \) the concentration parameter of the von Mises distribution.
+
+The function originally used by \citet{batschelet1981circular} is given by
+\begin{equation}
+  \tau(\theta) = \theta + \lambda \sin \theta,
+\end{equation}
+where the peakedness parameter \( \lambda \in [-1, 1] \) can be used to obtain a family of flat-topped densities. Using the inverse of \(\tau(\theta)\) instead results in a family of peaked densities \citep{abe2010symmetric, pewsey2011extension}. A family of densities incorporating both flat-topped and peaked members was developed in \citet{jones2012inverse} and will be employed here.
+
+The von Mises based symmetric Inverse Batschelet density is given by
+\begin{equation} \label{eqn:invbatpdf}
+ f(\theta \mid \mu, \kappa, \lambda) = [2\pi I_0(\kappa)K_{\kappa, \lambda}]^{-1} \exp\{\kappa \cos t_\lambda(\theta - \mu)\}
+\end{equation}
+where
+\begin{equation} \label{eqn:invbattransform}
+  t_\lambda(\theta) = \frac{1 - \lambda}{1 + \lambda}\theta + \frac{2\lambda}{1 + \lambda} s_\lambda^{-1}(\theta)
+\end{equation}
+with \(s_\lambda^{-1}(\theta)\) being the inverse of \(s_\lambda(\theta) = \theta - \frac{1}{2} (1 + \lambda) \sin(\theta),\) and
+\begin{equation}
+   K_{\kappa, \lambda} = \frac{1 + \lambda}{1 - \lambda} - \frac{2\lambda}{1 - \lambda} \int_{-\pi}^\pi [2\pi I_0(\kappa)]^{-1} \exp\left\{\kappa \cos \left(\theta -  (1 - \lambda) \sin(\theta) / 2 \right) \right\} d\theta.
+\end{equation}
+Note that \(t_\lambda(\theta)\) is not available analytically because \(s_\lambda^{-1}(\theta)\) is not.  Therefore, evaluation of the density requires both numerical integration and numerical inversion. The density is plotted with various values of \(\lambda\) in Figure \ref{fig:pdf_compare:invbat}. It can be seen that the peaked distribution observed for the saccade data can be obtained from this distribution when \(0 < \lambda \leq 1.\)
+
+Although for many applications the computational burden of numerically inverting a function for each density evaluation is acceptable, such computations quickly become burdensome upon incorporation of the density into a larger model, such as a mixture model. This same can occur when using certain methods for uncertainty quantification, such as MCMC or the bootstrap. Therefore, in order to be able to employ Batschelet distributions in a broader context of models, an alternative to  \(t_\lambda(\theta)\) will be introduced in the following section. The major advantage will be that the alternative will not require numerical inversion.
+
+\begin{figure}
+\begin{center}
+  \begin{subfigure}[t]{0.5\linewidth}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/invbat-1} 
+
+\end{knitrout}
+    \caption{Inverse Batschelet distribution.}
+    \label{fig:pdf_compare:invbat}
+  \end{subfigure}%
+  \begin{subfigure}[t]{0.5\linewidth}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/powbat-1} 
+
+\end{knitrout}
+    \caption{Power Batschelet distribution.}
+    \label{fig:pdf_compare:powbat}
+  \end{subfigure}%
+\end{center}
+\caption{Two types of Batschelet distributions, based on the von Mises distribution with \(\mu = 0, \kappa = 2\). In order of increasing height at \(\theta = 0,\) the peakedness parameter \(\lambda = \{-.8, -.4, -.1, 0, .1, .4, .8\}\). In each figure, \(\lambda = \{-.8, .8\}\) are dashed, while \(\lambda = 0\) is a solid black line, with all others dotted. It can be seen that the densities are extraordinarily similar.}
+\label{fig:pdf_compare}
+\end{figure}
+
+\subsection{Power Batschelet distribution}
+
+In order to improve computational efficiency in more complex models, \(t_\lambda(\theta)\) can be replaced by a function of similar shape, but more appealing computational properties. We propose
+\begin{equation}
+  t_{\lambda}^\ast(\theta) = \text{sign}(\theta)\pi \left( \frac{\vert\theta\vert}{\pi} \right)^{\gamma(\lambda)},
+\end{equation}
+with \(\gamma(\lambda) \in \mathbb{R}^+,\) which has the basic properties required of it, namely to be a mapping of the circle onto itself, so long as \(-\pi \leq \theta \leq \pi \) is assumed. In practice, this property is generally forced upon the original data \(\theta_{o}\) by taking \( \theta = [(\theta_{o} + \pi) \mod 2\pi] - \pi.\) Note this does not change the angle, merely its numerical representation.
+
+Next, the function \(\gamma(\lambda)\) should be chosen such that changing \(\lambda\) mimics the behaviour of parameter \(\lambda\) of the Inverse Batschelet distribution in Equation \ref{eqn:invbatpdf}. First, in order to keep the parametrization where \(-1 \leq \lambda \leq 1\) with negative values corresponding to flat-topped densities, take
+\begin{equation}
+  \gamma(\lambda) = \frac{1 - c\lambda}{1 + c\lambda},
+\end{equation}
+where \(c\) is some fixed constant, chosen such that \(t_\lambda^\ast\) closely approximates \(t_\lambda.\) In order to choose \(c,\) the difference between \(t_\lambda^\ast\) and \(t_\lambda\) was numerically minimized over values of \(c\),\footnote{To be precise, \(c\) was chosen such that for a specific \(\lambda\), the mean absolute difference between \(t_{\lambda}(\theta)\) and \(t_{\lambda}^\ast(\theta)\) evaluated at 100 points evenly spread on the circle was minimized. The final \(c =  0.4052284\) is the average between the optimal \(c\) for \(\lambda = 1\) and \(\lambda = -1\). The two functions do not have coincide exactly, as being able to directly compare values for \(\lambda\) is only used for interpretability. } resulting in \(c = 0.4052284.\) The two functions \(t_\lambda^\ast\) and \(t_\lambda\), are plotted together in Figure \ref{fig:tlamcompare}. It is clear that the functions, although they do not exactly coincide, are strongly comparable. In practical use, the resulting density of the Power Batschelet distribution was found to be evaluated more than several hundred times faster than the Inverse Batschelet distribution. The resulting density is shown in Figure \ref{fig:pdf_compare:powbat}, where again, we conclude that the densities are strongly similar.
+
+
+
+
+\begin{figure}
+\begin{center}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/tlam_comparison-1} 
+
+\end{knitrout}
+\end{center}
+\caption{Comparison of  \(t_\lambda^\ast\) (blue, dashed) used for the Power Batschelet distribution and \(t_\lambda\) (red, solid) used for the Inverse Batschelet distribution, with, in order of increasing height at \(\pi/2,\) peakedness parameter \(\lambda = \{-.8, -.3, .5, 1\}.\)}
+\label{fig:tlamcompare}
+\end{figure}
+
+The new continuous function \( t_{\lambda}^\ast(\theta) \) is trivial to compute and has several attractive properties. For example, note that the we simply have \(t_{\lambda}^{\ast-1}(\theta)= t_{-\lambda}^\ast(\theta).\)
+
+Using this function, the Power Batschelet distribution is then defined as
+\begin{equation} \label{eqn:powbatpdf}
+ f_{PB}(\theta \mid \mu, \kappa, \lambda) = [K^\ast_{\kappa, \lambda}]^{-1} \exp\{\kappa \cos t^\ast_\lambda(\theta - \mu)\},
+\end{equation}
+where
+\begin{equation}
+  t_{\lambda}^\ast(\theta) = \text{sign}(\theta)\pi \left( \frac{\vert\theta\vert}{\pi} \right)^{ \frac{1 - 0.4052284\lambda}{1 + 0.4052284\lambda}},
+\end{equation}
+and the inverse of the normalizing constant is
+\begin{equation}
+   K^\ast_{\kappa, \lambda} = \int_{-\pi}^\pi \exp\{\kappa \cos t^\ast_\lambda(\theta - \mu)\} d\theta,
+\end{equation}
+which must still be numerically integrated. The Power Batschelet distribution generally shares the properties of the Inverse Batschelet distribution, in that it is symmetric around \(\mu\) and unimodal. Several further properties of this distribution are discussed in Appendix \ref{app:powbat}.
+
+A possible problem is that if \(0 < \lambda \leq 1,\) we have \(0 < \gamma(\lambda) < 1,\) and thus \(\frac{d t^\ast_{\lambda}(\theta)}{d\theta}\Bigr|_{\theta = 0} = \infty,\) so the function is not twice differentiable for that range of \(\lambda\), nor smooth. That is, the probability density is continuous, and so is $t^\ast_\lambda(\cdot),$ but its derivative is not, nor is \( \frac{d f_{PB}(\theta \mid \mu, \kappa, \lambda)}{d\theta}.\) As a result, not all regularity conditions for maximum likelihood estimation are not met, in very similar fashion to the commonly used Laplace (double exponential) distribution. In addition, due to the role of this distribution as a close approximation to the Inverse Batschelet, results for the Power Batschelet distribution can be seen as an approximation to the results of the Inverse Batschelet distribution.
+
+If one is concerned about the regularity conditions for the Power Batschelet distribution, the Inverse Batschelet distribution is an alternative which is also implemented in the package \texttt{flexcircmix}. However, any analysis with that method may several orders of magnitude longer. In practice, we have not run into any issues related to this, so we prefer the computational efficiency of the Power Batschelet distribution.
+
+\subsection{Measures of circular dispersion}
+\label{sub:csd}
+
+While for the von Mises distribution the circular variance is known to decrease monotonically with increasing \(\kappa\) regardless of the other parameters, this does not hold true for Batschelet distributions, because the peakedness parameter \(\lambda\) also exerts strong influence on the circular variance. However, it is desirable to compare the circular variance across components in the mixture model discussed in the following sections. Therefore, we compute the circular variance $v$, given by \(v = 1 - \rho\), where \(\rho\) is the population resultant length associated with the circular density \(f(\theta \mid \bph),\)  where \(\bph\) denotes a vector of parameters. In the general case, it is given by
+\begin{equation}
+  \rho = E[\cos\Theta] = \int_{-\pi}^\pi \cos\theta ~ p(\theta \mid \bph) d\theta.
+\end{equation}
+If the data has the von Mises distribution, it is known that \(\rho =  \frac{I_1(\kappa)}{I_0(\kappa)}\) \citep{mardia2009directional}, but in general, computing \(\rho\) will require numerical integration. Denoting the normalizing constant by \(C(\kappa, \lambda) = \left[\int_{-\pi}^\pi \exp\{\kappa \cos t_\lambda(\theta) \} d\theta \right]^{-1} ,\) we have
+\begin{align}
+\rho(\kappa, \lambda) = E[\cos\Theta] &= \int_{-\pi}^\pi \cos\theta ~ p(\theta \mid \mu, \kappa, \lambda) d\theta  \\
+&= C(\kappa, \lambda) \int_{-\pi}^\pi \cos\theta ~  \exp\{\kappa \cos t_\lambda(\theta) \} d\theta.
+\end{align}
+This means we should need at most two numerical integrations. Lastly, the circular standard deviation can be computed by \(\sigma_c = \sqrt{-2\log\rho}\) \citep{fisher1995statistical}.
+
+
+\section{Inference for Batschelet mixtures}
+\label{sec:infer}
+
+The mixture of Batschelet distributions is given by
+\begin{equation}
+ f(\theta \mid \bmu, \bkp, \blam, \balph) = \sum_{j = 1}^J\alpha_j f_B(\theta \mid \mu_j, \kappa_j, \lambda_j),
+\end{equation}
+where \(j\) indexes the \(J\) components in the mixture, $\alpha_j$ are component weights, and \(f_B(\cdot)\) is the chosen density, either Inverse Batschelet or Power Batschelet.
+
+
+First, in Section \ref{sub:em}, an EM algorithm will be presented. Second, in Section \ref{sub:bayes}, a method for inference through MCMC is presented. A note on identifiability is given in \ref{sub:iden}. Note that the number of components will be assumed to be known initially. In Section \ref{modelhyptest}, model selection and hypothesis testing will be discussed, which can be used to select the number of components as well evaluate many types of hypotheses. For a discussion of direct inference on mixtures with an unknown number of components, see \citet{richardson1997bayesian}.
+
+\subsection{EM Algorithm}
+\label{sub:em}
+
+Directly maximizing the observed data log-likelihood of a mixture model is generally difficult. Therefore, the EM-algorithm will be employed, which exploits the fact that the complete data maximum likelihood, that is, with observed labels, is easier to maximize.
+
+The EM-algorithm consists of the following steps:
+
+\begin{enumerate}
+\item[(Initialization)] Define an \(n \times J\) matrix \(\bolW = \{\bolw_1, \dots, \bolw_J\}^T,\) where \(\bolw_j\) are \(n\)-vectors. Initialize the parameters \( \bmu, \bkp, \blam, \balph\) at some user-specified values.
+\item[(E-step)] Compute, for all \(i, j,\) the elements of \(\bolW\) as
+\begin{equation}
+w_{i, j} = \frac{\alpha_j f_B(\theta_i \mid \mu_j, \kappa_j, \lambda_j)}{\sum_{s = 1}^J \alpha_s f_B(\theta_i \mid \mu_s, \kappa_s, \lambda_s)}.
+\end{equation}
+\item[(M-step)] For each component \(k\), maximize
+\begin{equation}
+  \ell(\mu_j, \kappa_j, \lambda_j, w_j \mid \bth) =\sum_{i=1}^n w_{i, j}  \log f_B(\theta_i \mid \mu_j, \kappa_j, \lambda_j).
+\end{equation}
+The maximization of this log-likelihood of the parameters of a Batschelet distribution may proceed through the Nelder-Mead simplex \citep{nelder1965simplex}, as was done in \citet{jones2012inverse}.
+\end{enumerate}
+
+Note that the EM algorithm is not guaranteed to find a global maximum. Therefore, reasonable (or multiple) starting values should be used, in order to assess the validity of the final results. If avoiding convergence to local maxima is of particular importance, one could consider implementing a stochastic version of the EM algorithm \citep{diebolt1996stochastic, nielsen2000stochastic}. However, the Bayesian MCMC approach described in Section \ref{sub:bayes} shares the advantages of such methods.
+
+In addition to obtaining estimates of the mixture model, it is essential to infer the uncertainty around these estimates. For mixture models, asymptotic standard errors obtained from inverting the Fisher Information generally require very large datasets in order to have desirable properties \citep{mclachlan2004finite}. Therefore, parameter uncertainty will need to be assessed either through bootstrapping, or through MCMC.
+
+Bootstrapping was implemented through a non-parametric bootstrap \citep{efron1994introduction}. In order to reduce computational burden, the EM algorithm of each bootstrap sample was given the full data estimates as starting values.
+
+\subsection{Bayesian inference}
+\label{sub:bayes}
+
+A Bayesian analysis of the finite mixture of von Mises-based Batschelet distributions is available through MCMC sampling \citep{chib1995understanding, gilks1995markov}. For an introduction focused on mixture models, see \citet{fruhwirth2006finite}. Besides providing uncertainty quantification naturally by performing inference on the posterior distribution rather than a set of estimates, the Bayesian paradigm also provides computational advantages in this case. In particular, the MCMC algorithm is less likely to converge to local maxima.
+
+As is common for Bayesian sampling for mixture models , the parameter space is augmented by a vector of latent variables \(\boldsymbol{z} \in \{1, \dots, J\}^n\) which contains a group label for each observation. By randomly assigning each observation to a group during every iteration, the problem simplifies to MCMC sampling for each component separately. First, in Section \ref{subsub:priors}, priors for this model will be discussed. Then, the MCMC algorithm will be provided in Section \ref{subsub:mcmc}.
+
+\subsubsection{Priors}
+\label{subsub:priors}
+
+Although subjective priors can be chosen in practical use, attention here will be restricted to (somewhat) non-informative priors. Priors are required for \(\alpha_j, \mu_j, \kappa_j\) and \(\lambda_j,\) either jointly or separately. In principle, priors could even be set for the group assignments.
+
+The component weights \(\alpha_j\) are given the conjugate Dirichlet prior distribution, with vector prior parameter \(\boldsymbol{n}_0 \in \left[\mathbb{R}^+\right]^{J}.\) If \(\boldsymbol{n}_0 = \boldsymbol{1}_J,\) this prior is uninformative.
+
+The mean directions \(\mu_j\) are given a circular uniform prior, \(p(\mu_j) = [2\pi]^{-1}, \mu_j \in [-\pi, \pi),\) which is proper.
+
+The concentration parameters \(\kappa_j\) are given a constant prior \(p(\kappa_j) \propto 1,\) which is improper. In principle, the Jeffreys prior for the von Mises distribution could also be used. The Jeffreys prior is proportional to the square root of the determinant of the Fisher Information Matrix \( \mathcal{I}(\bph),\) so that for the von Mises distribution it is given by
+\begin{equation}
+  p(\bph) \propto \sqrt{ \text{det}\left[ \mathcal{I}(\bph) \right] } = \sqrt{\kp A(\kp) A'(\kp) },
+\end{equation}
+where \( A(\kp) = I_1(\kp) / I_0(\kp) \) and \( A'(\kp) = \frac{d}{d \kp} A(\kp).\) However, note that this is \textit{not} the Jeffreys prior for the Inverse Batschelet distribution (as the given $\mathcal{I}(\bph)$ is the Fisher information of the von Mises), nor for a mixture of any circular distributions, nor proper. However, it can be used as a relatively diffuse default prior for cases in which very large values of \(\kappa\) are deemed unlikely. For the case of the von Mises distribution, \citet{hornik2013conjugate} show that the resulting posterior is almost surely proper if \(n \geq 2.\) A final alternative is to use a relatively diffuse non-conjugate proper prior, such as one from the gamma family of distributions.
+
+The peakedness parameter \(\lambda\) can be given a proper uniform prior \(p(\lambda_j) = 1/2, \lambda_j \in [-1, 1).\) However, \citet{jones2012inverse} note that in maximum likelihood estimation of the Inverse Batschelet model, estimates often fall on the boundary of the parameter space. Boundary avoiding priors can be used here to prevent this behaviour of the estimates. In particular, one may posit that large values of \(\vert \lambda_j \vert\) are a priori unlikely. This belief can be captured in a rescaled \(\text{Beta}(a, b)\) prior, so that \(p(\lambda_j) \propto f_{Beta} \left(\frac{\lambda + 1}{2} \mid a, b\right).\) If \(a = 1, b = 1, \) this results in the uniform prior on \([-1, 1],\) while \(1 < a, b \leq 2\) gives a range of priors which favor smaller values for  \(\vert \lambda_j \vert,\) and thus less peaked and less flat-topped densities.
+
+
+\subsubsection{MCMC algorithm}
+\label{subsub:mcmc}
+
+In the application of MCMC sampling, only the group assignments in latent variable \(\boldsymbol{z}\) and the mixture weights \(\boldsymbol\alpha\) have known full conditional distributions. All other parameters are updated using the Metropolis-Hastings algorithm \citep{metropolis1953equation, hastings1970monte}. After selecting starting values, the algorithm will be performed for \(m = 1,\dots, M\) iterations, which will constitute a sample from the posterior distribution. One iteration \(m\) of the algorithm proceeds as follows:
+
+\begin{enumerate}
+
+\item[(Sample \(z_i\))]  For each observation $\theta_i$, sample $z_i\in 1, \dots, J$ with group probabilities $$P(z_i = j) = \frac{\alpha_j f_B(\theta_i \mid \mu_j, \kappa_j, \lambda_j)}{\sum_{s=1}^J \alpha_s f_B(\theta_i \mid \mu_s, \kappa_s, \lambda_s)}.$$ This represents assigning this observation to one of the possible mixture components.
+
+\item[(Sample \(\boldsymbol{\alpha}\))] Sample the vector of mixture weights $$\boldsymbol{\alpha} = \alpha_1, \dots, \alpha_J \sim \text{Dirichlet}(\boldsymbol{n} + \boldsymbol{n}_0),$$ where \(\boldsymbol{n} = \left\{\sum_{i = 1}^n I(z_i = 1), \dots, \sum_{i = 1}^n I(z_i = J)\right\}^T,\) with $I(\cdot)$ the indicator function, and $\boldsymbol{n}_0$ the vector prior parameter for the Dirichlet, which is set to  $\boldsymbol{n}_0 = \boldsymbol{1}_n$ by default for an uninformative prior. Note that the definition of $\boldsymbol{n}$ means that all we need to do to sample the mixture weights is counting the number of observations assigned to each group.
+
+\item[(Sample \(\mu_j, \kappa_j, \lambda_j\))] For each mixture component $j\in 1, \dots, J$, sample parameters $\mu_j, \kappa_j, \lambda_j.$ Note that none of these parameters have known distributions, so we resort to Metropolis-Hastings throughout.
+
+\begin{enumerate}
+    \item Sample $\mu_j$ using an MH-step. As for the proposal $\mu_j^\ast$, we make use of the fact that the distribution reduces to the von Mises distribution if $\lambda = 0$. Therefore, we can draw from the known distribution of the mean of the von Mises distribution, because it will be somewhat close to the desired distribution. We can take either the previously sampled $\mu,$ by sampling from $\mu_j^\ast \sim \mathcal{M}\left(\mu_j^{(m - 1)}, R_j \kappa\right),$ or use the current sample mean direction $\bar{\theta},$ by sampling from $\mu_j^\ast \sim \mathcal{M}\left(\bar{\theta}_j, R_j \kappa\right),$ where $\bar{\theta}_j$ and $R_j$ are computed from the sample assigned to component $j$.
+
+    \item Sample $\kappa_j$ using a MH-step, using a gamma distribution with mean \(\kappa^{(m-1)}\) as the proposal distribution. The variance of this gamma distribution is a tuning parameter, which can be changed to improve computational efficiency of the algorithm. If the variance is \(\kappa^{(m-1)},\) the proposal is the \(\chi^2\)-distribution with \({\kappa^{(m-1)}}\) degrees of freedom. In practice, setting the variance to \(.05 {\kappa^{(m-1)}}\) seems to work well.
+
+    \item Sample $\lambda_j$ using a MH-step, using a uniform proposal
+    \begin{equation}
+    U\left[\max(-1, \lambda^{(m - 1)}_j - \varepsilon), ~ \min(1, \lambda^{(m - 1)}_j + \varepsilon)\right].
+    \end{equation}
+    Note that although the proposal distribution seems symmetric, this is not the case if the current value is less than $\varepsilon$ from the boundary. Because the proposal is not symmetric, the proposal distribution must be included in the MH ratio. Again, \(\varepsilon\) is a tuning parameter, and we will set \(\varepsilon = 0.01.\)
+\end{enumerate}
+\end{enumerate}
+
+It is well known that if parameters are strongly correlated, MCMC sampling can benefit from joint proposals for the correlated parameters. The parameters $\kappa$ and $\lambda$ are correlated, although not in an extreme fashion. Therefore, \(\kappa\) and \(\lambda\) may be sampled jointly, although this did not always prove beneficial in practice.
+
+\subsection{Model identifiability} \label{sub:iden}
+
+In general, mixture models may not be identifiable \citep{teicher1963identifiability}, a property which manifests itself most often through label switching, where component $k$ represents a different unobserved subpopulation in different bootstrap or MCMC samples from the model. However, forcing an ordering on the means may be sufficient for identification \citep{everitt2004mixture}.
+
+For the case of Batschelet mixtures on the circle, means are sometimes fixed by design, because this can be a reasonable assumption for saccade data. If the means are fixed, the model is identifiable as long as \(\{\kappa_j = 0, \lambda = 0\}\) in no more than one component. If this assumption is violated, any convex combination of mixture weights $\alpha_j$ of components where \(\{\kappa_j = 0, \lambda = 0\}\) gives the same probability density, so the model is not identified. This is unlikely in practice and can simply be checked in the output.
+
+If the means are not fixed but estimated, label switching may occur. In practical inference, if label switching has occurred, this would be evident in bootstrap or MCMC samples. If label switching has occurred, a post-processing step may be used to solve this issue \citep{Stephens:2000gba, jasra2005markov}. However, care must be taken in ensuring a circular ordering rather than a linear ordering.
+
+
+\subsection{Model selection and hypothesis testing} \label{modelhyptest}
+
+It is often relevant to compare several models and select the best among them, for example to select the required number of mixture components. The most common approach to model selection is through information criteria such as AIC \citep{akaike1987factor} and BIC \citep{schwarz1978estimating} in frequentist settings, and DIC \citep{spiegelhalter2002bayesian} and WAIC \citep{watanabe2010asymptotic} in Bayesian settings (for an overview, see \citet{WAGENMAKERS200699}). Such tools are provided in the \texttt{R} package \texttt{flexcircmix} accompanying this paper and provide an approximate comparison of the fit of various models.
+
+However, the Bayesian approach also allows us to perform more sophisticated model comparisons naturally by comparing the models on their posterior model probability.  Consider a set of \(Q\) models \(\mathcal{M}_1, \dots, \mathcal{M}_Q\) each indexed by a set of free parameters \(\bph,\) that are to be compared on their probability after observing data. This set of models can also be hypotheses to be compared. For example, one could compare a 3-component model with a 4-component model, a model with mean directions fixed at the cardinal directions versus a model where mean directions can vary freely, or a model that allows peaked distributions (ie. \(\lambda \in (-1, 1)\)) versus a von Mises mixture model (ie. \(\lambda = 0\)).
+
+In order to obtain the posterior model probability, the prior probability of the models under consideration must first be assessed. Here, and throughout the rest of this work, the models will be assumed to have equal prior probability, so \(p(\mathcal{M}_s) = 1 / Q.\) As a result, the prior probability drops out of the rest of the formulae.
+
+Then, regardless of the set of models under consideration, we can compute the posterior model probability
+\begin{equation}
+  \text{pmp}(\mathcal{M}_s) = \frac{p(\mathcal{M}_s \mid \bx)}{\sum_{q = 1}^Q p(\mathcal{M}_q \mid \bx) }
+\end{equation}
+where \(p(\mathcal{M}_s \mid \bx)\) is the \textit{marginal likelihood}, given by
+\begin{equation}
+  p(\mathcal{M}_s \mid \bx) = \int_{\Omega_{\bph}} p(\bx \mid \bph) d\bph,
+\end{equation}
+where \(\Omega_{\bph}\) is the sample space of the parameter vector for the model $\mathcal{M}_s$.  This integral is in general not easy to compute and has sparked a wealth of methods for computing it (for an overview, see \citet{ardia2012comparative} and \citet{friel2012estimating}). Perhaps the most promising and stable sampling-based solution is found in bridge sampling \citep{meng1996simulating}, which was recently made more easily applicable as a post-processing step on MCMC output through the \texttt{R} package \texttt{bridgesampling} \citep{gronau2017tutorial}. Broadly speaking, bridge sampling produces an estimate of the marginal likelihood by evaluating additional samples from a known density that approximates the posterior. For details, see \citet{gronau2017tutorial} and \citet{meng1996simulating}.
+
+Two issues arise for this specific application. First, the sample of mean direction parameters \(\bmu_j\) lie on a circular parameter space. Bridge sampling will find a known density that approximates the posterior by using the linear mean and the covariance matrix of the MCMC samples, for example by using the multivariate normal density with the same mean vector and covariance matrix. The approximation need only be roughly correct, which is not necessarily the case  for our model. For example, if we have a circular parameter with a mean direction near zero, some sampled values will lie in both intervals \([0, .1]\) and \([2\pi - .1, 2\pi)\). The linear mean will then incorrectly lie near \(\pi,\) and the linear variance will be far too large. To solve this, we will change the numerical representation of the mean direction sample of \(\bmu_j\) such that it lends itself better to the linear approximation. To do this, first the posterior mean direction \(\bar{\mu}_j\) is computed from the sample of mean directions \(\bmu_j\). Then, by taking \(\bmu_j^\ast = [(\bmu_j - \bar{\mu}_j + \pi)~ \text{mod} ~ 2\pi ] - \pi + \bar{\mu}_j,\) a numerical representation is obtained that does not have any 'gaps' on the real line, but corresponds to the same set of angles \(\bmu_j\).
+
+The second issue is that the sample of component weight parameters \(\alpha_j \in [0, 1]\) lie on a simplex, that is, they are constrained to sum to one. The bridge sampling usually lies on the real line, such as the aforementioned multivariate normal distribution, which means the constrained parameter space is ignored, so that almost surely invalid proposals are sampled. Therefore, these parameters are given a stick-breaking representation and are then logit-transformed, in a similar manner as in Stan \citep{carpenter2017stan}. For details on the transformation, its inverse and associated Jacobian, see the Stan reference manual \citep{stanrefmanual}. The solutions for both circular and simplex parameters were contributed to the latest version of the \texttt{bridgesampling} package.
+
+
+
+
+\section{Illustration}
+\label{sec:ill}
+
+In order to illustrate the methods presented in this work, they will be applied to two examples.
+
+First, the method is applied to a synthetic dataset in Section \ref{sub:synth}, where it is shown that the true parameters of a data generating process can be recovered. Then, in Section \ref{sub:fv}, the method is shown to provide new insights in the saccade direction data from \citet{van2016infants}.
+
+
+\subsection{Synthetic data}
+\label{sub:synth}
+
+Here, the methods developed in this paper will be applied to a synthetic data set for which parameter values are known. In order to sample from the Inverse Batschelet distribution, the sampling algorithm from \citet{jones2012inverse} was applied. A data set consisting of \(1000\) angles was sampled with parameters \(\bmu = \{-1, 1, 2\},\)  \(\bkp = \{20, 4, 15\},\)  \(\blam = \{-.7, 0, .7\},\) and  \(\balph = \{ .25, .25, .5\}.\)
+
+The results are shown in Table \ref{tab:synth} and Figure \ref{fig:fit}. First, it is clear that the method is able to recover mean direction. Also, it can be seen that both the bootstrapped confidence intervals and the credible intervals generally include the true value, and cases in which this is not true can be attributed to sampling error.
+
+As mentioned previously, the joint likelihood of \( \{\kappa, \lambda\}\) is correlated. Because of this, it can be seen in Table \ref{tab:synth} that neither \(\kappa\) nor \(\lambda\) can be estimated precisely, with both having confidence intervals that are quite wide. A remarkable property of this method is that while neither of the variance-related parameters is estimated very precisely, the circular standard deviation, computed as in Section \ref{sub:csd}, has tighter confidence intervals and is estimated more precisely, so inference on it will be more powerful than inference directly on \(\kappa\) or \(\lambda\).
+
+The components weights are estimated adequately in all cases.
+
+
+
+
+
+
+
+
+
+
+
+\begin{table}[btp]
+\centering
+\caption{Synthetic data fits using the Power Batschelet distribution.} 
+\label{tab:synth}
+\begingroup\scriptsize
+\begin{tabular}{rrrrrrrr}
+  &&EM & \multicolumn{2}{c}{Boot. CI} & \multicolumn{3}{c}{Bayes (MCMC)} \\  \hline
+ & Truth & Est. & 2.5\%  & 97.5\% & Median & 2.5\% & 97.5\% \\ 
+  \hline
+$\mu_1$ & -1.00 & -1.00 & -1.09 & -0.91 & -1.00 & -1.04 & -0.96 \\ 
+  $\kappa_1$ & 20.00 & 24.92 & 8.67 & 63.37 & 27.67 & 8.91 & 59.99 \\ 
+  $\lambda_1$ & -0.70 & -0.81 & -1.00 & -0.47 & -0.85 & -0.99 & -0.51 \\ 
+  $\alpha_1$ & 0.25 & 0.26 & 0.23 & 0.28 & 0.26 & 0.23 & 0.29 \\ 
+   \vspace{0.2cm} $\sigma_{c1}$ & 0.52 & 0.55 & 0.51 & 0.60 & 0.56 & 0.51 & 0.60 \\ 
+  $\mu_2$ & 1.00 & 0.98 & 0.95 & 1.01 & 1.00 & 0.97 & 1.03 \\ 
+  $\kappa_2$ & 4.00 & 3.26 & 3.17 & 3.94 & 3.52 & 2.80 & 5.17 \\ 
+  $\lambda_2$ & 0.70 & 0.89 & 0.66 & 1.00 & 0.81 & 0.54 & 0.98 \\ 
+  $\alpha_2$ & 0.25 & 0.26 & 0.23 & 0.29 & 0.27 & 0.23 & 0.31 \\ 
+   \vspace{0.2cm} $\sigma_{c2}$ & 0.34 & 0.42 & 0.33 & 0.44 & 0.38 & 0.27 & 0.53 \\ 
+  $\mu_3$ & 2.00 & 1.97 & 1.95 & 2.00 & 1.98 & 1.96 & 2.00 \\ 
+  $\kappa_3$ & 15.00 & 16.29 & 10.87 & 44.57 & 25.08 & 11.37 & 67.42 \\ 
+  $\lambda_3$ & 0.00 & -0.09 & -0.36 & 0.08 & -0.22 & -0.47 & 0.06 \\ 
+  $\alpha_3$ & 0.50 & 0.48 & 0.45 & 0.51 & 0.48 & 0.44 & 0.51 \\ 
+  $\sigma_{c3}$ & 0.26 & 0.28 & 0.26 & 0.30 & 0.28 & 0.25 & 0.30 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\end{table}
+
+
+
+
+
+\begin{figure}
+\begin{center}
+  \begin{subfigure}[t]{0.32\linewidth}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/synth_ex_real-1} 
+
+\end{knitrout}
+    \caption{True density.}
+    \label{fig:fit:true}
+  \end{subfigure}%
+  \begin{subfigure}[t]{0.32\linewidth}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/em_synth_plot-1} 
+
+\end{knitrout}
+    \caption{Fit from EM algorithm.}
+    \label{fig:fit:em}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.32\linewidth}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/mcmc_sam_plot-1} 
+
+\end{knitrout}
+    \caption{MCMC fit.}
+    \label{fig:mcmc_dens_synth}
+  \end{subfigure}
+\end{center}
+\caption{Synthetic data plots using the power Batschelet distibution. The sample of synthetic data, plotted along with a sample of 200 densities of which the parameters were sampled in the MCMC. That is, the spread of probability density functions provides a rough uncertainty bound for the true probability at each point.}
+\label{fig:fit}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Free-viewing data}
+\label{sub:fv}
+
+Here, the method will be applied to a real world example, the free-viewing dataset that was originally published in \citet{van2016infants}, shown again in Figure \ref{fig:fv}. As discussed in Section \ref{intro}, there are several hypotheses one might wish to learn about using this dataset. One hypothesis of interest is whether infants have a larger circular variance for each of their mixture components. Another is whether the horizontal bias, that is, the preference for left-right movements, is weaker for infants than for adults. These hypotheses will be assessed here.
+
+
+\begin{figure}
+\begin{center}
+  \begin{subfigure}[t]{0.475\linewidth}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/adult_em-1} 
+
+\end{knitrout}
+    \caption{EM fit for adults.}
+    \label{fig:fv:em_adult}
+  \end{subfigure}%
+  \begin{subfigure}[t]{0.475\linewidth}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/adult_mcmc-1} 
+
+\end{knitrout}
+    \caption{MCMC fit for adults.}
+    \label{fig:fv:mcmc_adult}
+  \end{subfigure}%
+  \vskip\baselineskip
+  \begin{subfigure}[t]{0.475\linewidth}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/infant_em-1} 
+
+\end{knitrout}
+    \caption{EM fit for infants.}
+    \label{fig:fv:em_inf}
+  \end{subfigure}%
+  \begin{subfigure}[t]{0.475\linewidth}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/infant_mcmc-1} 
+
+\end{knitrout}
+    \caption{MCMC fit for infants.}
+    \label{fig:fv:mcmc_inf}
+  \end{subfigure}%
+\end{center}
+\caption{Free-viewing data fit for adults (top) and infants (bottom) using the power Batschelet distibution. The $x$-axis is given in radians, where $0$ corresponds to the rightward direction, while $\pi/2$ corresponds to the downward direction. In the left plot, it can be seen that a third component is estimated for adults, while this is not the case for infants. In the right plot, the densities are plotted that result from sampled parameter sets from the MCMC. }
+\label{fig:fv}
+\end{figure}
+
+
+Because the mixture model has a fairly large number of parameters, it can be fruitful to consider fixing parameters about which we do not need to learn. For free-viewing data, modes are always observed oriented exactly in the cardinal directions, which will simplify our modeling problem somewhat. The mean directions can be chosen to be fixed at \(\mu_1 = -\pi / 2 ~\text{(upward)},\mu_2 = 0 ~\text{(rightward)},\mu_3 = \pi / 2 ~\text{(downward)},\mu_4 = \pi ~\text{(leftward)}\). Because fewer components are needed in the Batschelet mixture and because the means are fixed, the model actually has fewer parameters than the von Mises mixture model. It is also possible to loosen this assumption slightly by placing a strong prior on the mean directions centered on the aforementioned cardinal directions.
+
+For Bayesian inference, the priors were chosen according to the consideration in Section~\ref{subsub:priors}. To be specific, the prior for \(\mu_j\) was circular uniform, for \(\kappa_j\) the Jeffreys prior of the von Mises distribution, for \(\lambda_j\) the prior was the rescaled beta distribution proportional to \(f_{Beta} \left(\frac{\lambda + 1}{2} \mid \sqrt{2}, \sqrt{2}\right)\), and finally the prior for \(\alpha_j\) was \(\text{Dirichlet}(\boldsymbol{\alpha} = \{\sqrt{2}, \dots, \sqrt{2}\}^T)\). The MCMC algorithm was run for 46000 iterations, split into 46 parallel chains each having a burn in of \(1000\).
+
+A bootstrap was run with 10000 bootstrap replications. For both adults and infants, the results from the EM algorithm with bootstrapped standard errors will be displayed together with the Bayesian approach in Table \ref{tab:fv}.
+
+\subsubsection{Adults}
+
+Results for the adult sample are displayed in Figures \ref{fig:fv:em_adult} and \ref{fig:fv:mcmc_adult}. Visually, the model fit seems excellent, and it can be seen that observed distributions are generally quite peaked. For adults, it can be seen that all four components contribute to the overall shape of the overall shape of the model.
+
+\subsubsection{Infants}
+
+For infants, judging from the convergence plots in Figure \ref{fig:convergence_infants}, there might be grounds to assume that fewer than four components may suffice. Specifically, we can see that component 1 (upward) has component weight $\alpha$ that tends to zero. This can also be seen in Figure \ref{fig:fv:em_inf}, where the red (upward) component 1 is taken as almost completely flat.
+
+
+\subsubsection{Horizontal Bias comparison} \label{horbias}
+
+The main question of whether the horizontal bias of adults and infants differ can be addressed by comparing the circular standard deviation in Table \ref{tab:fv}, as well as compare the component weights \(\boldsymbol{\alpha}\).
+
+The horizontal components are component 2 and 4. For the rightward component 2, with (\(\mu_2 = 0\)), the estimates are generally somewhat similar between adults and infants, as the confidence and credible intervals overlap.
+
+For the leftward component 4 (\(\mu_4 = \pi\)), the confidence and credible intervals of adults and infants do not overlap, which can also be observed in Figure \ref{fig:fv} by noting that this component has a different shape between Figures \ref{fig:fv:em_inf} and \ref{fig:fv:em_adult}. For the component weight \(\alpha_4\), adults have EM-estimate and 95\% bootstrap confidence interval \(\hat\alpha^{(EM)} =\) 0.465 (0.443, 0.502) and posterior median and credible interval \(\hat\alpha^{(MCMC)} = \) 0.542 (0.431, 0.58), compared to infants which have \(\hat\alpha^{(EM)} = \) 0.405 (0.37, 0.455) and \(\hat\alpha^{(MCMC)} = \) 0.472 (0.28, 0.614).
+
+For the circular standard deviation \(\sigma_{c4}\), adults have \(\hat\sigma_c^{(EM)} =\) 0.886 (0.812, 0.964) and  \(\hat\sigma_c^{(MCMC)} = \) 0.995 (0.786, 1.07), compared to infants which have \(\hat\sigma_c^{(EM)} = \) 1.16 (1.036, 1.258) and \(\hat\sigma_c^{(MCMC)} = \) 1.161 (0.749, 1.391). Therefore, infants seem to have a larger variance on this component than adults. From this, it can be concluded that the horizontal bias exists, and differs between adults and infants.
+
+\subsubsection{Hypothesis testing}
+
+Using the model comparison methods discussed in Section \ref{modelhyptest}, several models of interest can be compared using Bayesian hypothesis tests.
+
+First, it is worthwile to investigate whether in general infants and adults differ. This can be done by comparing the model that is discussed in Section \ref{horbias}, which allows separate parameters for infants and adults, to a model where both are given the same parameters (for which parameter estimates are not shown). For this model, the log Bayes Factor in favor of the model that has separate parameters is 52.7, which is associated with a posterior model probability (assuming equal prior odds) in favor of separate parameters close to \(100\%\). Therefore, we have separated the groups throughout.
+
+Second, as can be seen in Figure \ref{fig:fv:em_inf}, one may be unsure about the number of required components for infants. Although four components were assumed so far, three may suffice. Again, we find almost certain evidence, log Bayes Factor 70.7,  posterior probability \(\approx 100\%\), that the model with four components fits better than the model with only three components.
+
+Finally, the assumption that the means can be fixed to the cardinal directions can be checked. To test whether this was a valid assumption, a model with free means is run for both adults and infants (parameter estimates not shown). This model is then compared to the model with fixed means from before, which gives a log Bayes factor of 61 in favor of free means. This suggests that the data can be fit better by allowing the means to be freely estimated. This could be understood as a systematic bias of the means away from the cardinal directions contained in the stimuli used. However, for the sake of simplicity, the means were kept fixed throughout this paper.
+
+
+
+\begin{figure}
+\begin{center}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/conv_infants-1} 
+
+\end{knitrout}
+\hspace{-.7cm}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/conv_infants2-1} 
+
+\end{knitrout}
+
+\end{center}
+\caption{Convergence plot for the infant data. The plot shows 46 chains of 1000 MCMC iterations, with a thinning factor of 50. }
+\label{fig:convergence_infants}
+\end{figure}
+
+\begin{table}[btp]
+\centering
+\caption{Free-viewing fit using the Power Batschelet mixture model, for adults (left) and infants (right). Mean directions were fixed at \(\mu_1 = -\pi / 2 ~\text{(upward)},\mu_2 = 0 ~\text{(rightward)},\mu_3 = \pi / 2 ~\text{(downward)},\mu_4 = \pi ~\text{(leftward)}\).} 
+\label{tab:fv}
+\begingroup\scriptsize
+\begin{tabular}{llrrrrrrlrrrrrr}
+  && \multicolumn{6}{c}{Adults} & & \multicolumn{6}{c}{Infants} \\
+& &EM & \multicolumn{2}{c}{Boot. CI} & \multicolumn{3}{c}{Bayes (MCMC)} & &EM & \multicolumn{2}{c}{Boot. CI} & \multicolumn{3}{c}{Bayes (MCMC)}\\  \hline
+  &   & Est. & 2.5\%  & 97.5\% & Median & 2.5\% & 97.5\% &   & Est. & 2.5\%  & 97.5\% & Median & 2.5\% & 97.5\% \\ 
+  \hline
+\multirow{4}{*}{\rotatebox{90}{Up}} & $\kappa_1$ & 0.81 & 0.69 & 1.03 & 5.94 & 0.85 & 666.66 &  & 0.38 & 0.25 & 0.91 & 6.76 & 0.14 & 635.15 \\ 
+   & $\lambda_1$ & 1.00 & 1.00 & 1.00 & 0.41 & -0.53 & 0.97 &  & -1.00 & -1.00 & 0.17 & -0.56 & -0.97 & 0.55 \\ 
+   & $\alpha_1$ & 0.11 & 0.09 & 0.12 & 0.02 & 0.01 & 0.12 &  & 0.15 & 0.11 & 0.18 & 0.05 & 0.00 & 0.28 \\ 
+   \vspace{0.2cm}  & $\sigma_{c1}$ & 1.54 & 1.37 & 1.64 & 0.32 & 0.09 & 1.46 &  & 1.96 & 1.46 & 2.13 & 0.68 & 0.03 & 2.33 \\ 
+  \multirow{4}{*}{\rotatebox{90}{Right}} & $\kappa_2$ & 3.05 & 2.61 & 3.50 & 2.46 & 2.09 & 3.39 &  & 2.34 & 1.90 & 3.75 & 2.22 & 1.49 & 3.78 \\ 
+   & $\lambda_2$ & 0.67 & 0.56 & 0.78 & 0.77 & 0.58 & 0.91 &  & 0.72 & 0.40 & 0.90 & 0.67 & 0.38 & 0.93 \\ 
+   & $\alpha_2$ & 0.32 & 0.31 & 0.35 & 0.36 & 0.31 & 0.40 &  & 0.27 & 0.23 & 0.32 & 0.32 & 0.23 & 0.43 \\ 
+   \vspace{0.2cm}  & $\sigma_{c2}$ & 0.48 & 0.42 & 0.58 & 0.62 & 0.44 & 0.76 &  & 0.65 & 0.43 & 0.84 & 0.69 & 0.43 & 1.05 \\ 
+  \multirow{4}{*}{\rotatebox{90}{Down}} & $\kappa_3$ & 1.93 & 1.65 & 3.34 & 4.33 & 1.51 & 30.56 &  & 1.41 & 1.21 & 1.94 & 2.14 & 0.90 & 18.24 \\ 
+   & $\lambda_3$ & 0.76 & 0.44 & 0.90 & 0.41 & -0.20 & 0.85 &  & 0.99 & 0.61 & 1.00 & 0.65 & -0.09 & 0.96 \\ 
+   & $\alpha_3$ & 0.10 & 0.07 & 0.12 & 0.06 & 0.05 & 0.14 &  & 0.18 & 0.15 & 0.20 & 0.13 & 0.06 & 0.34 \\ 
+   \vspace{0.2cm}  & $\sigma_{c3}$ & 0.80 & 0.47 & 0.95 & 0.38 & 0.23 & 1.01 &  & 1.12 & 0.80 & 1.23 & 0.73 & 0.25 & 1.42 \\ 
+  \multirow{4}{*}{\rotatebox{90}{Left}} & $\kappa_4$ & 1.84 & 1.70 & 1.97 & 1.62 & 1.50 & 2.02 &  & 1.34 & 1.18 & 1.49 & 1.28 & 0.98 & 2.06 \\ 
+   & $\lambda_4$ & 0.96 & 0.88 & 1.00 & 0.97 & 0.87 & 1.00 &  & 0.98 & 0.82 & 1.00 & 0.88 & 0.61 & 0.99 \\ 
+   & $\alpha_4$ & 0.47 & 0.44 & 0.50 & 0.54 & 0.43 & 0.58 &  & 0.41 & 0.37 & 0.46 & 0.47 & 0.28 & 0.61 \\ 
+   & $\sigma_{c4}$ & 0.89 & 0.81 & 0.96 & 1.00 & 0.79 & 1.07 &  & 1.16 & 1.04 & 1.26 & 1.16 & 0.75 & 1.39 \\ 
+   \hline
+\end{tabular}
+\endgroup
+\end{table}
+
+
+
+\section{Discussion} \label{sec:discussion}
+
+In this paper, a new mixture model for flexible circular distributions was developed. It can be used to distinguish clusters in samples of directions, for example those obtained from saccade directions. The main contribution is the development of mixture models for circular data that allow for peaked and flat-topped shapes. In order to do this, a new family of distributions was introduced, the Power Batschelet distributions, that mimic the distributions developed in \citet{jones2012inverse}, but that enjoy more appealing computational properties.
+
+The method developed here can be used as a method to investigate whether two sets of saccade directions differ from each other, as shown in Section \ref{sub:fv}. This allows eye-tracking researchers to answer more complex questions about their saccade data, and draw inference where this was previously not possible.
+
+Although developed in the context of saccade directions, the method has potentially much broader applications. For example, wind directions are commonly modeled with circular distributions \citep{bowers2000directional, holzmann2006hidden, bao2010bias}, and sometimes feature peaked distributions. Also, observed arrival times can sometimes be governed by an event occuring at a single time point, causing strongly peaked distributions as well. Also, the method is a strong contender for any form of non-parametric fit on a set of univariate circular data. In that case, the current method functions as a flexible parametric alternative to a fully non-parametric analysis. The mixture of Batschelet distributions then allows much more extensive interpretation and inference than a non-parametric analysis typically would, at a minor cost of flexibility.
+
+It should be noted that in general saccade data is time-series data where each observation is correlated with the previous observations. In the free-viewing paradigm, this autocorrelation is not of core interest, as the time series consist of only 3-5 saccades per viewed image. In general, fitting the saccade directions with a flexible model such as the one provided here while ignoring the time-series structure violates an assumption of the model. However, the time series structure of saccade directions usually does not follow a traditional autocorrelation structure, because, for example, reaching the end of a page results in negative autocorrelation. Therefore, this issue should be addressed separately. The current approach does allow a powerful parametric comparison of different groups of saccade direction data, even when ignoring the autocorrelation. For some applications however, interest might specifically lie in the autocorrelation structure, and for those settings different models might be preferred.
+
+In future studies, it may be fruitful to model the saccade direction jointly with saccade length, instead of the saccade direction separately. One promising model that has not been applied to the field of eye-tracking is the Abe-Ley model for cylindrical data \citep{abe2016tractable}. In this model, saccades with larger length naturally have a higher (circular) concentration, a property which is commonly observed in vision research. However, the complex form of such models means that extensions such as mixtures are not available, although a hidden Markov model has been developed \citep{lagona2015hidden}.
+
+Finally, it should be noted that methods developed here are made accessible to eye-tracking researchers through the easy-to-use R package \texttt{flexcircmix}. This means that the methods can be readily applied to new data, without requiring extensive technical knowledge. Hopefully, the methods developed in this paper will provide a valuable new direction for eye-tracking researchers to perform more valid parametric inference on the angles of saccades throughout a broad range of applications.
+
+
+
+\section{Acknowledgements}
+
+This work was supported by a ------ grant awarded to ------ from ----- (------).
+
+
+
+
+\newpage
+
+\appendix
+
+\newcommand{\gamlam}{\gamma(\lambda)}
+\newcommand{\pimingl}{\pi^{1 - \gamma(\lambda)}}
+\newcommand{\sumin}{\sum_{i = 1}^n}
+
+\section{Properties of the Power Batschelet Distribution} \label{app:powbat}
+
+The probability density function of the Power Batschelet distribution is defined as
+\begin{equation} \label{eqn:powbatpdf}
+ f_{PB}(\theta \mid \mu, \kappa, \lambda) = [K^\ast_{\kappa, \lambda}]^{-1} \exp\{\kappa \cos t^\ast_\lambda(\theta - \mu)\},
+\end{equation}
+where
+\begin{equation} \label{tlamast}
+  t_{\lambda}^\ast(\theta) = \text{sign}(\theta)\pi \left( \frac{\vert\theta\vert}{\pi} \right)^{\gamlam},
+\end{equation}
+with \(\gamlam = \frac{1 - c\lambda}{1 + c\lambda},\) where \(c = 0.4052284\) and the inverse of the normalizing constant being
+\begin{equation}
+   K^\ast_{\kappa, \lambda} = \int_{-\pi}^\pi \exp\{\kappa \cos t^\ast_\lambda(\theta - \mu)\} d\theta,
+\end{equation}
+which is usually numerically integrated.
+
+Note that for any symmetric base density, such as the von Mises used in this case, the $\text{sign}(\theta)$ in Equation \ref{tlamast} is optional, because $f_{PB}((\theta - \mu) \mid \mu, \kappa, \lambda) = f_{PB}(-(\theta - \mu) \mid \mu, \kappa, \lambda).$
+
+The log-likelihood is
+\begin{equation} \label{eqn:powbatll}
+ \ell(\mu, \kappa, \lambda \mid \bth) = -\log[K^\ast_{\kappa, \lambda}] + \kappa \sum_{i = 1}^n \cos t^\ast_\lambda(\theta_i - \mu),
+\end{equation}
+so that, assuming $\theta_i \neq \mu ~ \forall ~ i \in 1, \dots, n,$ the score functions are
+\begin{align}
+\frac{\partial  \ell(\mu, \kappa, \lambda \mid \bth)}{\partial \mu}     &=  \kappa \pimingl \gamlam \sumin  \vert \theta_i - \mu \vert^{\gamlam - 1} \sin t^\ast_\lambda(\theta_i - \mu)\\
+\frac{\partial  \ell(\mu, \kappa, \lambda \mid \bth)}{\partial \kappa}  &= - \left[K^\ast_{\kappa, \lambda}\right]^{-1}  \int_{-\pi}^\pi \cos t^\ast_\lambda(\theta) e^{\kappa \cos t^\ast_\lambda(\theta)} d\theta + \sumin \cos t^\ast_\lambda(\theta_i - \mu)  \\
+\frac{\partial  \ell(\mu, \kappa, \lambda \mid \bth)}{\partial \lambda} &= - \left[K^\ast_{\kappa, \lambda}\right]^{-1}  \int_{-\pi}^\pi h(\theta, \mu, \kappa, \lambda) e^{\kappa \cos t^\ast_\lambda(\theta)} d\theta  + \sumin h(\theta_i, \mu, \kappa, \lambda)
+\end{align}
+where
+\begin{equation}
+h(\theta, \mu, \kappa, \lambda) = \frac{\partial \kappa \cos t^\ast_\lambda(\theta - \mu)}{\partial \lambda} =  \frac{ \kappa \gamma'(\lambda) \vert \theta - \mu \vert^{\gamlam}}{\pi^{\gamlam - 1}}  \sin \left( \frac{\vert \theta - \mu \vert^{\gamlam}}{\pi^{\gamlam - 1}} \right) \log\left(\frac{\pi}{\vert \theta - \mu \vert} \right)
+\end{equation}
+where \(\gamma'(\lambda) = \frac{2c}{(1 + c \lambda)}.\) Due to the form of the score functions, as well as the condition that $\theta_i \neq \mu ~ \forall ~ i \in 1, \dots, n,$ it is clear that the Hessian and Fisher Information will not be easy to work with. Therefore, it is preferred to work directly with the log-likelihood.
