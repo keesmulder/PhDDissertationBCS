@@ -142,7 +142,7 @@ In order to perform statistical inference, we use the data to estimate populatio
 
 The information contained in the data is usually entered into the statistical model through the likelihood function. The likelihood function of the von Mises distribution can be specified as
 \begin{equation}
-L(\bphi \mid \bt ) = \prod_{i = 1}^n p(t_i \mid \mu, \kp),
+L(\bphi \mid \boldt ) = \prod_{i = 1}^n p(t_i \mid \mu, \kp),
 \end{equation}
 where \( \mu\) and \(\kp\) are the aforementioned parameters of the von Mises distribution, and \( p(t_i \mid \mu, \kp) \) is the von Mises density given in \ref{vmeq}, which could also be replaced by any other density if we so desire. Usually, we would algebraically or numerically optimize this likelihood function to obtain maximum likelihood estimates  (MLEs), which can be plugged into the von Mises density to obtain an estimate of the crime time density. However, this formulation supposes all crime times are directly observed.
 

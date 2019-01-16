@@ -1,0 +1,46 @@
+\documentclass{book}
+
+\input{usepkg_newcommand.tex}
+\hypersetup{
+	colorlinks=true,
+	citecolor=blue,
+	urlcolor=blue
+}
+
+
+\begin{document}
+
+
+
+% \section{Introduction}
+% \label{introduction}
+\input{chapters/circ_glm.tex}
+
+
+%
+% \section{Mixture model}
+% \label{design}
+% \input{fragments/model.tex}
+%
+% \section{Reversible jump MCMC sampler}
+% \label{implementation}
+% \input{fragments/methods.tex}
+%
+% \section{Simulation study}
+% \label{simulations}
+% \input{fragments/simulations.tex}
+%
+% \section{Listening behavior}
+% \label{22tracks}
+% \input{fragments/22tracks.tex}
+%
+% \section{Discussion}
+% \label{discussion}
+% \input{fragments/discussion.tex}
+
+
+\bibliographystyle{apacite}
+\bibliography{C:/Dropbox/LiteratureCircular/CircularData}
+
+
+\end{document}

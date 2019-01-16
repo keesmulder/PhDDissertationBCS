@@ -1,0 +1,24 @@
+\BOOKMARK [1][-]{section.0.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.0.2}{Bayesian circular GLM}{}% 2
+\BOOKMARK [2][-]{subsection.0.2.1}{Likelihood}{section.0.2}% 3
+\BOOKMARK [2][-]{subsection.0.2.2}{Priors}{section.0.2}% 4
+\BOOKMARK [1][-]{section.0.3}{MCMC sampling}{}% 5
+\BOOKMARK [2][-]{subsection.0.3.1}{Sampling 0}{section.0.3}% 6
+\BOOKMARK [2][-]{subsection.0.3.2}{Sampling }{section.0.3}% 7
+\BOOKMARK [2][-]{subsection.0.3.3}{Sampling bold0mu mumu units}{section.0.3}% 8
+\BOOKMARK [2][-]{subsection.0.3.4}{Sampling bold0mu mumu units}{section.0.3}% 9
+\BOOKMARK [1][-]{section.0.4}{Hypothesis tests}{}% 10
+\BOOKMARK [2][-]{subsection.0.4.1}{Equality constrained hypotheses}{section.0.4}% 11
+\BOOKMARK [2][-]{subsection.0.4.2}{Inequality constrained hypotheses}{section.0.4}% 12
+\BOOKMARK [1][-]{section.0.5}{Simulation study}{}% 13
+\BOOKMARK [2][-]{subsection.0.5.1}{Simple regression}{section.0.5}% 14
+\BOOKMARK [2][-]{subsection.0.5.2}{Factorial ANOVA}{section.0.5}% 15
+\BOOKMARK [2][-]{subsection.0.5.3}{ANCOVA with four covariates}{section.0.5}% 16
+\BOOKMARK [2][-]{subsection.0.5.4}{Bayes factors and posterior model probabilities}{section.0.5}% 17
+\BOOKMARK [1][-]{section.0.6}{Example}{}% 18
+\BOOKMARK [2][-]{subsection.0.6.1}{ANOVA model}{section.0.6}% 19
+\BOOKMARK [2][-]{subsection.0.6.2}{ANCOVA model}{section.0.6}% 20
+\BOOKMARK [2][-]{subsection.0.6.3}{Inequality constrained hypothesis}{section.0.6}% 21
+\BOOKMARK [1][-]{section.0.7}{Discussion}{}% 22
+\BOOKMARK [1][-]{section.0.8}{Acknowledgements}{}% 23
+\BOOKMARK [1][-]{section.Alph0.1}{Conditional distribution of 0}{}% 24
