@@ -1,4 +1,5 @@
-\documentclass{book}
+\documentclass[12pt, a4paper]{book}
+
 
 \input{usepkg_newcommand.tex}
 \hypersetup{
@@ -6,38 +7,72 @@
 	citecolor=blue,
 	urlcolor=blue
 }
+% \input{jss.tex}
+
+
+% Manual additions to automatic newcommands.
+\DeclareMathOperator{\atantwo}{atan2}
+
+
+
 
 
 \begin{document}
 
 
 
-% \section{Introduction}
-% \label{introduction}
+\frontmatter
+\tableofcontents
+
+
+
+\mainmatter
+\chapter{Introduction}
+\label{intro}
+% \input{chapters/introduction.tex}
+
+
+\chapter{Bayesian Estimation and Hypothesis Tests for a Circular GLM}
+\label{circglm}
 \input{chapters/circ_glm.tex}
 
 
-%
-% \section{Mixture model}
-% \label{design}
-% \input{fragments/model.tex}
-%
-% \section{Reversible jump MCMC sampler}
-% \label{implementation}
-% \input{fragments/methods.tex}
-%
-% \section{Simulation study}
-% \label{simulations}
-% \input{fragments/simulations.tex}
-%
-% \section{Listening behavior}
-% \label{22tracks}
-% \input{fragments/22tracks.tex}
-%
-% \section{Discussion}
-% \label{discussion}
-% \input{fragments/discussion.tex}
+\chapter{Bayesian Tests for Circular Uniformity}
+\label{hypotest}
+\input{chapters/hypotest.tex}
 
+
+\chapter{Mixtures of Peaked Power Batschelet Distributions for Circular Data  With Application to Saccade Directions}
+\label{flexcmix}
+\input{chapters/flexcmix.tex}
+%
+%
+\chapter{Bayesian inference for mixtures of von Mises distributions using the reversible jump MCMC sampler}
+\label{revrjump}
+\input{chapters/revrjump.tex}
+%
+\chapter{Dealing With Partially Observed Crime Times}
+\label{dpm_crim}
+\input{chapters/dpm_crim.tex}
+%
+% \chapter{circbayes: An R package for Bayesian circular statistics}
+% \label{circbays}
+% \input{chapters/circbays.tex}
+
+
+
+
+
+\chapter{Appendix}
+
+\appendix
+
+\input{chapters/circ_glm_appendix.tex}
+\input{chapters/flexcmix_appendix.tex}
+\input{chapters/dpm_crim_appendix.tex}
+
+
+\backmatter
 
 \bibliographystyle{apacite}
 \bibliography{C:/Dropbox/LiteratureCircular/CircularData}

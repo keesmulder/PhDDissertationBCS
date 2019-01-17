@@ -1,0 +1,184 @@
+
+
+
+\section{Proof of variance overestimation using the aoristic fraction method} \label{proofvar}
+
+
+The fact that the variance of the data in density estimation methods such as the aoristic fraction method can be proven mathematically. First, for familiarity, this will be done for the linear case, where the data lies on the real line. Second, we will show the same proof for circular interval censored data, such as aoristic data.
+
+\subsection{Data on the real line} \label{proofreal}
+
+Here, we will show that for data on the real line using a density estimate based on the interval-censored histogram (ICH) method, essentially the linear analogue of the aoristic fraction method, leads to an overestimate of the variance in the linear case.
+
+Let $X \in \mathbb{R}$ be a random variable with some unknown distribution, but where $E[X] = \mu$ and $\text{Var}[X] = \sigma^2$. This $X$ is not directly observed, but rather we observe an interval $(a, b),$ knowing $a \leq x \leq b$. We can expand the bounds as $a = x - \dli$ and $b = x + \dui,$ where $\dli$ is the distance between the start of the interval and the unobserved true $x$, and $\dui$ the distance further from $x$ to the end of the interval. Note that $\dli$ and $\dui$  are random variables themselves, with unknown distribution. A core assumption that we will make is that $\dli$ and $\dui$ have the same distribution. Then, we also assume that the expected difference between $x$ and an interval bound is $E[\dli] = E[\dli] > 0.$ That is, the data are actually censored. As a result, $E[\dui - \dli] = 0$.
+
+
+The procedure under investigation is to estimate the unknown density $p(x)$ by the interval-censored histogram, which is an average of uniform distributions for each interval, that is $$\ich{x} = \wavg \frac{\myival}{b_i - a_i},$$  where $I(\cdot)$ is the indicator function. The question we will evaluate is whether the variance of this density, which we will call $\hat{\sigma}^2_{ICH},$ overestimates the true variance $\sigma^2$ of $X$. Thus, the question is whether $E[\hat{\sigma}^2_{ICH}] > \sigma^2.$
+
+First, we will need the expectation to produce an estimate of the variance. Note that our estimate of the expected value of $X$ using the ICH density is
+\begin{align}
+\hat\mu &= \int_{\mathbb{R}} x ~ \ich{x} dx \\
+&= \int_{\mathbb{R}} x \wavg \frac{\myival}{b_i - a_i} dx \\
+&= \wavg  \int_{a_i}^{b_i} x dx
+= \wavg \frac{b_i - a_i}{2} \\
+&= \wavg x_i + \frac{\dui - \dli}{2},
+\end{align}
+where the last form is not observed, but helps us realise that if we take the expectation of the unknown interval lengths, $\frac{E[\dui] - E[\dli]}{2} = 0.$ Then, $\hat\mu = \bar{x} = \wavg x_i.$ So, if $\dli$ and $\dui$ have the same expectation, the estimate $\hat\mu$ is an unbiased estimator of $\mu$.
+
+For simplicity, we will assume that the data are centered so that $\hat\mu = 0.$ Then, we can create an unbiased estimator of $\sigma^2$ by
+\begin{align}
+\hat{\sigma}^2_{ICH} &= \left(1 - \frac{1}{n} \right) \text{Var}[X] = \left(1 - \frac{1}{n} \right) E[X^2] \\
+&= \int_{\mathbb{R}} x^2 \wavgmn \frac{\myival}{b_i - a_i} dx \\
+&= \wavgmn \frac{1}{3} \frac{b_i^3 - a_i^3}{b_i - a_i}
+= \frac{1}{3} \wavgmn a_i^2 + a_i b_i + b_i^2
+\end{align}
+Then, expanding the bounds, and taking the expectation over $\dli$ and $\dui,$
+\begin{align}
+E_\dli [E_\dui [\hat{\sigma}^2_{ICH}]] &=  E_\dli \left[ E_\dui \left[ \frac{1}{3} \wavgmn 3 x_i^2 - 2\dli x_i + \dli^2 + \dui x_i - \dli \dui + 2 \dui x_i + \dui^2 \right] \right] \\
+ &= \frac{1}{3} \left\{ \wavgmn 3 x_i^2 +  E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli \dui \right] \right]  \right\} \\
+ &= \left\{ \wavgmn x_i^2  \right\}   + \frac{1}{3} \left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right] \right] \right\}.
+\end{align}
+We can recognize that $\wavgmn{x_i^2}$ is simply an unbiased estimator of the variance. Therefore, taking the expectation over $x$,
+\begin{align}
+E_x[E_\dli [E_\dui [\hat{\sigma}^2_{ICH}]]] &= E_x\left[ \wavgmn x_i^2 \right] +  \frac{1}{3}\left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right]\right] \right\} \\
+&= \sigma^2 +  \frac{1}{3}\left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right] \right] \right\}
+\end{align}
+However, note that  $\dli^2 + \dui^2 - \dli\dui \geq 0,$ with equality if and only if $\dli = \dui = 0,$ which would mean there was no interval-censoring. Because the second term is positive, we have that the variance is overestimated by $\hat{\sigma}^2_{ICH},$ that is, it is biased upwards. From this last equation, it is clear that the upwards bias depends on the distribution of $\dli$ and $\dui.$ Specifically, the bias is $E[\hat{\sigma}^2_{ICH} - \sigma] =   \frac{1}{3}\left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right]\right] \right\}.$
+
+\subsection{Aoristic data} \label{aoproof}
+
+In the circular case, let $\theta \in [0, 2\pi)$ be a circular random variable, which again  is not directly observed, but rather only up to an interval $a_i \leq \theta \leq b_i,$ with again $a = \theta - \dli$ and $b = \theta + \dui.$ This time, the intervals are assumed to be bounded on the semicircle, that is $\dli \in [0, \pi),$ and $\dui \in [0, \pi).$ Again, assume that $\dli$ and $\dui$ have some unknown distribution.
+
+The distribution of $\theta$ is unknown, but let's assume it has a population mean direction $\mu$. An unbiased estimator of $\mu$ is given by $\bar\theta = \text{atan2}(\sum_{i=1}^n \sin(\theta_i), \sum_{i=1}^n \cos(\theta_i))$ \citep{mardia2009directional}. For aoristic data, an unbiased estimator of $\mu$ is
+\begin{equation}
+\tilde\theta = \text{atan2} \left( \sum_{i=1}^n \sin(a_i) + \sin(b_i), \sum_{i=1}^n \cos(a_i) + \cos(b_i) \right).
+\end{equation}
+This is equal to taking the mean direction of the midpoints of the aorisitic intervals. To show that this is unbiased, taking the expectation over the distribution of $\dli$ and $\dui,$ we obtain
+\begin{align}
+E_{\dli, \dui} \left[\sum_{i=1}^n \cos(a_i) + \cos(b_i)\right] &= \sum_{i=1}^n \cos(\theta_i) E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right] \\
+E_{\dli, \dui} \left[\sum_{i=1}^n \sin(a_i) + \sin(b_i)\right] &= \sum_{i=1}^n \sin(\theta_i) E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right].
+\end{align}
+Note that this last term $E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right]$ is the same for both components. Also, for any constant $q > 0$ we have $\text{atan2}(qs, qc) = \text{atan2}(s, c).$ So, if we set $q = E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right] > 0,$ we can see $\text{atan2}(q \sum_{i=1}^n \sin(\theta_i), q \sum_{i=1}^n \cos(\theta_i)) = \bar\theta,$ which is an unbiased estimator of $\mu$.
+
+The population variance is given by $1 - \rho$, where $\rho = \int_0^{2\pi} \cos(\theta - \mu) p(\theta) d\theta$ is the population resultant length. If we center data by subtracting the mean direction estimate  $\tilde\theta$ such that the mean direction is zero, then we simply have $\rho = \int_0^{2\pi} \cos\theta p(\theta) d\theta,$ with an unbiased estimator being $\wavg \cos\theta_i.$
+
+The aoristic fraction method leads us to estimate the resultant length as
+\begin{align}
+\hrho &= \int_0^{2\pi} \cos\theta  ~ \hat{p}_{AF}(\theta) d\theta \\
+&= \int_0^{2\pi} \cos\theta \wavg \frac{\myival}{b_i - a_i} d\theta \\
+&= \wavg  \frac{1}{b_i - a_i}  \int_{a_i}^{b_i} \cos\theta d\theta \\
+&= \wavg  \frac{\sin b_i - \sin a_i}{b_i - a_i} \\
+&= \wavg  \frac{\sin(\theta_i + \dui) - \sin(\theta_i - \dli)}{b_i - a_i} \\
+&= \wavg  \frac{\sin \theta_i \cos\dui + \cos \theta_i \sin\dui - \sin \theta_i \cos\dli + \cos \theta_i \sin\dli}{b_i - a_i}.
+\end{align}
+Then, taking the expectation over $\theta,$ $\dli$ and $\dui,$ recalling $E[\sin\theta] = 0,$ this gives
+\begin{align}
+E[\hrho] &= \wavg \frac{E[\sin \theta_i] E[\cos\dui] + E[\cos \theta_i] E[ \sin\dui] - E[\sin \theta_i] E[\cos\dli] + E[\cos \theta_i] E[\sin\dli]}{E[\dli] + E[\dui]} \\
+&= \wavg \frac{E[\cos \theta_i] E[\sin\dui] + E[\cos \theta_i] E[\sin\dli]}{E[\dli] + E[\dui]}  \\
+&= \wavg \rho  \frac{E[\sin\dli] + E[\sin\dui]}{E[\dli] + E[\dui]}.
+\end{align}
+Then, set the distributions of $\dli$ and $\dui$ equal again to the distribution of some $\delta$, to get
+\begin{align}
+E[\hrho]&= \wavg \rho  \frac{E[\sin\delta_i]}{E[\delta_i]}.
+\end{align}
+Finally, if $0 < \delta < \pi,$ that is, there is interval censoring, we know that $\sin\delta < \delta,$ so $\frac{E[\sin\delta_i]}{E[\delta_i]} < 1,$ and the bias is
+\begin{equation}
+E[\hrho - \rho] = \wavg \rho  \frac{E[\sin\delta_i]}{E[\delta_i]} - \rho  = \left(\wavg  \frac{E[\sin\delta_i]}{E[\delta_i]} - 1\right) \rho < 0.
+\end{equation}
+Therefore, the estimate of the resultant length given by the aoristic fraction method $\hrho$ is biased downwards, so that the circular variance $1 - \hrho$ is biased upwards.
+
+\newpage
+
+\section{Von Mises based Dirichlet Process Mixture model} \label{dpmdetails}
+
+We propose to use a von Mises based Dirichlet Process mixture (DPM) model. The von Mises DPM model on circular observation $\theta_i \in [0, 2\pi)$ can be written as
+\begin{align}
+\theta_i \mid (\mu_i, \kp_i) &\sim \mathcal{M}(\mu_i, \kp_i) \\
+(\mu_i, \kp_i) \mid G  &\sim G \\
+G &\sim \text{DP}(P_0, \alpha).
+\end{align}
+The base distribution $P_0$ is the conjugate prior for the von Mises distribution, that is
+\begin{equation}
+p(\mu, \kp \mid \mu_0, R_0, n_0) \propto [I_0(\kp)]^{-n_0} \exp\left\{ R_0 \kp \cos(\mu - \mu_0)\right\},
+\end{equation}
+where $\mu_0$ is the prior mean, $R_0$ is the prior resultant length, and $n_0$ is somewhat like a prior sample size.
+
+Because this prior is conjugate, the posterior has the same form, which is
+\begin{equation}
+p(\mu, \kp \mid \mu_n, R_n, m) \propto [I_0(\kp)]^{-m} \exp\left\{ R_n \kp \cos(\mu - \mu_n)\right\},
+\end{equation}
+where, setting $S_n = \sumin \sin(\theta_i) + R_0 \sin(\mu_0)$ and $C_n =  \sumin \cos(\theta_i) + R_0 \cos(\mu_0),$  the posterior mean direction is $\mu_n = \text{atan2} \left(S_n, C_n\right)$, the posterior resultant length is given by $R_n = \sqrt{C_n^2 + S_n^2},$ and the posterior sample size is $m = n + n_0$.
+
+For computation, we also require the prior predictive distribution of a data point $\tilde{y}$.  It is given by
+\begin{align}
+p(\tilde{y}\mid \mu_0, R_0, n_0) &= \int_{0}^\infty \int_0^{2\pi} p(\mu, \kp \mid \mu_0, R_0, n_0) \mathcal{M}(\tilde{y} \mid \mu, \kp) d\mu d\kp \\
+&= \frac{1}{C}  \frac{1}{(2\pi)^{n_0}} \int_{0}^\infty \frac{I_0(R_p\kp)}{I_0(\kp)^{n_p}} d\kp
+\end{align}
+where $p(\mu, \kp \mid \mu_0, R_0, n_0)$ is the base distribution $P_0$, $ \mathcal{M}(\tilde{y} \mid \mu, \kp)$ is the probability density function of the von Mises distribution, $R_p = \sqrt{\left(\cos{\tilde{y}} + R_0 \cos \mu_0 \right)^2 + \left(\sin{\tilde{y}} + R_0 \sin \mu_0 \right)^2},$ $n_p = n_0 + 1,$ and
+\begin{equation}
+C = (2\pi)^{1 - n_0} \int_{0}^\infty \frac{I_0(R_0\kp)}{I_0(\kp)^{n_0}} d\kp
+\end{equation}
+is the normalizing constant of the base distribution $P_0$.
+
+To obtain a Dirichlet process that is uninformative with regards to the mean direction, we must take $R_0 = 0$ so that the terms with $\mu_0$ disappear in the posterior computations. If we want a non-informative prior to limit the  influence of the prior, this suggests setting $R_0 = 0,$ $n_0 = 1,$ and $\mu_0$ any value, as it is irrelevant now. The downside of such an approach is that it puts most weight on components that have low concentration, an issue which is addressed in Appendix \ref{margprior}.
+
+Computation was implemented using the R package \href{https://cran.r-project.org/web/packages/dirichletprocess/index.html}{dirichletprocess} \citep{dirichletprocesspackage}, to which methods for circular data and aoristic data were contributed. This package uses the Gibbs sampling schemes from \citet{neal2000markov}.
+
+\newpage
+
+\section{Rejection sampling aoristic data} \label{rejsampling}
+
+A computational issue arises in rejection sampling for aoristic data because it will tend to contain both very small and larger intervals. Usually, data augmentation will use direct rejection sampling, such as in \citet{doss1994bayesian}. This direct rejection algorithm will attempt to sample a value $t$ from interval $(a, b)$ which has distribution $p(t \mid \bphi, a, b) \propto p(t \mid \bphi) I(a < t < b), $  where $\bphi$ are the parametrs of the distribution and $I(\cdot)$ is the indicator function. This algorithm can be summarized as follows.
+\begin{enumerate}
+\item Sample a value $t^\ast \sim p(t \mid \bphi).$ \label{stepone}
+\item If $a < t < b,$ set $t = t^\ast.$ Otherwise, go back to step \ref{stepone}.
+\end{enumerate}
+However, if we have a very small interval, say (17:18, 17:21), the algorithm will perform have very low acceptance probability and thus perform badly. This is because the acceptance probability of the direct rejection algorithm is $\int_{a}^{b} p(t \mid \bphi) dt$ which can be quite small for small intervals.
+
+An alternative is to use envelope rejection sampling \citep{gilks1992adaptive}, which can be summarized as follows.
+\begin{enumerate}
+\item Compute the maximum value of the distribution $p(t \mid \bphi)$ within the interval, that is $m = \max_{t : a < t < b} p(t \mid \bphi).$
+\item Sample a value $t^\ast \sim U[a, b],$ that is from the uniform distribution between $a$ and $b$.\label{samplestep}
+\item Sample $u \sim U[0, 1].$ If $um < p(t^\ast \mid \bphi),$ set $t = t^\ast.$ Otherwise, go back to step \ref{samplestep}.
+\end{enumerate}
+This algorithm has rejection probability $m(b - a) - \int_{a}^{b} p(t \mid \bphi) dt.$ This should make it clear that the envelope rejection and  direct rejection will often perform differently in terms of acceptance probability.
+
+For this reason, we employ a adaptive strategy for the sampling. A final issue is that the acceptance probability is generally not available in closed form and costly to compute. Therefore, we approximate the distribution by a Normal distribution. For the von Mises distribution with mean direction $\mu$ and concentration $\kp$, we can approximate it by a Normal distribution $N(\mu, \frac{1}{\kp}).$ If the approximated acceptance probability for direct rejection is smaller than some number, say $10\%,$ we switch to the envelope rejection strategy.
+
+\newpage
+
+\section{Prior independent of $\mu_0$} \label{margprior}
+
+In the Dirichlet Process, we have $\{\mu, \kp\} \sim DP(\alpha P_0).$ The base measure $P_0$ is the conjugate prior for the von Mises distribution, that is
+\begin{equation}
+p(\mu, \kp \mid \mu_0, R_0, n_0) \propto [I_0(\kp)]^{-n_0} \exp\left\{ R_0 \kp \cos(\mu - \mu_0)\right\}.
+\end{equation}
+As $R_0$ gets closer to $n_0$, more weight is given to higher $\kp,$ so more concentrated components, in the direction of $\mu_0$. Note that the prior mean direction $\mu_0$ is irrelevant if $R_0 = 0,$ so a common prior undecided about $\mu_0$ has $R_0 = 0, n_0 = 1.$
+
+However, we would like to put prior mass on more concentrated components, while remaining undecided on $\mu_0$. A prior with this property can be obtained by integrating out $\mu_0$, which results in the prior
+\begin{align}
+p(\mu, \kp \mid R_0, n_0)  &\propto \int_0^{2\pi} [I_0(\kp)]^{-n_0} \exp\left\{ R_0 \kp \cos(\mu - \mu_0)\right\} d\mu_0
+= \frac{I_0(R_0 \kp)}{I_0(\kp)^{n_0}}.
+\end{align}
+This prior, however, will lead to heavily increased computational burden, because it  is no longer conjugate.
+
+To regain conjugacy, the sampler can be augmented by taking $\mu_0 \sim U(0, 2\pi),$ so $p(\mu_0) = 1 / (2\pi).$ Then, sampling $\mu_0$ each time, the base measure, averaged over $\mu_0$, will be
+\begin{align}
+E_{\mu_0}[p(\mu, \kp \mid \mu_0, R_0, n_0)]
+&= \int_0^{2\pi} p(\mu, \kp \mid \mu_0, R_0, n_0) p(\mu_0) d\mu_0 \\
+&= \int_0^{2\pi} [I_0(\kp)]^{-n_0} \exp\left\{ R_0 \kp \cos(\mu - \mu_0)\right\} \frac{1}{2\pi} d\mu_0 \\
+&\propto p(\mu, \kp \mid R_0, n_0).
+\end{align}
+This last one is exactly as required. Therefore, the $\mu_0$ can be simply randomly sampled uniformly over the circle in each iteration, and filled into the conjugate model.
+
+An alternative is to marginalize the posterior summary statistics $\mu_n, R_n, m$ over the uniform distribution on $\mu_0.$ We obtain $E_{\mu_0}[\mu_n] = \bar\theta,$ and $E_{\mu_0}[m] = n + n_0,$ with $R_n$ being the average distance of the points on a circle with center $(\sumin \cos(\theta_i), \sumin \sin(\theta_i))$ and radius $R_0.$ This is given by
+\begin{align}
+E_{\mu_0}[R_n] &= \frac{1}{2\pi} \int_{0}^{2\pi} \sqrt{R_0^2 + R^2 + 2 R_0 R \cos(t)} dt \\
+&= \frac{2 [R_0 + R]}{\pi}  E_2\left( \frac{2 \sqrt{R_0 R}}{R_0 + R} \right)
+\end{align}
+where $R$ is the resultant length of the data, and $E_2(\cdot)$ is the complete elliptic integral of the second kind. There is no closed form available for this last integral, but efficient algorithms are available.
+
+A final option is introduce a data dependence in the prior by setting \(\mu_0 = \bar{\theta}\) if there is data, and \(\mu_0 \sim U[0, 2\pi)\) if there is not. This prior can be set in terms of posterior parameters \(\mu_n, R_n, m\) because if $\mu_0 = \bar\theta$ , we have  $\mu_n = \bar\theta$, $R_n = R_0 + R,$ and $m = n_0 + n.$ The data dependence in this prior is sometimes seen as problematic in the Bayesian community \citep{darnieder2011bayesian}, but the ease of use by setting this in the posterior parameters and conjugacy while allowing for more concentrated priors makes it an appealing alternative.
+
+
+

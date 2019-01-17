@@ -1,0 +1,33 @@
+\section{Properties of the Power Batschelet Distribution} \label{app:powbat}
+
+The probability density function of the Power Batschelet distribution is defined as
+\begin{equation} \label{eqn:powbatpdf}
+ f_{PB}(\theta \mid \mu, \kappa, \lambda) = [K^\ast_{\kappa, \lambda}]^{-1} \exp\{\kappa \cos t^\ast_\lambda(\theta - \mu)\},
+\end{equation}
+where
+\begin{equation} \label{tlamast}
+  t_{\lambda}^\ast(\theta) = \text{sign}(\theta)\pi \left( \frac{\vert\theta\vert}{\pi} \right)^{\gamlam},
+\end{equation}
+with \(\gamlam = \frac{1 - c\lambda}{1 + c\lambda},\) where \(c = 0.4052284\) and the inverse of the normalizing constant being
+\begin{equation}
+   K^\ast_{\kappa, \lambda} = \int_{-\pi}^\pi \exp\{\kappa \cos t^\ast_\lambda(\theta - \mu)\} d\theta,
+\end{equation}
+which is usually numerically integrated.
+
+Note that for any symmetric base density, such as the von Mises used in this case, the $\text{sign}(\theta)$ in Equation \ref{tlamast} is optional, because $f_{PB}((\theta - \mu) \mid \mu, \kappa, \lambda) = f_{PB}(-(\theta - \mu) \mid \mu, \kappa, \lambda).$
+
+The log-likelihood is
+\begin{equation} \label{eqn:powbatll}
+ \ell(\mu, \kappa, \lambda \mid \bth) = -\log[K^\ast_{\kappa, \lambda}] + \kappa \sum_{i = 1}^n \cos t^\ast_\lambda(\theta_i - \mu),
+\end{equation}
+so that, assuming $\theta_i \neq \mu ~ \forall ~ i \in 1, \dots, n,$ the score functions are
+\begin{align}
+\frac{\partial  \ell(\mu, \kappa, \lambda \mid \bth)}{\partial \mu}     &=  \kappa \pimingl \gamlam \sumin  \vert \theta_i - \mu \vert^{\gamlam - 1} \sin t^\ast_\lambda(\theta_i - \mu)\\
+\frac{\partial  \ell(\mu, \kappa, \lambda \mid \bth)}{\partial \kappa}  &= - \left[K^\ast_{\kappa, \lambda}\right]^{-1}  \int_{-\pi}^\pi \cos t^\ast_\lambda(\theta) e^{\kappa \cos t^\ast_\lambda(\theta)} d\theta + \sumin \cos t^\ast_\lambda(\theta_i - \mu)  \\
+\frac{\partial  \ell(\mu, \kappa, \lambda \mid \bth)}{\partial \lambda} &= - \left[K^\ast_{\kappa, \lambda}\right]^{-1}  \int_{-\pi}^\pi h(\theta, \mu, \kappa, \lambda) e^{\kappa \cos t^\ast_\lambda(\theta)} d\theta  + \sumin h(\theta_i, \mu, \kappa, \lambda)
+\end{align}
+where
+\begin{equation}
+h(\theta, \mu, \kappa, \lambda) = \frac{\partial \kappa \cos t^\ast_\lambda(\theta - \mu)}{\partial \lambda} =  \frac{ \kappa \gamma'(\lambda) \vert \theta - \mu \vert^{\gamlam}}{\pi^{\gamlam - 1}}  \sin \left( \frac{\vert \theta - \mu \vert^{\gamlam}}{\pi^{\gamlam - 1}} \right) \log\left(\frac{\pi}{\vert \theta - \mu \vert} \right)
+\end{equation}
+where \(\gamma'(\lambda) = \frac{2c}{(1 + c \lambda)}.\) Due to the form of the score functions, as well as the condition that $\theta_i \neq \mu ~ \forall ~ i \in 1, \dots, n,$ it is clear that the Hessian and Fisher Information will not be easy to work with. Therefore, it is preferred to work directly with the log-likelihood.

@@ -4,7 +4,7 @@ library(tidyverse)
 out_folder <- "C:/Dropbox/Research/PhDDissertationBCS/chapters/"
 glm_path <- "C:/Dropbox/Research/BayesMultCircCovariates/Article JMP/"
 
-
+# Don't ask me what this regex does.
 inside_curly <- Vectorize(function(string) {
   stringr::str_extract(string, "\\{.*?\\}(?!.*\\})")
 })
@@ -32,10 +32,22 @@ read_and_refactor_chapter <- function(input_path) {
 
   body_text <- strip_text[-c(bib_idx, end_idx, header_idx)]
 
+  # Split the appendix.
+  apx_start <- grepl("\\\\appendix", body_text)
+  if (any(apx_start)) {
+    apx_idx   <- (which(apx_start)[1] + 1):length(body_text)
+    apx_text  <- body_text[apx_idx]
+
+    body_text <- body_text[-apx_idx]
+  } else {
+    apx_text <- NA
+  }
+
   out <- list(title            = title,
               authors          = authors,
               usepackage_lines = pkg_lines,
               new_commands     = new_cmds,
+              appendix         = apx_text,
               sections         = sections,
               text             = body_text)
   class(out) <- c("tex_chapter", "list")
@@ -45,7 +57,8 @@ read_and_refactor_chapter <- function(input_path) {
 
 read_and_save_multiple_chapters <- function(filepaths,
                                             outloc = "C:/Dropbox/Research/PhDDissertationBCS/",
-                                            remove_preamble_lines = character(0)) {
+                                            remove_preamble_lines = character(0),
+                                            copy_figs = TRUE) {
 
   outloc_ch <- paste0(outloc, "chapters/")
   outloc_ch
@@ -58,29 +71,57 @@ read_and_save_multiple_chapters <- function(filepaths,
   }
 
   preamble_lines <- character(0)
+  outfig_path <- paste0(outloc, "figure/")
 
   # Refactor and save.
   for (filepath_nm in nms) {
     filepath <- filepaths[filepath_nm]
     chapter <- read_and_refactor_chapter(filepath)
 
-    cat("Read chapter '", chapter$title, "'. Processing...\n---\n", sep = "")
+    cat("Read chapter '", chapter$title, "'. Processing...\n", sep = "")
 
+    # Add preamble lines/
     preamble_lines <- c(preamble_lines,
                         chapter$usepackage_lines,
                         chapter$new_commands)
 
+    # Split the appendix.
 
+
+    # Save the full object.
     saveRDS(chapter, file = paste0(outloc_ch, filepath_nm, ".rds"))
 
+    # Save the chapter tex.
     filecon <- file(paste0(outloc_ch, filepath_nm, ".tex"))
     writeLines(chapter$text, con = filecon)
     close(filecon)
 
+    # Save the appendix.
+    if (!is.na(chapter$appendix[1])) {
+      # Save the chapter tex.
+      filecon <- file(paste0(outloc_ch, filepath_nm, "_appendix.tex"))
+      writeLines(chapter$appendix, con = filecon)
+      close(filecon)
+    }
+
+
+    if (copy_figs) {
+      cat("Figures...\n")
+      last_slash <- stringr::str_locate_all(filepath, "/")[[1]]
+      clip_str <- str_sub(filepath, end = last_slash[nrow(last_slash), 1])
+
+      fig_files <- dir(paste0(clip_str, "figure/"), full.names = TRUE)
+      file.copy(fig_files, outfig_path)
+      fig_files <- dir(paste0(clip_str, "figures/"), full.names = TRUE)
+      file.copy(fig_files, outfig_path)
+
+    }
+
+    cat("---\n")
   }
 
 
-  # COMMAND LINES
+  # COMMAND LINES use Packages
   cmd_lines_sep <- sapply(preamble_lines, function(x) {
     locs <- str_locate_all(x, pattern = "\\\\newcommand")[[1]]
     str_sub(x, start = locs[, 1], end =  c(locs[-1, 1] - 1, nchar(x)))
@@ -104,6 +145,7 @@ read_and_save_multiple_chapters <- function(filepaths,
   # Remove Knitr commands which would be double.
   plu <- plu[!grepl("^(\\\\newcommand\\{\\\\hl)", plu)]
 
+  # Output package and newcommand files.
   cat("Writing usepackage and newcommand lines.\n")
   filecon <- file(paste0(outloc, "usepkg_newcommand.tex"))
   writeLines(plu, con = filecon)
@@ -116,7 +158,9 @@ manual_fixes <- c("\\newcommand{\\sumin}{\\sum_{i = 1}^n}",
                   "\\newcommand{\\bx}{\\boldsymbol{\\theta}}",
                   "\\newcommand{\\thedata}{\\bt, \\bX, \\bd}",
                   "\\newcommand{\\wavg}{\\frac{1}{n} \\sum_{i=1}^n}",
-                  "\\usepackage{upquote}}{}")
+                  "\\usepackage{upquote}}{}",
+                  "\\usepackage{fullpage}",
+                  "\\usepackage{caption,subcaption}")
 
 
 resfol <- "C:/Dropbox/Research/"

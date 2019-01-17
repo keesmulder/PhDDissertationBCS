@@ -39,3 +39,8 @@ rsconnect/
 *.aux
 Dissertation_KeesMulder_BayesianCircularStatistics-concordance.tex
 *.gz
+
+
+
+figure/*
+*.pdf
