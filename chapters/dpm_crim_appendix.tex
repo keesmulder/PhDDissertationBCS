@@ -1,12 +1,12 @@
 
 
 
-\section{Proof of variance overestimation using the aoristic fraction method} \label{proofvar}
+\chapter{Proof of variance overestimation using the aoristic fraction method} \label{proofvar}
 
 
 The fact that the variance of the data in density estimation methods such as the aoristic fraction method can be proven mathematically. First, for familiarity, this will be done for the linear case, where the data lies on the real line. Second, we will show the same proof for circular interval censored data, such as aoristic data.
 
-\subsection{Data on the real line} \label{proofreal}
+\section{Data on the real line} \label{proofreal}
 
 Here, we will show that for data on the real line using a density estimate based on the interval-censored histogram (ICH) method, essentially the linear analogue of the aoristic fraction method, leads to an overestimate of the variance in the linear case.
 
@@ -45,7 +45,7 @@ E_x[E_\dli [E_\dui [\hat{\sigma}^2_{ICH}]]] &= E_x\left[ \wavgmn x_i^2 \right] +
 \end{align}
 However, note that  $\dli^2 + \dui^2 - \dli\dui \geq 0,$ with equality if and only if $\dli = \dui = 0,$ which would mean there was no interval-censoring. Because the second term is positive, we have that the variance is overestimated by $\hat{\sigma}^2_{ICH},$ that is, it is biased upwards. From this last equation, it is clear that the upwards bias depends on the distribution of $\dli$ and $\dui.$ Specifically, the bias is $E[\hat{\sigma}^2_{ICH} - \sigma] =   \frac{1}{3}\left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right]\right] \right\}.$
 
-\subsection{Aoristic data} \label{aoproof}
+\section{Aoristic data} \label{aoproof}
 
 In the circular case, let $\theta \in [0, 2\pi)$ be a circular random variable, which again  is not directly observed, but rather only up to an interval $a_i \leq \theta \leq b_i,$ with again $a = \theta - \dli$ and $b = \theta + \dui.$ This time, the intervals are assumed to be bounded on the semicircle, that is $\dli \in [0, \pi),$ and $\dui \in [0, \pi).$ Again, assume that $\dli$ and $\dui$ have some unknown distribution.
 
@@ -89,7 +89,7 @@ Therefore, the estimate of the resultant length given by the aoristic fraction m
 
 \newpage
 
-\section{Von Mises based Dirichlet Process Mixture model} \label{dpmdetails}
+\chapter{Von Mises based Dirichlet Process Mixture model} \label{dpmdetails}
 
 We propose to use a von Mises based Dirichlet Process mixture (DPM) model. The von Mises DPM model on circular observation $\theta_i \in [0, 2\pi)$ can be written as
 \begin{align}
@@ -126,7 +126,7 @@ Computation was implemented using the R package \href{https://cran.r-project.org
 
 \newpage
 
-\section{Rejection sampling aoristic data} \label{rejsampling}
+\chapter{Rejection sampling aoristic data} \label{rejsampling}
 
 A computational issue arises in rejection sampling for aoristic data because it will tend to contain both very small and larger intervals. Usually, data augmentation will use direct rejection sampling, such as in \citet{doss1994bayesian}. This direct rejection algorithm will attempt to sample a value $t$ from interval $(a, b)$ which has distribution $p(t \mid \bphi, a, b) \propto p(t \mid \bphi) I(a < t < b), $  where $\bphi$ are the parametrs of the distribution and $I(\cdot)$ is the indicator function. This algorithm can be summarized as follows.
 \begin{enumerate}
@@ -147,7 +147,7 @@ For this reason, we employ a adaptive strategy for the sampling. A final issue i
 
 \newpage
 
-\section{Prior independent of $\mu_0$} \label{margprior}
+\chapter{Prior independent of $\mu_0$} \label{margprior}
 
 In the Dirichlet Process, we have $\{\mu, \kp\} \sim DP(\alpha P_0).$ The base measure $P_0$ is the conjugate prior for the von Mises distribution, that is
 \begin{equation}

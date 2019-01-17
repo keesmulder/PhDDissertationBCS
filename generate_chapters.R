@@ -28,16 +28,15 @@ read_and_refactor_chapter <- function(input_path) {
   first_sec  <- grep("\\\\section", strip_text, value = FALSE)[1]
   bib_idx    <- grep("\\\\bibliography", strip_text, value = FALSE)
   end_idx    <- grep("\\\\end\\{document\\}", strip_text, value = FALSE)
-  header_idx <- 1:(first_sec - 1)
+  header_idx <- 1:(first_sec)
 
   body_text <- strip_text[-c(bib_idx, end_idx, header_idx)]
 
   # Split the appendix.
   apx_start <- grepl("\\\\appendix", body_text)
   if (any(apx_start)) {
-    apx_idx   <- (which(apx_start)[1] + 1):length(body_text)
-    apx_text  <- body_text[apx_idx]
-
+    apx_idx   <- (which(apx_start)[1]):length(body_text)
+    apx_text  <- body_text[apx_idx[-1]]
     body_text <- body_text[-apx_idx]
   } else {
     apx_text <- NA
@@ -98,9 +97,14 @@ read_and_save_multiple_chapters <- function(filepaths,
 
     # Save the appendix.
     if (!is.na(chapter$appendix[1])) {
+      chapter$appendix %>%
+        str_replace("\\\\section", "\\\\chapter") %>%
+        str_replace("\\\\subsection", "\\\\section") ->
+        apx
+
       # Save the chapter tex.
       filecon <- file(paste0(outloc_ch, filepath_nm, "_appendix.tex"))
-      writeLines(chapter$appendix, con = filecon)
+      writeLines(apx, con = filecon)
       close(filecon)
     }
 
