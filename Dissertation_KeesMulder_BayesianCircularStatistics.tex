@@ -50,24 +50,46 @@
 
 \usepackage{alltt}
 
-
+% Commands and packages from the papers.
 \input{usepkg_newcommand.tex}
 \hypersetup{
 	colorlinks=true,
 	citecolor=blue,
 	urlcolor=blue
 }
-% \input{jss.tex}
+
+
+
+\usepackage{titling}
+\newcommand{\subtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip0.5em}%
+}
+
+
+
 
 
 % Manual additions to automatic newcommands.
 \DeclareMathOperator{\atantwo}{atan2}
+
+
+
+\title{Bayesian Circular Statistics}
+\subtitle{von Mises-based solutions for practical problems}
+
+\author{Kees Mulder}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
 
 
 \frontmatter
+
+\maketitle
+
 \tableofcontents
 
 
@@ -75,32 +97,69 @@
 \mainmatter
 \chapter{Introduction}
 \label{intro}
-% \input{chapters/introduction.tex}
+
+In a small caf\'e in the historical city center, three long-time friends meet for dinner. After a some chit-chat, one of the friends, in a philosophical mood, asks: ``\textit{Hey, I wonder what our average birthday is?"}\footnote{This true story was relayed to me by my friend and colleague Erik-Jan van Kesteren.}.
+
+Pondering over this somewhat odd question, the friends first conclude that the question is clearly more reasonable than a nonsensical question such as ``\textit{What is the average between three cows and a goat?}". Then again, a question such as ``\textit{What is the average between 5, 13, and 7?}" is obviously way easier to answer, as the object (or, \textit{data}) to be averaged is simply a real number. As often happens with seemingly hard-to-answer puzzles, it sticks in the mind, and the friends end up discussing the issue for two hours.
+
+Thankfully, the friends are all born in the month February, on February 3, 7, and 26 to be precise, and decide to calebrate their triple birthday on their average birthday of February 12th, a simple average of the three days. However, as the three friends rejoice the imminent financial benefits of throwing not three birthday parties but one, more of their friends start arriving.
+
+The first new arrival has their birthday on January 7. Not a problem, conclude the friends. They come up with the scheme of labeling all days in the year consecutively, and averaging these. So, they now average the new 7 with their birthdays, which are now labeled 34, 38, and 57. The new average is 34, which translates back to an average birthday of February 3rd. Content, the friends continue their dinner, although they are left with the sneaking suspicion that they have cheated, somehow.
+
+%
+The real trouble begins when four more friends arrive. Due to a mild statistical anomaly\footnote{The probability of this is described in a famous statistical problem, which also happens to be about birthdays (see \url{https://en.wikipedia.org/wiki/Birthday_problem}).}, they all happen to be born in December, on the 5th, the 6th,  16th, and 21st. Now, the strategy of consecutively labeling all the days in the year not only has become excessively laborous\footnote{Not to mention inevitable issues with leap years, although we will ignore those here.}, it also leads to some odd conclusions. The average of 7, 34, 38, 57, 339, 339, 350, and 355 is 190. This translates to back to the day of July 9, which baffles the group of friends for several reasons.
+
+First, the average birthday of July 9th is a summer birthday, and is nowhere near the birthday of any of the people in the group, who were all born in winter. Second, if the friends had started counting the days of the year at March 1st, which would have been just as good as January 1st, the resulting average birthday would have been completely different. Clearly, the strategy of consecutive labeling fails to accurately capture what we mean by `average'.
+
+So what happened here? Within the month of February, the days nicely follow each other, and the average seems to makes sense. But when we expand our scope to the full year, a problem arises. When the year progresses to its final day, the day of the year rolls around to the first day of the new year. The day of the year is, in this sense, periodic (or \textit{cyclical}), and it is exactly this periodicity which makes the friend group's attempts at creating a sensible avarage fail.
+
+\section{Circular data}
+
+As it turns out, this `average birthday' problem is not as frivolous as it seems at first glance. A birthday is simply an example of an observed day of the year. Throughout statistics, examples can be found where the interest is in statistical modeling and prediction when in a year certain events occur. One example is modeling the distribution of extreme weather events over the year.
+
+More generally, temporally periodic data can also consist of hours of the day, days of the week, days of the month, etcetera. In fact, many occurences of events are governed in some way by a periodical process, which must be taken into account when modeling.
+
+The clock is not the only instrument to provide us with observations on a periodical scale. Another major source of circular data
+
+Any data where the The type of data being described here are generally referred to as \textit{circular data}.
+
+\subsection{Circular units}
+
+
+\section{Circular statistics}
+
+The field of circular can further be embedded in the field of directional statistics.
 
 
 \chapter{Bayesian Estimation and Hypothesis Tests for a Circular GLM}
+\chaptermark{Bayesian Circular GLM}
 \label{circglm}
 \input{chapters/circ_glm.tex}
 
 
 \chapter{Bayesian Tests for Circular Uniformity}
+\chaptermark{Bayesian Circular Uniformity Tests}
 \label{hypotest}
 \input{chapters/hypotest.tex}
 
 
 \chapter{Mixtures of Peaked Power Batschelet Distributions for Circular Data  With Application to Saccade Directions}
+\chaptermark{Peaked Circular Mixtures}
 \label{flexcmix}
 \input{chapters/flexcmix.tex}
 %
 %
-\chapter{Bayesian inference for mixtures of von Mises distributions using the reversible jump MCMC sampler}
+\chapter{Bayesian inference for mixtures of von Mises distributions using the Reversible Jump MCMC sampler}
+\chaptermark{Reversible Jump vM-Mixture}
 \label{revrjump}
 \input{chapters/revrjump.tex}
 %
-\chapter{Dealing With Partially Observed Crime Times}
+\chapter{Inference for Interval-Censored Circular Data With Application to Crime Times}
+\chaptermark{Interval-Censored Circular Data}
 \label{dpm_crim}
 \input{chapters/dpm_crim.tex}
-%
+
+
 % \chapter{circbayes: An R package for Bayesian circular statistics}
 % \label{circbays}
 % \input{chapters/circbays.tex}
