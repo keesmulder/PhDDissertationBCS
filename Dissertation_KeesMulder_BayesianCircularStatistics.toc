@@ -1,7 +1,13 @@
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
 \contentsline {section}{\numberline {1.1}Circular data}{2}{section.1.1}
-\contentsline {subsection}{\numberline {1.1.1}Circular units}{3}{subsection.1.1.1}
-\contentsline {section}{\numberline {1.2}Circular statistics}{3}{section.1.2}
+\contentsline {subsection}{\numberline {1.1.1}Units for circular observations}{3}{subsection.1.1.1}
+\contentsline {section}{\numberline {1.2}Applications}{3}{section.1.2}
+\contentsline {section}{\numberline {1.3}Circular statistics}{3}{section.1.3}
+\contentsline {subsection}{\numberline {1.3.1}Literature}{4}{subsection.1.3.1}
+\contentsline {subsection}{\numberline {1.3.2}Approaches}{4}{subsection.1.3.2}
+\contentsline {section}{\numberline {1.4}Bayesian statistics}{4}{section.1.4}
+\contentsline {section}{\numberline {1.5}Aims}{4}{section.1.5}
+\contentsline {section}{\numberline {1.6}Outline}{4}{section.1.6}
 \contentsline {chapter}{\numberline {2}Bayesian Estimation and Hypothesis Tests for a Circular GLM}{5}{chapter.2}
 \contentsline {section}{\numberline {2.1}Bayesian circular GLM}{7}{section.2.1}
 \contentsline {subsection}{\numberline {2.1.1}Likelihood}{9}{subsection.2.1.1}
@@ -104,12 +110,13 @@
 \contentsline {subsection}{\numberline {6.5.3}Montly crime time trends}{117}{subsection.6.5.3}
 \contentsline {section}{\numberline {6.6}Discussion}{118}{section.6.6}
 \contentsline {section}{\numberline {6.7}Acknowledgements}{120}{section.6.7}
-\contentsline {chapter}{\numberline {7}Appendix}{121}{chapter.7}
-\contentsline {chapter}{\numberline {A}Conditional distribution of $\beta _0$}{123}{appendix.A}
-\contentsline {chapter}{\numberline {B}Properties of the Power Batschelet Distribution}{125}{appendix.B}
-\contentsline {chapter}{\numberline {C}Proof of variance overestimation using the aoristic fraction method}{127}{appendix.C}
-\contentsline {section}{\numberline {C.1}Data on the real line}{127}{section.C.1}
-\contentsline {section}{\numberline {C.2}Aoristic data}{129}{section.C.2}
-\contentsline {chapter}{\numberline {D}Von Mises based Dirichlet Process Mixture model}{133}{appendix.D}
-\contentsline {chapter}{\numberline {E}Rejection sampling aoristic data}{135}{appendix.E}
-\contentsline {chapter}{\numberline {F}Prior independent of $\mu _0$}{137}{appendix.F}
+\contentsline {chapter}{\numberline {7}Discussion}{121}{chapter.7}
+\contentsline {chapter}{\numberline {8}Appendix}{123}{chapter.8}
+\contentsline {chapter}{\numberline {A}Conditional distribution of $\beta _0$}{125}{appendix.A}
+\contentsline {chapter}{\numberline {B}Properties of the Power Batschelet Distribution}{127}{appendix.B}
+\contentsline {chapter}{\numberline {C}Proof of variance overestimation using the aoristic fraction method}{129}{appendix.C}
+\contentsline {section}{\numberline {C.1}Data on the real line}{129}{section.C.1}
+\contentsline {section}{\numberline {C.2}Aoristic data}{131}{section.C.2}
+\contentsline {chapter}{\numberline {D}Von Mises based Dirichlet Process Mixture model}{135}{appendix.D}
+\contentsline {chapter}{\numberline {E}Rejection sampling aoristic data}{137}{appendix.E}
+\contentsline {chapter}{\numberline {F}Prior independent of $\mu _0$}{139}{appendix.F}

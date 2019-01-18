@@ -98,38 +98,96 @@
 \chapter{Introduction}
 \label{intro}
 
-In a small caf\'e in the historical city center, three long-time friends meet for dinner. After a some chit-chat, one of the friends, in a philosophical mood, asks: ``\textit{Hey, I wonder what our average birthday is?"}\footnote{This true story was relayed to me by my friend and colleague Erik-Jan van Kesteren.}.
+In a small caf\'e in the historical city center, three long-time friends meet for dinner. After a some chit-chat, one of the friends, in a philosophical mood, asks: ``\textit{Hey, I wonder what our average birthday is?"}
 
-Pondering over this somewhat odd question, the friends first conclude that the question is clearly more reasonable than a nonsensical question such as ``\textit{What is the average between three cows and a goat?}". Then again, a question such as ``\textit{What is the average between 5, 13, and 7?}" is obviously way easier to answer, as the object (or, \textit{data}) to be averaged is simply a real number. As often happens with seemingly hard-to-answer puzzles, it sticks in the mind, and the friends end up discussing the issue for two hours.
+Pondering over this somewhat odd question, the friends first conclude that the question is clearly more reasonable than a nonsensical question such as ``\textit{What is the average animal of three cows and a goat?}". Then again, a question such as ``\textit{What is the average of 5, 13, and 7?}" is obviously much easier to answer, as the object (or, \textit{data}) to be averaged is simply a real number. As often happens with seemingly hard-to-answer puzzles, this one stuck in the mind, and the friends end up discussing the issue for two hours.\footnote{This true story was relayed to me by my friend and colleague Erik-Jan van Kesteren.}.
 
 Thankfully, the friends are all born in the month February, on February 3, 7, and 26 to be precise, and decide to calebrate their triple birthday on their average birthday of February 12th, a simple average of the three days. However, as the three friends rejoice the imminent financial benefits of throwing not three birthday parties but one, more of their friends start arriving.
 
 The first new arrival has their birthday on January 7. Not a problem, conclude the friends. They come up with the scheme of labeling all days in the year consecutively, and averaging these. So, they now average the new 7 with their birthdays, which are now labeled 34, 38, and 57. The new average is 34, which translates back to an average birthday of February 3rd. Content, the friends continue their dinner, although they are left with the sneaking suspicion that they have cheated, somehow.
 
 %
-The real trouble begins when four more friends arrive. Due to a mild statistical anomaly\footnote{The probability of this is described in a famous statistical problem, which also happens to be about birthdays (see \url{https://en.wikipedia.org/wiki/Birthday_problem}).}, they all happen to be born in December, on the 5th, the 6th,  16th, and 21st. Now, the strategy of consecutively labeling all the days in the year not only has become excessively laborous\footnote{Not to mention inevitable issues with leap years, although we will ignore those here.}, it also leads to some odd conclusions. The average of 7, 34, 38, 57, 339, 339, 350, and 355 is 190. This translates to back to the day of July 9, which baffles the group of friends for several reasons.
+The real trouble begins when four more friends arrive. Due to a mild statistical anomaly\footnote{The probability of this is described in a famous statistical problem, which also happens to be about birthdays (see \url{https://en.wikipedia.org/wiki/Birthday_problem}).}, they all happen to be born in December, on the 5th, the 6th,  16th, and 21st. Now, the strategy of consecutively labeling all the days in the year not only has become excessively laborous\footnote{Not to mention inevitable issues with leap years, although we will ignore those here.}, it also leads to some odd conclusions. The average of 7, 34, 38, 57, 339, 339, 350, and 355 is 190. This translates to back to the day of July 9, which baffles the group of friends for two reasons.
 
-First, the average birthday of July 9th is a summer birthday, and is nowhere near the birthday of any of the people in the group, who were all born in winter. Second, if the friends had started counting the days of the year at March 1st, which would have been just as good as January 1st, the resulting average birthday would have been completely different. Clearly, the strategy of consecutive labeling fails to accurately capture what we mean by `average'.
+First, the average birthday of July 9th is a summer birthday, and is nowhere near the birthday of any of the people in the group, who were all born in winter. Second, if the friends had started counting the days of the year at March 1st (which would have been just as good a day to start as the arbitrary January 1st), the resulting average birthday would have been completely different. Clearly, the strategy of consecutive labeling fails to accurately capture what we mean by `average'.
 
-So what happened here? Within the month of February, the days nicely follow each other, and the average seems to makes sense. But when we expand our scope to the full year, a problem arises. When the year progresses to its final day, the day of the year rolls around to the first day of the new year. The day of the year is, in this sense, periodic (or \textit{cyclical}), and it is exactly this periodicity which makes the friend group's attempts at creating a sensible avarage fail.
+So what happened here? Within the month of February, the days nicely follow each other, and the average seems to makes sense. But when we expand our scope to the full year, a problem arises. When the year progresses to its final day, the day of the year rolls around to the first day of the new year. The moment the previous year ends and the moment the new year begins are one and the same, so the beginning and end of the year are tied together. The day of the year is, in this sense, periodic (or \textit{cyclical}), and it is exactly this periodicity which makes the friend group's attempts at creating a sensible avarage fail.
 
 \section{Circular data}
 
-As it turns out, this `average birthday' problem is not as frivolous as it seems at first glance. A birthday is simply an example of an observed day of the year. Throughout statistics, examples can be found where the interest is in statistical modeling and prediction when in a year certain events occur. One example is modeling the distribution of extreme weather events over the year.
+As it turns out, this `average birthday' problem is not as frivolous as it seems at first glance. A birthday is simply an example of an observed day of the year. Throughout statistics, examples can be found where the interest is in statistical modeling and prediction when in a year certain events occur. One example is modeling the distribution of extreme weather events (such as hurricanes) over the year. In contrast, the question of whether extreme weather events have increased in number over the last 30 years is quite different, because it is interested in the linear aspects of time, that is, temporal trends over multiple years. If we wish to truly understand extreme weather events, both parts must be modeled, although the linear temporal aspects have traditionally received more attention.
 
-More generally, temporally periodic data can also consist of hours of the day, days of the week, days of the month, etcetera. In fact, many occurences of events are governed in some way by a periodical process, which must be taken into account when modeling.
+Temporally periodic data can also consist of hours of the day, days of the week, days of the month, and so forth. In fact, many occurences of events are governed in some way by a periodical process, which must be taken into account when modeling if we wish to understand and control this process. For example, the number of patients arriving at a hospital varies more by the hour of the day than along any other dimension.
 
-The clock is not the only instrument to provide us with observations on a periodical scale. Another major source of circular data
+More generally, the clock is not the only instrument to provide us with observations on a periodical scale. Another major source of circular data is the compass, which directly provides us with measurements of directions. For example, one might consider movement directions of animals, or orientations of rock formations. These more directly provide us with data that is periodic. That is, two direction of $1^\circ$ and $359^\circ$ are very close, but this is not immediately apparent from the numerical values.
 
-Any data where the The type of data being described here are generally referred to as \textit{circular data}.
+Any data where the sample space is periodic. The type of data being described here are generally referred to as \textit{circular data}.
 
-\subsection{Circular units}
+\subsection{Units for circular observations}
 
+A circular observation, which we will usually denote by $\theta$, can be represented in a variety of ways. Among the most common are degrees, hours, radians, unit vectors and complex numbers. Degrees ($\theta \in [0^\circ, 360^\circ$) are generally obtained from the compass, while hours are usually measured on a 24-hour clock, so $\theta \in [0, 24)$.
+
+For mathematical and computational purposes, representing circular observations as radians, where $\theta \in [-\pi, \pi),$ is both ubiquitous and generally advantageous, so throughout circular observations will be represented as radians.
+
+In some cases, representing angles as unit vectors is also beneficial. In this representation, we have a bivariate vector $\bx = \{x_1, x_2\}^T = \{\cos\theta, \sin\theta\}^T,$ and the restriction that $\sqrt{x_1^2 + x_2^2} = 1.$
+
+The complex number representation allows us to write an angle as $\cos\theta + i \sin \theta,$ where $i$ is the imaginary unit. This can be useful, particularly because by Euler's formula we have $\cos\theta + i \sin \theta = e^{i\theta}.$
+
+
+\section{Applications}
+
+Interestingly, circular data tend to form a small part of the data collected in almost all scientific fields.
 
 \section{Circular statistics}
 
-The field of circular can further be embedded in the field of directional statistics.
+Techniques for both descriptive and inferential methods for circular data can be found in a branch of statistics called \textit{circular statistics}.
 
+The branch of circular statistics is further embedded in the branch of directional statistics, where spherical data (in three or more dimensions) is considered. Because the circle is a special case of the hypersphere, some methods from directional statistics are also applicable to circular statistics.
+
+\subsection{Literature}
+
+Only a limited number of books have been written on the topic of circular and directional statistics. The seminal technical work is \citet{mardia2009directional}. A more practical handbook is given by \citet{fisher1995statistical}, with a more recent book focusing on R also available in \citet{pewsey2013circular}. Very recently, two more books have been published, one focusing recent statistical developments for directional data \citep{ley2017modern}, another on recent applications of directional statistics \citep{ley2018applied}.
+
+\subsection{Approaches}
+
+Three major approaches to developing statistical models for circular data are well-developed in the literature.
+
+First, the intrinsic approach directly models circular data with a probability density which takes values on the circle.
+
+A common assumption is to require the probability density function to be continuous on the circle.
+
+
+
+
+
+Some alternatives to these three approaches
+
+One could argue
+
+In this work, focus will be almost entirely on the intrinsic approach. More specifically, we will employ the von Mises distribution and distributions derived from the von Mises distribution throughout. Advantages of this model can be identified. First, the von Mises is of simple mathematical form. Second, directly modeling of circular data,
+
+
+
+
+
+
+\section{Bayesian statistics}
+
+
+
+
+\section{Aims}
+
+
+
+\section{Outline}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Bayesian Estimation and Hypothesis Tests for a Circular GLM}
 \chaptermark{Bayesian Circular GLM}
@@ -164,6 +222,8 @@ The field of circular can further be embedded in the field of directional statis
 % \label{circbays}
 % \input{chapters/circbays.tex}
 
+
+\chapter{Discussion}
 
 
 
