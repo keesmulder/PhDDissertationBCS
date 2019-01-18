@@ -67,22 +67,25 @@ In a small caf\'e in the historical city center, three long-time friends meet fo
 
 Pondering over this somewhat odd question, the friends first conclude that the question is clearly more reasonable than a nonsensical question such as ``\textit{What is the average animal of three cows and a goat?}". Then again, a question such as ``\textit{What is the average of 5, 13, and 7?}" is obviously much easier to answer, as the object (or, \textit{data}) to be averaged is simply a real number. As often happens with seemingly hard-to-answer puzzles, this one stuck in the mind, and the friends end up discussing the issue for two hours.\footnote{This true story was relayed to me by my friend and colleague Erik-Jan van Kesteren.}.
 
-Thankfully, the friends are all born in the month February, on February 3, 7, and 26 to be precise, and decide to calebrate their triple birthday on their average birthday of February 12th, a simple average of the three days. However, as the three friends rejoice the imminent financial benefits of throwing not three birthday parties but one, more of their friends start arriving.
-
-The first new arrival has their birthday on January 7. Not a problem, conclude the friends. They come up with the scheme of labeling all days in the year consecutively, and averaging these. So, they now average the new 7 with their birthdays, which are now labeled 34, 38, and 57. The new average is 34, which translates back to an average birthday of February 3rd. Content, the friends continue their dinner, although they are left with the sneaking suspicion that they have cheated, somehow.
-
-
 
 \begin{figure}
-<<birthday_example, echo = FALSE>>=
-dates1 <- data_frame(x = ymd(c("2019-02-03", "2019-02-07", "2019-02-26")), y = 0)
-dates2 <- data_frame(x = c(ymd("2019-01-07"), dates1$x), y = 0)
-dates3 <- data_frame(x = c(ymd(c("2019-12-05", "2019-12-06", "2019-12-16", "2019-12-26")), dates2$x), y = 0)
+<<birthday_example, fig.height = 3, fig.width = 8, echo = FALSE>>=
+dates3 <- data_frame(x = c(ymd(c("2019-02-03", "2019-02-07", "2019-02-26",
+                                 "2019-01-07", "2019-12-05", "2019-12-06",
+                                 "2019-12-16", "2019-12-26"))),
+                     y = 0)
 # brks <- seq(ymd(c("2019-01-01")), ymd(c("2020-01-01")), length.out = 13)
+
+
+dates1 <- dates3[1:3, ]
+dates2 <- dates3[1:4, ]
+
 brks <- ymd(c(paste0("2019-", 1:12, "-01"), "2020-01-01"))
 
+
+
 ymin <- -.05
-ymax <- .2
+ymax <- .3
 
 p <- ggplot() +
   scale_y_continuous(expand = c(0, 0), limits = c(ymin, ymax)) +
@@ -100,43 +103,53 @@ p <- ggplot() +
 
 hjust <- 1
 vjust <- .5
-angle <- 90
-ylinemax <- 0
+angle <- 0
+ylinemax <- 0.12
 direction <- "both"
-p1 <- p + geom_text_repel(data = dates1, direction = direction,
-                          mapping = aes(x, y, label = format(x, "%b %d")),
-                          hjust = hjust, vjust = vjust, angle = angle) +
+p1 <- p +
+  # geom_text_repel(data = dates1, direction = direction,
+  #                         mapping = aes(x, y, label = format(x, "%b %d")),
+  #                         hjust = hjust, vjust = vjust, angle = angle) +
   geom_point(data = dates1, mapping = aes(x, y)) +
   geom_line(data = data_frame(x = ymd("2019-02-12"), y = c(ymin, ylinemax)),
             mapping = aes(x, y), col = "tomato") +
   geom_point(data = data_frame(x = ymd("2019-02-12"), y = c(ymin+.01)),
             mapping = aes(x, y), col = "tomato")
 
-p2 <- p + geom_text_repel(data = dates2, direction = direction,
-                          mapping = aes(x, y, label = format(x, "%b %d")),
-                          hjust = hjust, vjust = vjust, angle = angle) +
+p2 <- p +
+  # geom_text_repel(data = dates2, direction = direction,
+  #                         mapping = aes(x, y, label = format(x, "%b %d")),
+  #                         hjust = hjust, vjust = vjust, angle = angle) +
   geom_point(data = dates2, mapping = aes(x, y)) +
   geom_line(data = data_frame(x = ymd("2019-02-03"), y = c(ymin, ylinemax)),
             mapping = aes(x, y), col = "tomato") +
   geom_point(data = data_frame(x = ymd("2019-02-03"), y = c(ymin+.01)),
             mapping = aes(x, y), col = "tomato")
 
-p3 <- p + geom_text_repel(data = dates3, direction = direction,
-                          mapping = aes(x, y, label = format(x, "%b %d")),
-                          hjust = hjust, vjust = vjust, angle = angle) +
+p3 <- p +
+  # geom_text_repel(data = dates3, direction = direction,
+  #                         mapping = aes(x, y, label = format(x, "%b %d")),
+  #                         hjust = hjust, vjust = vjust, angle = angle) +
   geom_point(data = dates3, mapping = aes(x, y)) +
   xlab("Birthday") +
   geom_line(data = data_frame(x = ymd("2019-01-01") + 190, y = c(ymin, ylinemax)),
             mapping = aes(x, y), col = "tomato") +
-  geom_point(data = data_frame(x = ymd("2019-01-01") + 190, y = c(ymin+.01)),
+  geom_point(data = data_frame(x = ymd("2019-01-01") + 190, y = c(ymin + .01)),
             mapping = aes(x, y), col = "tomato")
 
 
 grid.arrange(p1, p2, p3, ncol = 1)
 @
-\caption{Average birthday  progression (from top to bottom) for our group of friends, as friends keep arriving.}
+\caption{Average birthday  progression (in red) from top to bottom) for our group of friends, as friends keep arriving.}
 \label{birthday_example}
 \end{figure}
+
+
+Thankfully, the friends are all born in the month February, on February 3, 7, and 26 to be precise, and decide to calebrate their triple birthday on their average birthday of February 12th, a simple average of the three days. However, as the three friends rejoice the imminent financial benefits of throwing not three birthday parties but one, more of their friends start arriving.
+
+The first new arrival has their birthday on January 7. Not a problem, conclude the friends. They come up with the scheme of labeling all days in the year consecutively, and averaging these. So, they now average the new 7 with their birthdays, which are now labeled 34, 38, and 57. The new average is 34, which translates back to an average birthday of February 3rd. Content, the friends continue their dinner, although they are left with the sneaking suspicion that they have cheated, somehow.
+
+
 
 
 The real trouble begins when four more friends arrive. Due to a mild statistical anomaly\footnote{The probability of this is described in a famous statistical problem, which also happens to be about birthdays (see \url{https://en.wikipedia.org/wiki/Birthday_problem}).}, they all happen to be born in December, on the 5th, the 6th,  16th, and 21st. Now, the strategy of consecutively labeling all the days in the year not only has become excessively laborous\footnote{Not to mention inevitable issues with leap years, although we will ignore those here.}, it also leads to some odd conclusions. The average of 7, 34, 38, 57, 339, 339, 350, and 355 is 190. This translates to back to the day of July 9, which baffles the group of friends for two reasons.
@@ -146,11 +159,19 @@ First, the average birthday of July 9th is a summer birthday, and is nowhere nea
 
 
 \begin{figure}
-<<birthday_example, echo = FALSE>>=
-p + geom_point(data = dates3, mapping = aes(x, y)) + coord_polar()
+<<birthday_example_circle, echo = FALSE>>=
+rads <- as.numeric(dates3$x - ymd("2019-01-01")) * 2 * pi / 365
+ggplot() + geom_point(data = data.frame(x = rads, y = .05), mapping = aes(x, y)) +
+  theme_void() +
+  circbayes:::gg_circular_elems(r = 1) +
+  circbayes:::gg_inside_labels("months_abb", nticks = 12, labdist = .17) +
+  geom_line(data = data_frame(x = atan2(sum(sin(rads)), sum(cos(rads))), y = c(-.02, 0.12)),
+            mapping = aes(x, y), col = "tomato") +
+  geom_point(data = data_frame(x = atan2(sum(sin(rads)), sum(cos(rads))), y = c(.01)),
+            mapping = aes(x, y), col = "tomato")
 
 @
-\caption{Average birthday progression (from top to bottom) for our group of friends, as friends keep arriving.}
+\caption{On the circle, the average birthday (red line) is easier to spot.}
 \label{birthday_example}
 \end{figure}
 
