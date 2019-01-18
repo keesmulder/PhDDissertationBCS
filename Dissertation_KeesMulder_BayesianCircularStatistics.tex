@@ -58,8 +58,6 @@
 	urlcolor=blue
 }
 
-
-
 \usepackage{titling}
 \newcommand{\subtitle}[1]{%
   \posttitle{%
@@ -68,12 +66,10 @@
     \vskip0.5em}%
 }
 
-
-
-
-
 % Manual additions to automatic newcommands.
 \DeclareMathOperator{\atantwo}{atan2}
+
+
 
 
 
@@ -81,10 +77,49 @@
 \subtitle{von Mises-based solutions for practical problems}
 
 \author{Kees Mulder}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(ggplot2)}
+\hlkwd{library}\hlstd{(tidyverse)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# -- Attaching packages ----- tidyverse 1.2.1 --}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# v tibble\ \ 1.4.2\ \ \ \  v purrr\ \  0.2.5\\\#\# v tidyr\ \  0.8.2\ \ \ \  v dplyr\ \  0.7.8\\\#\# v readr\ \  1.3.1\ \ \ \  v stringr 1.3.1\\\#\# v tibble\ \ 1.4.2\ \ \ \  v forcats 0.3.0}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# -- Conflicts -------- tidyverse\_conflicts() --\\\#\# x dplyr::filter() masks stats::filter()\\\#\# x dplyr::lag()\ \ \ \ masks stats::lag()}}\begin{alltt}
+\hlkwd{library}\hlstd{(lubridate)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# Attaching package: 'lubridate'}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# The following object is masked from 'package:base':\\\#\# \\\#\#\ \ \ \  date}}\begin{alltt}
+\hlkwd{library}\hlstd{(gridExtra)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# Attaching package: 'gridExtra'}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# The following object is masked from 'package:dplyr':\\\#\# \\\#\#\ \ \ \  combine}}\begin{alltt}
+\hlkwd{library}\hlstd{(ggrepel)}
+
+
+\hlstd{knitr}\hlopt{::}\hlstd{opts_chunk}\hlopt{$}\hlkwd{set}\hlstd{(}\hlkwc{eval} \hlstd{=} \hlnum{TRUE}\hlstd{,}
+                      \hlkwc{cache} \hlstd{=} \hlnum{TRUE}\hlstd{,}
+                      \hlkwc{fig.width} \hlstd{=} \hlnum{8}\hlstd{,} \hlkwc{fig.height} \hlstd{=} \hlnum{4}\hlstd{,}
+                      \hlcom{# fig.retina = TRUE,}
+                      \hlkwc{dev} \hlstd{=} \hlstr{'tikz'}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
-
-
 
 \frontmatter
 
@@ -106,7 +141,19 @@ Thankfully, the friends are all born in the month February, on February 3, 7, an
 
 The first new arrival has their birthday on January 7. Not a problem, conclude the friends. They come up with the scheme of labeling all days in the year consecutively, and averaging these. So, they now average the new 7 with their birthdays, which are now labeled 34, 38, and 57. The new average is 34, which translates back to an average birthday of February 3rd. Content, the friends continue their dinner, although they are left with the sneaking suspicion that they have cheated, somehow.
 
-%
+
+
+\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/birthday_example-1} 
+
+\end{knitrout}
+\caption{Average birthday progression (from top to bottom) for our group of friends, as friends keep arriving.}
+\label{birthday_example}
+\end{figure}
+
+
 The real trouble begins when four more friends arrive. Due to a mild statistical anomaly\footnote{The probability of this is described in a famous statistical problem, which also happens to be about birthdays (see \url{https://en.wikipedia.org/wiki/Birthday_problem}).}, they all happen to be born in December, on the 5th, the 6th,  16th, and 21st. Now, the strategy of consecutively labeling all the days in the year not only has become excessively laborous\footnote{Not to mention inevitable issues with leap years, although we will ignore those here.}, it also leads to some odd conclusions. The average of 7, 34, 38, 57, 339, 339, 350, and 355 is 190. This translates to back to the day of July 9, which baffles the group of friends for two reasons.
 
 First, the average birthday of July 9th is a summer birthday, and is nowhere near the birthday of any of the people in the group, who were all born in winter. Second, if the friends had started counting the days of the year at March 1st (which would have been just as good a day to start as the arbitrary January 1st), the resulting average birthday would have been completely different. Clearly, the strategy of consecutive labeling fails to accurately capture what we mean by `average'.
@@ -123,20 +170,22 @@ More generally, the clock is not the only instrument to provide us with observat
 
 Any data where the sample space is periodic. The type of data being described here are generally referred to as \textit{circular data}.
 
-\subsection{Units for circular observations}
+\subsection{Applications}
 
-A circular observation, which we will usually denote by $\theta$, can be represented in a variety of ways. Among the most common are degrees, hours, radians, unit vectors and complex numbers. Degrees ($\theta \in [0^\circ, 360^\circ$) are generally obtained from the compass, while hours are usually measured on a 24-hour clock, so $\theta \in [0, 24)$.
+Interestingly, circular data tend to form a small part of the data collected in almost all scientific fields.
+
+\subsection{Units}
+
+A circular observation, which we will usually denote by $\theta$, can be represented in a variety of ways. Among the most common are degrees, hours, radians, unit vectors and complex numbers. Degrees ($\theta \in [0^\circ, 360^\circ)$) are generally obtained from the compass, while hours are usually measured on a 24-hour clock, so $\theta \in [0:00, 24:00)$.
 
 For mathematical and computational purposes, representing circular observations as radians, where $\theta \in [-\pi, \pi),$ is both ubiquitous and generally advantageous, so throughout circular observations will be represented as radians.
 
-In some cases, representing angles as unit vectors is also beneficial. In this representation, we have a bivariate vector $\bx = \{x_1, x_2\}^T = \{\cos\theta, \sin\theta\}^T,$ and the restriction that $\sqrt{x_1^2 + x_2^2} = 1.$
+In some cases, thinking of angles as unit vectors is also beneficial. In this representation, we have a bivariate vector $\bx = \{x_1, x_2\}^T = \{\cos\theta, \sin\theta\}^T,$ and the restriction that $\sqrt{x_1^2 + x_2^2} = 1.$
 
-The complex number representation allows us to write an angle as $\cos\theta + i \sin \theta,$ where $i$ is the imaginary unit. This can be useful, particularly because by Euler's formula we have $\cos\theta + i \sin \theta = e^{i\theta}.$
+An angle can be represented as a complex number as $\cos\theta + i \sin \theta,$ where $i$ is the imaginary unit. This can be useful, particularly because by Euler's formula we have $\cos\theta + i \sin \theta = e^{i\theta},$ which provides a natural mapping between bivariate and univariate representation of angles.
 
 
-\section{Applications}
 
-Interestingly, circular data tend to form a small part of the data collected in almost all scientific fields.
 
 \section{Circular statistics}
 
@@ -146,7 +195,7 @@ The branch of circular statistics is further embedded in the branch of direction
 
 \subsection{Literature}
 
-Only a limited number of books have been written on the topic of circular and directional statistics. The seminal technical work is \citet{mardia2009directional}. A more practical handbook is given by \citet{fisher1995statistical}, with a more recent book focusing on R also available in \citet{pewsey2013circular}. Very recently, two more books have been published, one focusing recent statistical developments for directional data \citep{ley2017modern}, another on recent applications of directional statistics \citep{ley2018applied}.
+Only a limited number of books have been written on the topic of circular and directional statistics. The seminal technical work is \citet{mardia2009directional}. A more practical handbook is given by \citet{fisher1995statistical}, with a more recent book focusing on running circular data models in R is also available in \citet{pewsey2013circular}. Very recently, two more books have been published, one focusing recent statistical developments for directional data \citep{ley2017modern}, another on recent applications of directional statistics \citep{ley2018applied}. Other books exist with a more specialized focus, such as \citet{batschelet1981circular} and \citet{jammalamadaka2001topics}.
 
 \subsection{Approaches}
 

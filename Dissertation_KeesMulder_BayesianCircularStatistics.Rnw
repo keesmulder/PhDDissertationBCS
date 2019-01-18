@@ -8,8 +8,6 @@
 	urlcolor=blue
 }
 
-
-
 \usepackage{titling}
 \newcommand{\subtitle}[1]{%
   \posttitle{%
@@ -18,12 +16,10 @@
     \vskip0.5em}%
 }
 
-
-
-
-
 % Manual additions to automatic newcommands.
 \DeclareMathOperator{\atantwo}{atan2}
+
+
 
 
 
@@ -33,14 +29,27 @@
 \author{Kees Mulder}
 
 
+<<init>>=
+library(ggplot2)
+library(tidyverse)
+library(lubridate)
+library(gridExtra)
+library(ggrepel)
+
+
+knitr::opts_chunk$set(eval = TRUE,
+                      cache = TRUE,
+                      fig.width = 8, fig.height = 4,
+                      # fig.retina = TRUE,
+                      dev = 'tikz')
+
+@
 
 
 
 
 
 \begin{document}
-
-
 
 \frontmatter
 
@@ -62,10 +71,90 @@ Thankfully, the friends are all born in the month February, on February 3, 7, an
 
 The first new arrival has their birthday on January 7. Not a problem, conclude the friends. They come up with the scheme of labeling all days in the year consecutively, and averaging these. So, they now average the new 7 with their birthdays, which are now labeled 34, 38, and 57. The new average is 34, which translates back to an average birthday of February 3rd. Content, the friends continue their dinner, although they are left with the sneaking suspicion that they have cheated, somehow.
 
-%
+
+
+\begin{figure}
+<<birthday_example, echo = FALSE>>=
+dates1 <- data_frame(x = ymd(c("2019-02-03", "2019-02-07", "2019-02-26")), y = 0)
+dates2 <- data_frame(x = c(ymd("2019-01-07"), dates1$x), y = 0)
+dates3 <- data_frame(x = c(ymd(c("2019-12-05", "2019-12-06", "2019-12-16", "2019-12-26")), dates2$x), y = 0)
+# brks <- seq(ymd(c("2019-01-01")), ymd(c("2020-01-01")), length.out = 13)
+brks <- ymd(c(paste0("2019-", 1:12, "-01"), "2020-01-01"))
+
+ymin <- -.05
+ymax <- .2
+
+p <- ggplot() +
+  scale_y_continuous(expand = c(0, 0), limits = c(ymin, ymax)) +
+  scale_x_date(labels = scales::date_format("%b"),
+               breaks = brks,
+               limits = ymd(c("2019-01-01","2019-12-31"))) +
+  xlab("") +
+  theme_classic() +
+    theme(axis.line.y.left = element_line(colour = "white"),
+          axis.ticks.y = element_blank(),
+          axis.title.y = element_blank(),
+          axis.text.y =  element_blank())
+
+
+
+hjust <- 1
+vjust <- .5
+angle <- 90
+ylinemax <- 0
+direction <- "both"
+p1 <- p + geom_text_repel(data = dates1, direction = direction,
+                          mapping = aes(x, y, label = format(x, "%b %d")),
+                          hjust = hjust, vjust = vjust, angle = angle) +
+  geom_point(data = dates1, mapping = aes(x, y)) +
+  geom_line(data = data_frame(x = ymd("2019-02-12"), y = c(ymin, ylinemax)),
+            mapping = aes(x, y), col = "tomato") +
+  geom_point(data = data_frame(x = ymd("2019-02-12"), y = c(ymin+.01)),
+            mapping = aes(x, y), col = "tomato")
+
+p2 <- p + geom_text_repel(data = dates2, direction = direction,
+                          mapping = aes(x, y, label = format(x, "%b %d")),
+                          hjust = hjust, vjust = vjust, angle = angle) +
+  geom_point(data = dates2, mapping = aes(x, y)) +
+  geom_line(data = data_frame(x = ymd("2019-02-03"), y = c(ymin, ylinemax)),
+            mapping = aes(x, y), col = "tomato") +
+  geom_point(data = data_frame(x = ymd("2019-02-03"), y = c(ymin+.01)),
+            mapping = aes(x, y), col = "tomato")
+
+p3 <- p + geom_text_repel(data = dates3, direction = direction,
+                          mapping = aes(x, y, label = format(x, "%b %d")),
+                          hjust = hjust, vjust = vjust, angle = angle) +
+  geom_point(data = dates3, mapping = aes(x, y)) +
+  xlab("Birthday") +
+  geom_line(data = data_frame(x = ymd("2019-01-01") + 190, y = c(ymin, ylinemax)),
+            mapping = aes(x, y), col = "tomato") +
+  geom_point(data = data_frame(x = ymd("2019-01-01") + 190, y = c(ymin+.01)),
+            mapping = aes(x, y), col = "tomato")
+
+
+grid.arrange(p1, p2, p3, ncol = 1)
+@
+\caption{Average birthday  progression (from top to bottom) for our group of friends, as friends keep arriving.}
+\label{birthday_example}
+\end{figure}
+
+
 The real trouble begins when four more friends arrive. Due to a mild statistical anomaly\footnote{The probability of this is described in a famous statistical problem, which also happens to be about birthdays (see \url{https://en.wikipedia.org/wiki/Birthday_problem}).}, they all happen to be born in December, on the 5th, the 6th,  16th, and 21st. Now, the strategy of consecutively labeling all the days in the year not only has become excessively laborous\footnote{Not to mention inevitable issues with leap years, although we will ignore those here.}, it also leads to some odd conclusions. The average of 7, 34, 38, 57, 339, 339, 350, and 355 is 190. This translates to back to the day of July 9, which baffles the group of friends for two reasons.
 
 First, the average birthday of July 9th is a summer birthday, and is nowhere near the birthday of any of the people in the group, who were all born in winter. Second, if the friends had started counting the days of the year at March 1st (which would have been just as good a day to start as the arbitrary January 1st), the resulting average birthday would have been completely different. Clearly, the strategy of consecutive labeling fails to accurately capture what we mean by `average'.
+
+
+
+\begin{figure}
+<<birthday_example, echo = FALSE>>=
+p + geom_point(data = dates3, mapping = aes(x, y)) + coord_polar()
+
+@
+\caption{Average birthday progression (from top to bottom) for our group of friends, as friends keep arriving.}
+\label{birthday_example}
+\end{figure}
+
+
 
 So what happened here? Within the month of February, the days nicely follow each other, and the average seems to makes sense. But when we expand our scope to the full year, a problem arises. When the year progresses to its final day, the day of the year rolls around to the first day of the new year. The moment the previous year ends and the moment the new year begins are one and the same, so the beginning and end of the year are tied together. The day of the year is, in this sense, periodic (or \textit{cyclical}), and it is exactly this periodicity which makes the friend group's attempts at creating a sensible avarage fail.
 
@@ -79,6 +168,10 @@ More generally, the clock is not the only instrument to provide us with observat
 
 Any data where the sample space is periodic. The type of data being described here are generally referred to as \textit{circular data}.
 
+\subsection{Applications}
+
+Interestingly, circular data tend to form a small part of the data collected in almost all scientific fields.
+
 \subsection{Units}
 
 A circular observation, which we will usually denote by $\theta$, can be represented in a variety of ways. Among the most common are degrees, hours, radians, unit vectors and complex numbers. Degrees ($\theta \in [0^\circ, 360^\circ)$) are generally obtained from the compass, while hours are usually measured on a 24-hour clock, so $\theta \in [0:00, 24:00)$.
@@ -90,9 +183,7 @@ In some cases, thinking of angles as unit vectors is also beneficial. In this re
 An angle can be represented as a complex number as $\cos\theta + i \sin \theta,$ where $i$ is the imaginary unit. This can be useful, particularly because by Euler's formula we have $\cos\theta + i \sin \theta = e^{i\theta},$ which provides a natural mapping between bivariate and univariate representation of angles.
 
 
-\section{Applications}
 
-Interestingly, circular data tend to form a small part of the data collected in almost all scientific fields.
 
 \section{Circular statistics}
 
@@ -102,7 +193,7 @@ The branch of circular statistics is further embedded in the branch of direction
 
 \subsection{Literature}
 
-Only a limited number of books have been written on the topic of circular and directional statistics. The seminal technical work is \citet{mardia2009directional}. A more practical handbook is given by \citet{fisher1995statistical}, with a more recent book focusing on R also available in \citet{pewsey2013circular}. Very recently, two more books have been published, one focusing recent statistical developments for directional data \citep{ley2017modern}, another on recent applications of directional statistics \citep{ley2018applied}.
+Only a limited number of books have been written on the topic of circular and directional statistics. The seminal technical work is \citet{mardia2009directional}. A more practical handbook is given by \citet{fisher1995statistical}, with a more recent book focusing on running circular data models in R is also available in \citet{pewsey2013circular}. Very recently, two more books have been published, one focusing recent statistical developments for directional data \citep{ley2017modern}, another on recent applications of directional statistics \citep{ley2018applied}. Other books exist with a more specialized focus, such as \citet{batschelet1981circular} and \citet{jammalamadaka2001topics}.
 
 \subsection{Approaches}
 
