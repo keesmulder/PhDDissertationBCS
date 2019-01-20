@@ -1,122 +1,123 @@
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
 \contentsline {section}{\numberline {1.1}Circular data}{3}{section.1.1}
 \contentsline {subsection}{\numberline {1.1.1}Applications}{4}{subsection.1.1.1}
-\contentsline {subsection}{\numberline {1.1.2}Units}{4}{subsection.1.1.2}
-\contentsline {section}{\numberline {1.2}Circular statistics}{4}{section.1.2}
-\contentsline {subsection}{\numberline {1.2.1}Literature}{5}{subsection.1.2.1}
-\contentsline {subsection}{\numberline {1.2.2}Approaches}{5}{subsection.1.2.2}
-\contentsline {section}{\numberline {1.3}Bayesian statistics}{5}{section.1.3}
-\contentsline {section}{\numberline {1.4}Aims}{5}{section.1.4}
-\contentsline {section}{\numberline {1.5}Outline}{5}{section.1.5}
-\contentsline {chapter}{\numberline {2}Bayesian Estimation and Hypothesis Tests for a Circular GLM}{7}{chapter.2}
-\contentsline {section}{\numberline {2.1}Bayesian circular GLM}{9}{section.2.1}
-\contentsline {subsection}{\numberline {2.1.1}Likelihood}{11}{subsection.2.1.1}
-\contentsline {subsection}{\numberline {2.1.2}Priors}{12}{subsection.2.1.2}
-\contentsline {subsubsection}{$p(\delta _j)$}{12}{section*.5}
-\contentsline {subsubsection}{$p(\beta )$}{12}{section*.6}
-\contentsline {subsubsection}{$p(\beta _0, \kappa )$}{13}{section*.8}
-\contentsline {section}{\numberline {2.2}MCMC sampling}{14}{section.2.2}
-\contentsline {subsection}{\numberline {2.2.1}Sampling $\beta _0$}{14}{subsection.2.2.1}
-\contentsline {subsection}{\numberline {2.2.2}Sampling $\kappa $}{14}{subsection.2.2.2}
-\contentsline {subsection}{\numberline {2.2.3}Sampling $\boldsymbol {\beta }$}{16}{subsection.2.2.3}
-\contentsline {subsection}{\numberline {2.2.4}Sampling $\boldsymbol {\delta }$}{16}{subsection.2.2.4}
-\contentsline {section}{\numberline {2.3}Hypothesis tests}{16}{section.2.3}
-\contentsline {subsection}{\numberline {2.3.1}Equality constrained hypotheses}{17}{subsection.2.3.1}
-\contentsline {subsection}{\numberline {2.3.2}Inequality constrained hypotheses}{18}{subsection.2.3.2}
-\contentsline {section}{\numberline {2.4}Simulation study}{19}{section.2.4}
-\contentsline {subsection}{\numberline {2.4.1}Simple regression}{20}{subsection.2.4.1}
-\contentsline {subsection}{\numberline {2.4.2}Factorial ANOVA}{21}{subsection.2.4.2}
-\contentsline {subsection}{\numberline {2.4.3}ANCOVA with four covariates}{22}{subsection.2.4.3}
-\contentsline {subsection}{\numberline {2.4.4}Bayes factors and posterior model probabilities}{23}{subsection.2.4.4}
-\contentsline {section}{\numberline {2.5}Example}{23}{section.2.5}
-\contentsline {subsection}{\numberline {2.5.1}ANOVA model}{25}{subsection.2.5.1}
-\contentsline {subsection}{\numberline {2.5.2}ANCOVA model}{27}{subsection.2.5.2}
-\contentsline {subsection}{\numberline {2.5.3}Inequality constrained hypothesis}{28}{subsection.2.5.3}
-\contentsline {section}{\numberline {2.6}Discussion}{29}{section.2.6}
-\contentsline {section}{\numberline {2.7}Acknowledgements}{30}{section.2.7}
-\contentsline {chapter}{\numberline {3}Bayesian Tests for Circular Uniformity}{33}{chapter.3}
-\contentsline {section}{\numberline {3.1}Frequentist tests of circular uniformity}{34}{section.3.1}
-\contentsline {section}{\numberline {3.2}A Bayesian test for circular uniformity with a von Mises alternative}{35}{section.3.2}
-\contentsline {subsection}{\numberline {3.2.1}Choosing priors}{36}{subsection.3.2.1}
-\contentsline {subsection}{\numberline {3.2.2}Priors based on the conjugate prior}{37}{subsection.3.2.2}
-\contentsline {subsection}{\numberline {3.2.3}Jeffreys prior}{39}{subsection.3.2.3}
-\contentsline {subsection}{\numberline {3.2.4}Simulation}{40}{subsection.3.2.4}
-\contentsline {section}{\numberline {3.3}A Bayesian test for circular uniformity against a Kernel Density alternative}{42}{section.3.3}
-\contentsline {subsection}{\numberline {3.3.1}Simulation}{43}{subsection.3.3.1}
-\contentsline {section}{\numberline {3.4}Examples}{44}{section.3.4}
-\contentsline {subsection}{\numberline {3.4.1}Homing pigeon example 1}{45}{subsection.3.4.1}
-\contentsline {subsection}{\numberline {3.4.2}Homing pigeon example 2}{46}{subsection.3.4.2}
-\contentsline {section}{\numberline {3.5}Discussion}{47}{section.3.5}
-\contentsline {section}{\numberline {3.6}Acknowledgements}{49}{section.3.6}
-\contentsline {chapter}{\numberline {4}Mixtures of Peaked Power Batschelet Distributions for Circular Data With Application to Saccade Directions}{51}{chapter.4}
-\contentsline {section}{\numberline {4.1}Family of Batschelet Distributions}{54}{section.4.1}
-\contentsline {subsection}{\numberline {4.1.1}Inverse Batschelet distribution}{54}{subsection.4.1.1}
-\contentsline {subsection}{\numberline {4.1.2}Power Batschelet distribution}{57}{subsection.4.1.2}
-\contentsline {subsection}{\numberline {4.1.3}Measures of circular dispersion}{59}{subsection.4.1.3}
-\contentsline {section}{\numberline {4.2}Inference for Batschelet mixtures}{60}{section.4.2}
-\contentsline {subsection}{\numberline {4.2.1}EM Algorithm}{60}{subsection.4.2.1}
-\contentsline {subsection}{\numberline {4.2.2}Bayesian inference}{62}{subsection.4.2.2}
-\contentsline {subsubsection}{Priors}{62}{section*.27}
-\contentsline {subsubsection}{MCMC algorithm}{63}{section*.28}
-\contentsline {subsection}{\numberline {4.2.3}Model identifiability}{64}{subsection.4.2.3}
-\contentsline {subsection}{\numberline {4.2.4}Model selection and hypothesis testing}{65}{subsection.4.2.4}
-\contentsline {section}{\numberline {4.3}Illustration}{67}{section.4.3}
-\contentsline {subsection}{\numberline {4.3.1}Synthetic data}{67}{subsection.4.3.1}
-\contentsline {subsection}{\numberline {4.3.2}Free-viewing data}{69}{subsection.4.3.2}
-\contentsline {subsubsection}{Adults}{69}{section*.32}
-\contentsline {subsubsection}{Infants}{71}{section*.33}
-\contentsline {subsubsection}{Horizontal Bias comparison}{71}{section*.34}
-\contentsline {subsubsection}{Hypothesis testing}{71}{section*.35}
-\contentsline {section}{\numberline {4.4}Discussion}{72}{section.4.4}
-\contentsline {section}{\numberline {4.5}Acknowledgements}{74}{section.4.5}
-\contentsline {chapter}{\numberline {5}Bayesian inference for mixtures of von Mises distributions using the Reversible Jump MCMC sampler}{75}{chapter.5}
-\contentsline {section}{\numberline {5.1}Von Mises Mixture Model}{78}{section.5.1}
-\contentsline {subsection}{\numberline {5.1.1}Von Mises mixture density}{78}{subsection.5.1.1}
-\contentsline {subsection}{\numberline {5.1.2}Likelihood}{79}{subsection.5.1.2}
-\contentsline {subsection}{\numberline {5.1.3}Prior distributions}{79}{subsection.5.1.3}
-\contentsline {section}{\numberline {5.2}Reversible jump MCMC for von Mises Mixtures}{80}{section.5.2}
-\contentsline {subsection}{\numberline {5.2.1}Updating the weights $w$}{81}{subsection.5.2.1}
-\contentsline {subsection}{\numberline {5.2.2}Updating component parameters $\mu $ and $\kappa $}{81}{subsection.5.2.2}
-\contentsline {subsection}{\numberline {5.2.3}Updating the allocation $z$}{82}{subsection.5.2.3}
-\contentsline {subsection}{\numberline {5.2.4}Dimensionality changing moves}{82}{subsection.5.2.4}
-\contentsline {subsubsection}{Split or combine move}{83}{section*.38}
-\contentsline {subsubsection}{Birth or death move}{86}{section*.40}
-\contentsline {subsection}{\numberline {5.2.5}Label switching}{87}{subsection.5.2.5}
-\contentsline {section}{\numberline {5.3}Simulation study}{87}{section.5.3}
-\contentsline {subsection}{\numberline {5.3.1}Simulation scenarios}{87}{subsection.5.3.1}
-\contentsline {subsection}{\numberline {5.3.2}Starting values}{88}{subsection.5.3.2}
-\contentsline {subsection}{\numberline {5.3.3}Convergence}{88}{subsection.5.3.3}
-\contentsline {subsection}{\numberline {5.3.4}Results}{88}{subsection.5.3.4}
-\contentsline {subsubsection}{Number of components $g$}{89}{section*.43}
-\contentsline {subsubsection}{Parameter estimates}{89}{section*.44}
-\contentsline {section}{\numberline {5.4}Illustration}{90}{section.5.4}
-\contentsline {subsection}{\numberline {5.4.1}Dataset}{90}{subsection.5.4.1}
-\contentsline {subsection}{\numberline {5.4.2}Results}{91}{subsection.5.4.2}
-\contentsline {section}{\numberline {5.5}Discussion}{92}{section.5.5}
-\contentsline {chapter}{\numberline {6}Inference for Interval-Censored Circular Data With Application to Crime Times}{101}{chapter.6}
-\contentsline {section}{\numberline {6.1}Aoristic data}{103}{section.6.1}
-\contentsline {section}{\numberline {6.2}Aoristic Fraction method}{106}{section.6.2}
-\contentsline {section}{\numberline {6.3}Statistical models for aoristic data}{109}{section.6.3}
-\contentsline {subsection}{\numberline {6.3.1}Circular data models}{109}{subsection.6.3.1}
-\contentsline {subsection}{\numberline {6.3.2}Aoristic Likelihood}{110}{subsection.6.3.2}
-\contentsline {subsection}{\numberline {6.3.3}Data augmentation}{112}{subsection.6.3.3}
-\contentsline {section}{\numberline {6.4}Nonparametric models}{113}{section.6.4}
-\contentsline {subsection}{\numberline {6.4.1}Dirichlet Process Mixture models}{114}{subsection.6.4.1}
-\contentsline {subsubsection}{Augmented sampler}{115}{section*.54}
-\contentsline {subsubsection}{Marginal sampler}{116}{section*.55}
-\contentsline {section}{\numberline {6.5}Applications}{116}{section.6.5}
-\contentsline {subsection}{\numberline {6.5.1}Ashby \& Bowers data}{116}{subsection.6.5.1}
-\contentsline {subsection}{\numberline {6.5.2}Montgomery Crime data}{118}{subsection.6.5.2}
-\contentsline {subsection}{\numberline {6.5.3}Montly crime time trends}{119}{subsection.6.5.3}
-\contentsline {section}{\numberline {6.6}Discussion}{120}{section.6.6}
-\contentsline {section}{\numberline {6.7}Acknowledgements}{122}{section.6.7}
-\contentsline {chapter}{\numberline {7}Discussion}{123}{chapter.7}
-\contentsline {chapter}{\numberline {8}Appendix}{125}{chapter.8}
-\contentsline {chapter}{\numberline {A}Conditional distribution of $\beta _0$}{127}{appendix.A}
-\contentsline {chapter}{\numberline {B}Properties of the Power Batschelet Distribution}{129}{appendix.B}
-\contentsline {chapter}{\numberline {C}Proof of variance overestimation using the aoristic fraction method}{131}{appendix.C}
-\contentsline {section}{\numberline {C.1}Data on the real line}{131}{section.C.1}
-\contentsline {section}{\numberline {C.2}Aoristic data}{133}{section.C.2}
-\contentsline {chapter}{\numberline {D}Von Mises based Dirichlet Process Mixture model}{137}{appendix.D}
-\contentsline {chapter}{\numberline {E}Rejection sampling aoristic data}{139}{appendix.E}
-\contentsline {chapter}{\numberline {F}Prior independent of $\mu _0$}{141}{appendix.F}
+\contentsline {subsection}{\numberline {1.1.2}Units}{5}{subsection.1.1.2}
+\contentsline {section}{\numberline {1.2}Circular statistics}{5}{section.1.2}
+\contentsline {subsection}{\numberline {1.2.1}Literature}{6}{subsection.1.2.1}
+\contentsline {subsection}{\numberline {1.2.2}Approaches}{6}{subsection.1.2.2}
+\contentsline {subsection}{\numberline {1.2.3}Descriptive and summary statistics}{7}{subsection.1.2.3}
+\contentsline {section}{\numberline {1.3}Bayesian statistics}{8}{section.1.3}
+\contentsline {section}{\numberline {1.4}Aims}{9}{section.1.4}
+\contentsline {section}{\numberline {1.5}Outline}{9}{section.1.5}
+\contentsline {chapter}{\numberline {2}Bayesian Estimation and Hypothesis Tests for a Circular GLM}{11}{chapter.2}
+\contentsline {section}{\numberline {2.1}Bayesian circular GLM}{13}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}Likelihood}{15}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}Priors}{16}{subsection.2.1.2}
+\contentsline {subsubsection}{$p(\delta _j)$}{16}{section*.6}
+\contentsline {subsubsection}{$p(\beta )$}{16}{section*.7}
+\contentsline {subsubsection}{$p(\beta _0, \kappa )$}{17}{section*.9}
+\contentsline {section}{\numberline {2.2}MCMC sampling}{18}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Sampling $\beta _0$}{18}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}Sampling $\kappa $}{18}{subsection.2.2.2}
+\contentsline {subsection}{\numberline {2.2.3}Sampling $\boldsymbol {\beta }$}{20}{subsection.2.2.3}
+\contentsline {subsection}{\numberline {2.2.4}Sampling $\boldsymbol {\delta }$}{20}{subsection.2.2.4}
+\contentsline {section}{\numberline {2.3}Hypothesis tests}{20}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Equality constrained hypotheses}{21}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}Inequality constrained hypotheses}{22}{subsection.2.3.2}
+\contentsline {section}{\numberline {2.4}Simulation study}{23}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Simple regression}{24}{subsection.2.4.1}
+\contentsline {subsection}{\numberline {2.4.2}Factorial ANOVA}{25}{subsection.2.4.2}
+\contentsline {subsection}{\numberline {2.4.3}ANCOVA with four covariates}{26}{subsection.2.4.3}
+\contentsline {subsection}{\numberline {2.4.4}Bayes factors and posterior model probabilities}{27}{subsection.2.4.4}
+\contentsline {section}{\numberline {2.5}Example}{27}{section.2.5}
+\contentsline {subsection}{\numberline {2.5.1}ANOVA model}{29}{subsection.2.5.1}
+\contentsline {subsection}{\numberline {2.5.2}ANCOVA model}{31}{subsection.2.5.2}
+\contentsline {subsection}{\numberline {2.5.3}Inequality constrained hypothesis}{32}{subsection.2.5.3}
+\contentsline {section}{\numberline {2.6}Discussion}{33}{section.2.6}
+\contentsline {section}{\numberline {2.7}Acknowledgements}{34}{section.2.7}
+\contentsline {chapter}{\numberline {3}Bayesian Tests for Circular Uniformity}{37}{chapter.3}
+\contentsline {section}{\numberline {3.1}Frequentist tests of circular uniformity}{38}{section.3.1}
+\contentsline {section}{\numberline {3.2}A Bayesian test for circular uniformity with a von Mises alternative}{39}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Choosing priors}{40}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.2.2}Priors based on the conjugate prior}{41}{subsection.3.2.2}
+\contentsline {subsection}{\numberline {3.2.3}Jeffreys prior}{43}{subsection.3.2.3}
+\contentsline {subsection}{\numberline {3.2.4}Simulation}{44}{subsection.3.2.4}
+\contentsline {section}{\numberline {3.3}A Bayesian test for circular uniformity against a Kernel Density alternative}{46}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Simulation}{47}{subsection.3.3.1}
+\contentsline {section}{\numberline {3.4}Examples}{48}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}Homing pigeon example 1}{49}{subsection.3.4.1}
+\contentsline {subsection}{\numberline {3.4.2}Homing pigeon example 2}{50}{subsection.3.4.2}
+\contentsline {section}{\numberline {3.5}Discussion}{51}{section.3.5}
+\contentsline {section}{\numberline {3.6}Acknowledgements}{53}{section.3.6}
+\contentsline {chapter}{\numberline {4}Mixtures of Peaked Power Batschelet Distributions for Circular Data With Application to Saccade Directions}{55}{chapter.4}
+\contentsline {section}{\numberline {4.1}Family of Batschelet Distributions}{58}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Inverse Batschelet distribution}{58}{subsection.4.1.1}
+\contentsline {subsection}{\numberline {4.1.2}Power Batschelet distribution}{61}{subsection.4.1.2}
+\contentsline {subsection}{\numberline {4.1.3}Measures of circular dispersion}{63}{subsection.4.1.3}
+\contentsline {section}{\numberline {4.2}Inference for Batschelet mixtures}{64}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}EM Algorithm}{64}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Bayesian inference}{66}{subsection.4.2.2}
+\contentsline {subsubsection}{Priors}{66}{section*.28}
+\contentsline {subsubsection}{MCMC algorithm}{67}{section*.29}
+\contentsline {subsection}{\numberline {4.2.3}Model identifiability}{68}{subsection.4.2.3}
+\contentsline {subsection}{\numberline {4.2.4}Model selection and hypothesis testing}{69}{subsection.4.2.4}
+\contentsline {section}{\numberline {4.3}Illustration}{71}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Synthetic data}{71}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}Free-viewing data}{73}{subsection.4.3.2}
+\contentsline {subsubsection}{Adults}{73}{section*.33}
+\contentsline {subsubsection}{Infants}{75}{section*.34}
+\contentsline {subsubsection}{Horizontal Bias comparison}{75}{section*.35}
+\contentsline {subsubsection}{Hypothesis testing}{75}{section*.36}
+\contentsline {section}{\numberline {4.4}Discussion}{76}{section.4.4}
+\contentsline {section}{\numberline {4.5}Acknowledgements}{78}{section.4.5}
+\contentsline {chapter}{\numberline {5}Bayesian inference for mixtures of von Mises distributions using the Reversible Jump MCMC sampler}{79}{chapter.5}
+\contentsline {section}{\numberline {5.1}Von Mises Mixture Model}{82}{section.5.1}
+\contentsline {subsection}{\numberline {5.1.1}Von Mises mixture density}{82}{subsection.5.1.1}
+\contentsline {subsection}{\numberline {5.1.2}Likelihood}{83}{subsection.5.1.2}
+\contentsline {subsection}{\numberline {5.1.3}Prior distributions}{83}{subsection.5.1.3}
+\contentsline {section}{\numberline {5.2}Reversible jump MCMC for von Mises Mixtures}{84}{section.5.2}
+\contentsline {subsection}{\numberline {5.2.1}Updating the weights $w$}{85}{subsection.5.2.1}
+\contentsline {subsection}{\numberline {5.2.2}Updating component parameters $\mu $ and $\kappa $}{85}{subsection.5.2.2}
+\contentsline {subsection}{\numberline {5.2.3}Updating the allocation $z$}{86}{subsection.5.2.3}
+\contentsline {subsection}{\numberline {5.2.4}Dimensionality changing moves}{86}{subsection.5.2.4}
+\contentsline {subsubsection}{Split or combine move}{87}{section*.39}
+\contentsline {subsubsection}{Birth or death move}{90}{section*.41}
+\contentsline {subsection}{\numberline {5.2.5}Label switching}{91}{subsection.5.2.5}
+\contentsline {section}{\numberline {5.3}Simulation study}{91}{section.5.3}
+\contentsline {subsection}{\numberline {5.3.1}Simulation scenarios}{91}{subsection.5.3.1}
+\contentsline {subsection}{\numberline {5.3.2}Starting values}{92}{subsection.5.3.2}
+\contentsline {subsection}{\numberline {5.3.3}Convergence}{92}{subsection.5.3.3}
+\contentsline {subsection}{\numberline {5.3.4}Results}{92}{subsection.5.3.4}
+\contentsline {subsubsection}{Number of components $g$}{93}{section*.44}
+\contentsline {subsubsection}{Parameter estimates}{93}{section*.45}
+\contentsline {section}{\numberline {5.4}Illustration}{94}{section.5.4}
+\contentsline {subsection}{\numberline {5.4.1}Dataset}{94}{subsection.5.4.1}
+\contentsline {subsection}{\numberline {5.4.2}Results}{95}{subsection.5.4.2}
+\contentsline {section}{\numberline {5.5}Discussion}{96}{section.5.5}
+\contentsline {chapter}{\numberline {6}Inference for Interval-Censored Circular Data With Application to Crime Times}{105}{chapter.6}
+\contentsline {section}{\numberline {6.1}Aoristic data}{107}{section.6.1}
+\contentsline {section}{\numberline {6.2}Aoristic Fraction method}{110}{section.6.2}
+\contentsline {section}{\numberline {6.3}Statistical models for aoristic data}{113}{section.6.3}
+\contentsline {subsection}{\numberline {6.3.1}Circular data models}{113}{subsection.6.3.1}
+\contentsline {subsection}{\numberline {6.3.2}Aoristic Likelihood}{114}{subsection.6.3.2}
+\contentsline {subsection}{\numberline {6.3.3}Data augmentation}{116}{subsection.6.3.3}
+\contentsline {section}{\numberline {6.4}Nonparametric models}{117}{section.6.4}
+\contentsline {subsection}{\numberline {6.4.1}Dirichlet Process Mixture models}{118}{subsection.6.4.1}
+\contentsline {subsubsection}{Augmented sampler}{119}{section*.55}
+\contentsline {subsubsection}{Marginal sampler}{120}{section*.56}
+\contentsline {section}{\numberline {6.5}Applications}{120}{section.6.5}
+\contentsline {subsection}{\numberline {6.5.1}Ashby \& Bowers data}{120}{subsection.6.5.1}
+\contentsline {subsection}{\numberline {6.5.2}Montgomery Crime data}{122}{subsection.6.5.2}
+\contentsline {subsection}{\numberline {6.5.3}Montly crime time trends}{123}{subsection.6.5.3}
+\contentsline {section}{\numberline {6.6}Discussion}{124}{section.6.6}
+\contentsline {section}{\numberline {6.7}Acknowledgements}{126}{section.6.7}
+\contentsline {chapter}{\numberline {7}Discussion}{127}{chapter.7}
+\contentsline {chapter}{\numberline {8}Appendix}{129}{chapter.8}
+\contentsline {chapter}{\numberline {A}Conditional distribution of $\beta _0$}{131}{appendix.A}
+\contentsline {chapter}{\numberline {B}Properties of the Power Batschelet Distribution}{133}{appendix.B}
+\contentsline {chapter}{\numberline {C}Proof of variance overestimation using the aoristic fraction method}{135}{appendix.C}
+\contentsline {section}{\numberline {C.1}Data on the real line}{135}{section.C.1}
+\contentsline {section}{\numberline {C.2}Aoristic data}{137}{section.C.2}
+\contentsline {chapter}{\numberline {D}Von Mises based Dirichlet Process Mixture model}{141}{appendix.D}
+\contentsline {chapter}{\numberline {E}Rejection sampling aoristic data}{143}{appendix.E}
+\contentsline {chapter}{\numberline {F}Prior independent of $\mu _0$}{145}{appendix.F}

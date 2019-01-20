@@ -79,44 +79,7 @@
 \author{Kees Mulder}
 
 
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{alltt}
-\hlkwd{library}\hlstd{(ggplot2)}
-\hlkwd{library}\hlstd{(tidyverse)}
-\end{alltt}
 
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# -- Attaching packages ------------------------ tidyverse 1.2.1 --}}
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# v tibble\ \ 1.4.2\ \ \ \  v purrr\ \  0.2.5\\\#\# v tidyr\ \  0.8.2\ \ \ \  v dplyr\ \  0.7.8\\\#\# v readr\ \  1.3.1\ \ \ \  v stringr 1.3.1\\\#\# v tibble\ \ 1.4.2\ \ \ \  v forcats 0.3.0}}
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# -- Conflicts --------------------------- tidyverse\_conflicts() --\\\#\# x dplyr::filter() masks stats::filter()\\\#\# x dplyr::lag()\ \ \ \ masks stats::lag()}}\begin{alltt}
-\hlkwd{library}\hlstd{(lubridate)}
-\end{alltt}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# Attaching package: 'lubridate'}}
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# The following object is masked from 'package:base':\\\#\# \\\#\#\ \ \ \  date}}\begin{alltt}
-\hlkwd{library}\hlstd{(gridExtra)}
-\end{alltt}
-
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# \\\#\# Attaching package: 'gridExtra'}}
-
-{\ttfamily\noindent\itshape\color{messagecolor}{\#\# The following object is masked from 'package:dplyr':\\\#\# \\\#\#\ \ \ \  combine}}\begin{alltt}
-\hlkwd{library}\hlstd{(ggrepel)}
-
-
-\hlstd{knitr}\hlopt{::}\hlstd{opts_chunk}\hlopt{$}\hlkwd{set}\hlstd{(}\hlkwc{eval} \hlstd{=} \hlnum{TRUE}\hlstd{,}
-                      \hlkwc{cache} \hlstd{=} \hlnum{TRUE}\hlstd{,}
-                      \hlkwc{fig.width} \hlstd{=} \hlnum{8}\hlstd{,} \hlkwc{fig.height} \hlstd{=} \hlnum{4}\hlstd{,}
-                      \hlcom{# fig.retina = TRUE,}
-                      \hlkwc{dev} \hlstd{=} \hlstr{'tikz'}\hlstd{)}
-\end{alltt}
-\end{kframe}
-\end{knitrout}
 
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
@@ -144,7 +107,7 @@ Pondering over this somewhat odd question, the friends first conclude that the q
 \includegraphics[width=\maxwidth]{figure/birthday_example-1} 
 
 \end{knitrout}
-\caption{Average birthday  progression (from top to bottom) for our group of friends, as friends keep arriving.}
+\caption{Birthdays of our group of friends (black dots), and average birthday progression (in red) for our group of friends, as friends keep arriving.}
 \label{birthday_example}
 \end{figure}
 
@@ -156,11 +119,9 @@ The first new arrival has their birthday on January 7. Not a problem, conclude t
 
 
 
-The real trouble begins when four more friends arrive. Due to a mild statistical anomaly\footnote{The probability of this is described in a famous statistical problem, which also happens to be about birthdays (see \url{https://en.wikipedia.org/wiki/Birthday_problem}).}, they all happen to be born in December, on the 5th, the 6th,  16th, and 21st. Now, the strategy of consecutively labeling all the days in the year not only has become excessively laborous\footnote{Not to mention inevitable issues with leap years, although we will ignore those here.}, it also leads to some odd conclusions. The average of 7, 34, 38, 57, 339, 339, 350, and 355 is 190. This translates to back to the day of July 9, which baffles the group of friends for two reasons.
+The real trouble begins when four more friends arrive. Due to a mild statistical anomaly\footnote{The probability of this is described in a famous statistical problem, which also happens to be about birthdays (see \url{https://en.wikipedia.org/wiki/Birthday_problem}).}, they all happen to be born in December, on the 5th, the 6th,  16th, and 21st. Now, the strategy of consecutively labeling all the days in the year not only has become excessively laborous\footnote{Not to mention inevitable issues with leap years, although we will ignore those here.}, it also leads to some odd conclusions. The average of 7, 34, 38, 57, 339, 339, 350, and 355 is 190. This 190 translates to back to the day of July 9, which baffles the group of friends for two reasons.
 
-First, the average birthday of July 9th is a summer birthday, and is nowhere near the birthday of any of the people in the group, who were all born in winter. Second, if the friends had started counting the days of the year at March 1st (which would have been just as good a day to start as the arbitrary January 1st), the resulting average birthday would have been completely different. Clearly, the strategy of consecutive labeling fails to accurately capture what we mean by `average'.
-
-
+First, the average birthday of July 9th is a summer day, and is nowhere near the birthday of any of the people in the group, who were all born in winter. Second, if the friends had started counting the days of the year at March 1st (which would have been just as good a day to start as the arbitrary January 1st), the resulting average birthday would have been completely different. Clearly, the strategy of consecutive labeling fails to accurately capture what we mean by `average'.
 
 \begin{figure}
 \begin{knitrout}
@@ -168,69 +129,102 @@ First, the average birthday of July 9th is a summer birthday, and is nowhere nea
 \includegraphics[width=\maxwidth]{figure/birthday_example_circle-1} 
 
 \end{knitrout}
-\caption{On the circle, the average birthday is easier to spot.}
-\label{birthday_example}
+\caption{On the circle, the circular mean of the birthdays (red line) is natural central tendency.}
+\label{birthday_example_circle}
 \end{figure}
 
 
 
 So what happened here? Within the month of February, the days nicely follow each other, and the average seems to makes sense. But when we expand our scope to the full year, a problem arises. When the year progresses to its final day, the day of the year rolls around to the first day of the new year. The moment the previous year ends and the moment the new year begins are one and the same, so the beginning and end of the year are tied together. The day of the year is, in this sense, periodic (or \textit{cyclical}), and it is exactly this periodicity which makes the friend group's attempts at creating a sensible avarage fail.
 
+So, the friends go home unsatiated, mulling over possible solutions every once in a while in the weeks to follow. However, we will see that the solution to this problem is much simpler if we think of the days of the year not on the real line, but on the circle (see Figure \ref{birthday_example_circle}). Because the ends of the scale (December 31 and January 1) are now connected correctly, there is no longer ambiguity about the average.
+
+
 \section{Circular data}
 
-As it turns out, this `average birthday' problem is not as frivolous as it seems at first glance. A birthday is simply an example of an observed day of the year. Throughout statistics, examples can be found where the interest is in statistical modeling and prediction when in a year certain events occur. One example is modeling the distribution of extreme weather events (such as hurricanes) over the year. In contrast, the question of whether extreme weather events have increased in number over the last 30 years is quite different, because it is interested in the linear aspects of time, that is, temporal trends over multiple years. If we wish to truly understand extreme weather events, both parts must be modeled, although the linear temporal aspects have traditionally received more attention.
+As it turns out, this `average birthday' problem is not as frivolous as it seems at first glance.  A birthday is simply an example of an observed day of the year. Throughout statistics, examples can be found where the interest is in statistical modeling and prediction when in a year certain events occur. One example is modeling the distribution of extreme weather events (such as hurricanes) over the year. In contrast, the question of whether extreme weather events have increased in number over the last 30 years is quite different, because it is interested in the linear aspects of time, that is, temporal trends over multiple years. If we wish to truly understand extreme weather events, both parts must be modeled, although the linear temporal aspects have traditionally received more attention.
 
 Temporally periodic data can also consist of hours of the day, days of the week, days of the month, and so forth. In fact, many occurences of events are governed in some way by a periodical process, which must be taken into account when modeling if we wish to understand and control this process. For example, the number of patients arriving at a hospital varies more by the hour of the day than along any other dimension.
 
-More generally, the clock is not the only instrument to provide us with observations on a periodical scale. Another major source of circular data is the compass, which directly provides us with measurements of directions. For example, one might consider movement directions of animals, or orientations of rock formations. These more directly provide us with data that is periodic. That is, two direction of $1^\circ$ and $359^\circ$ are very close, but this is not immediately apparent from the numerical values.
+However, temporal data makes up only a small part of the field of circular data, as the clock is not the only instrument to provide us with observations on a periodical scale. Another major source of circular data is the compass, which directly provides us with measurements of directions. For example, one might consider movement directions of animals, or orientations of rock formations. These more directly provide us with data that is periodic. That is, two direction of $1^\circ$ and $359^\circ$ are very close, but this is not immediately apparent from the numerical values.
 
-Any data where the sample space is periodic. The type of data being described here are generally referred to as \textit{circular data}.
+Besides directly observing circular data, in some cases it has turned out to be beneficial to transform a linear problem into a circular one. A prime example is the use of circumplex scales in psychology \citep{gurtmancircumplex}. Such scales extract a circular observation from a questionnaire, by means of a latent factor analysis method which imposes a circular structure on a correlation matrix \citep{browne1992circumplex}. While usually latent factors are represented by linear variables, the circumplex structure can in some cases provide a simpler and more interpretable description of the underlying latent factors.
+
+Regardless of the origin of the data, any data whose sample space is periodic requires us to treat the data while taking into account the periodicity. This periodic type of data is what is generally referred to as \textit{circular data}, and this dissertation consists of methods to treat circular data problems.
 
 \subsection{Applications}
 
-Interestingly, circular data tend to form a small part of the data collected in almost all scientific fields.
+Interestingly, circular data tend to be encountered in almost every scientific field. Therefore, circular statistics are used by a large number of somewhat disconnected research communities. These communities partly use their own specialized circular data methods, but also build on the general framework of circular statistics. To build some intuition for the variety of research for which circular models are used, we will recap a few examples of circular data applications here.
+
+In meteorology, one is often concerned with modeling wind directions \citep{bowers2000directional}. Wind directions can be directly measured, for example using a wind vane. A question of interest could be whether a certain condition, such as the SO2 concentration, is related to the observed wind direction \citep{garcia2013exploring}. Another question is to extract underlying groups of wind direction, using mixture models \citep{masseran2013fitting}.
+
+In bioinformatics, interest is can be in modeling torsional angles in molecules such as proteins \citep{mardia2008multivariate}. For such problems, we wish to obtain a joint distribution of two angles, correctly capturing how these angles are correlated.
+
+In political science, quantifying how average crime times differ between cities can influence policy \citep{gill2010}. Here, the problem requires us to model the crime times over the hours of the day, and infer in what way cities differ in their crime time patterns.
+
+While these problem vary wildly in flavor, all require a toolkit that can deal with circular data. Other examples can be found in fields such as biology \citep{nunez2018bayesian}, aerospace \citep{kurz2017deterministic},  machine learning \citep{gopal2014mises}, signal processing \citep{traa2013wrapped}, life sciences \citep{mardianew}, motor behaviour research \citep{mechsner2001perceptual, mechsner2007bimanual, postma2008keep, baayen2012test}, behavioural biology \citep{bulbert2015danger}, psychology \citep{Leary1957, gurtman2003circumplex, kaas2006haptic,  gurtman2009exploring}, bioinformatics \citep{mardia2008multivariate} and environmental sciences \citep{lagona2016regression, lagona2015hidden, arnold2006recent}.
+
+
 
 \subsection{Units}
 
-A circular observation, which we will usually denote by $\theta$, can be represented in a variety of ways. Among the most common are degrees, hours, radians, unit vectors and complex numbers. Degrees ($\theta \in [0^\circ, 360^\circ)$) are generally obtained from the compass, while hours are usually measured on a 24-hour clock, so $\theta \in [0:00, 24:00)$.
+A circular observation, which we will usually denote by $\theta$, can be represented mathematically in a variety of ways. Among the most common are degrees, hours, radians, unit vectors and complex numbers. Degrees ($\theta \in [0^\circ, 360^\circ)$) are generally obtained from the compass, while hours are usually measured on a 24-hour clock, so $\theta \in [$0:00, 24:00$)$.
 
 For mathematical and computational purposes, representing circular observations as radians, where $\theta \in [-\pi, \pi),$ is both ubiquitous and generally advantageous, so throughout circular observations will be represented as radians.
 
 In some cases, thinking of angles as unit vectors is also beneficial. In this representation, we have a bivariate vector $\bx = \{x_1, x_2\}^T = \{\cos\theta, \sin\theta\}^T,$ and the restriction that $\sqrt{x_1^2 + x_2^2} = 1.$
 
-An angle can be represented as a complex number as $\cos\theta + i \sin \theta,$ where $i$ is the imaginary unit. This can be useful, particularly because by Euler's formula we have $\cos\theta + i \sin \theta = e^{i\theta},$ which provides a natural mapping between bivariate and univariate representation of angles.
-
-
+An angle can be represented as a complex number as $\cos\theta + i \sin \theta,$ where $i$ is the imaginary unit. This can be elegant, particularly because by Euler's formula we have $\cos\theta + i \sin \theta = e^{i\theta},$ which provides a natural mapping between bivariate and univariate representation of angles.
 
 
 \section{Circular statistics}
 
-Techniques for both descriptive and inferential methods for circular data can be found in a branch of statistics called \textit{circular statistics}.
+Techniques for both descriptive and inferential analysis of circular data can be found in a branch of statistics called \textit{circular statistics}. Circular statistics is can also be seen as a subfield of \textit{directional statistics}, where one considers analysis of data found on (hyper-)spheres. Because the circle is a special case of the hypersphere, methods from directional statistics are often also applicable to circular statistics.
 
-The branch of circular statistics is further embedded in the branch of directional statistics, where spherical data (in three or more dimensions) is considered. Because the circle is a special case of the hypersphere, some methods from directional statistics are also applicable to circular statistics.
+In this section, we will provide a short introduction to circular statistics by first recapping some important literature, then describing three major approaches to dealing with circular data, and finally discussing circular descriptive and summary statistics.
 
 \subsection{Literature}
 
-Only a limited number of books have been written on the topic of circular and directional statistics. The seminal technical work is \citet{mardia2009directional}. A more practical handbook is given by \citet{fisher1995statistical}, with a more recent book focusing on running circular data models in R is also available in \citet{pewsey2013circular}. Very recently, two more books have been published, one focusing recent statistical developments for directional data \citep{ley2017modern}, another on recent applications of directional statistics \citep{ley2018applied}. Other books exist with a more specialized focus, such as \citet{batschelet1981circular} and \citet{jammalamadaka2001topics}.
+A limited number of books have been written on the topic of (frequentist) circular and directional statistics. The seminal technical work is \citet{mardia2009directional}. A more practical handbook is given by \citet{fisher1995statistical}, with a more recent book focusing on running circular data models in R is also available in \citet{pewsey2013circular}. Very recently, two more books have been published, one focusing recent statistical developments for directional data \citep{ley2017modern}, another on recent applications of directional statistics \citep{ley2018applied}. Other books exist with a more specialized focus, such as \citet{batschelet1981circular} and \citet{jammalamadaka2001topics}.
 
 \subsection{Approaches}
 
-Three major approaches to developing statistical models for circular data are well-developed in the literature.
+Three major distinct approaches for analysis of circular data are available in the literature.
 
-First, the intrinsic approach directly models circular data with a probability density which takes values on the circle.
+First, the \textit{intrinsic} approach, where distributions are defined directly on the circle. The most popular of these is the von Mises distribution \cite{von1918ganzzahligkeit}, given by
+\begin{equation}
+\mathcal{M}(\theta \mid \mu, \kappa) = \frac{1}{2 \pi I_0(\kappa)} \exp\{\kappa \cos(\theta - \mu)\},
+\end{equation}
+where $\mu$ is the mean direction parameter, $\kp$ is a concentration parameter, and $I_0(\cdot)$ is the modified Bessel function of the first kind and order zero. Note that in this probability density function, the cosine guarantees the probability being periodic over the circle.
 
-A common assumption is to require the probability density function to be continuous on the circle.
+Second, the  \textit{embedding} (or \textit{projecting}) approach \citep{presnell1998projected, Nunez-Antonio2005}, where the circular observations are assumed to be projections of unobserved bivariate observations to the circle. That is, we assume there is some latent random variable $r$ for each circular observation $\theta,$ and that $(r \cos\theta, r \sin\theta)^T \in \mathbb{R}^2$  has a bivariate distribution on the Euclidean plane, usually the bivariate Normal distribution. The main advantage is that this approach allows us to use bivariate models with circular observations. A disadvantage is that we must deal with the latent variable $r$, which is makes computation slightly more difficult.
+
+Third, the \textit{wrapping} approach, where distributions on the real line are wrapped around the circle \cite{ferrari2009wrapping}. In this framework,  we represent the circular observation as $\theta = x ~\text{mod} ~ 2\pi,$ where \(x \in \mathbb{R}\). This means that univariate distributions adapted for use with circular observation, leading for example to the Wrapped Normal distribution. However, for inference this means introducting a latent variable, as in the embedding approach. For the wrapping approach, this latent variable can be seen as some integer $k \in \mathbb{Z},$ and $x = \theta + 2\pi k.$ Similar to the projected approach, this means that we pay for the flexibility of using regular univariate models by the burden of modeling a latent variable.
+
+Arguably, a fourth approach which is quite common is to simply ignore the circular structure of the data and apply regular linear methods. If the data is concentrated on the circle, such an approach may not have such dire consequences, and can serve as a good approximation to a method that correctly takes the circular nature of the data into account. However, is data is spread all over the circle, such
+
+In this dissertation, focus will be almost entirely on the intrinsic approach. More specifically, we will employ the von Mises distribution and distributions derived from the von Mises distribution throughout, for several reasons. First, the von Mises distribution is of fairly simple mathematical form. Second, the von Mises distribution has directly interpretable parameters. Third, Bayesian inference for the von Mises distribution has recently become more computationally feasible \citep{forbes2015fast}. Lastly, Bayesian inference is also facilitated by the fact that conjugate priors are available \citep{mardia1976bayesian}.
 
 
+\subsection{Descriptive and summary statistics}
 
 
+Circular statistics requires a new definition of the mean and variance, which are called the mean direction and circular variance. Only the main descriptive and summary statistics will be provided here. For a full overview, see  \citet{mardia2009directional}.
 
-Some alternatives to these three approaches
+To compute the mean direction, each angle in a circular dataset can be viewed as a vector of length 1 in direction $\theta_i$. As illustrated in Figure \ref{exampleRMu}, the summation of these vectors results in a vector in direction $\bar{\theta}$ of length $R$. The mean direction $\bar{\theta}$ is an unbiased estimator of the mean direction of the von Mises distribution $\mu$. The resultant length $R$ is related to the circular variance and may be obtained from
+$$ R = \sqrt{\left(\sum_{i=1}^{n} \cos \theta_i \right)^2 + \left(\sum_{i=1}^{n} \sin \theta_i \right)^2},$$
+which increases with concentration and sample size. For the von Mises distribution, $R$ is a sufficient statistic for $\kappa$. The mean resultant length can be computed as $\bar{R} = R/n$, which is a metric of concentration independent of the sample size.
 
-One could argue
 
-In this work, focus will be almost entirely on the intrinsic approach. More specifically, we will employ the von Mises distribution and distributions derived from the von Mises distribution throughout. Advantages of this model can be identified. First, the von Mises is of simple mathematical form. Second, directly modeling of circular data,
+\begin{figure}
+\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=5cm,height=5cm]{figure/mu_example-1} 
 
+\end{knitrout}
+\caption{Example of obtaining the mean direction $\bar{\theta}$ and the mean resultant length $R$. The three grey arrows represent the circular observations, which are stacked on top of each other (by summation) as shown in the black arrows. The resultant vector (dashed line) has direction $\bar{\theta}$ and length $R$.}\label{exampleRMu}
+\end{figure}
 
 
 
@@ -238,14 +232,25 @@ In this work, focus will be almost entirely on the intrinsic approach. More spec
 
 \section{Bayesian statistics}
 
+The methods in this dissertation are almost all Bayesian methods. A discussion of the merits and downfalls of the frequentist or Bayesian approaches to statistics is beyond the scope of this work. However, we will shortly discuss developments in the field of Bayesian circular statistics, along with the avenues along which it may be advantageous above the frequentist approach to circular statistics.
 
+Among the earliest developments in Bayesian circular statistics was the development of conjugate priors for the von Mises distribution \citep{mardia1976bayesian}. Since then, Bayesian circular methods have been developed for problems such as Markov chain Monte Carlo (MCMC) methods for the von Mises distribution \citep{damien1999fullbayes, forbes2015fast}, regression with von Mises residuals \citep{gill2010}, wrapped models \citep{ravindran2011bayesian}, semiparametric circular regression \citep{george2006semiparametric, mcvinish2008semiparametric, Bhattacharya2009}, small area estimation \citep{hernandez2016hierarchical}, hierarchical regression with Projected Normal residuals \citep{nunez2011bayesian, nunez2014bayesian}. As of this writing, no books have been published that specifically focus on Bayesian circular statistics. However, Bayesian methods offer several appealing properties specific to circular statistics.
 
+First, Bayesian statistics allows us to include prior knowledge on the parameters of the model. While prior knowledge on the current research question may or may not be available, sometimes prior knowledge is available at the level of the model, for example because the model produces nonsensical data for certain parameter values (as seen in Chapter \ref{circglm}, for example).
+
+Second, Bayesian algorithms such as MCMC allow us to trivially obtain inference for any function of parameters. This can be exploited to fit a model using parameters which are easy to define, while providing results for parameters that are interpretable (for example, this is used for the Batschelet-type models of Chapter \ref{flexcmix}).
+
+Finally, some circular models are of such mathematical form that it is hard to obtain frequentist standard errors, while the Bayesian approach naturally provides uncertainties for all parameters.
 
 \section{Aims}
+
+The goal of this dissertation is to develop Bayesian methods for circular statistics which solve practical research problems. To this end, it has been a goal to develop collaborations with researchers and organizations working in domains which encounter circular data.
 
 
 
 \section{Outline}
+
+This dissertation consists of six chapters.
 
 
 
