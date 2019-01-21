@@ -10,7 +10,9 @@ inside_curly <- Vectorize(function(string) {
 })
 
 # Read a phd chapter and remove junk.
-read_and_refactor_chapter <- function(input_path) {
+read_and_refactor_chapter <- function(input_path,
+                                      in_text_removes = NULL,
+                                      add_afters = NULL) {
   text <- readLines(input_path)
 
   # Remove commented out lines.
@@ -42,6 +44,19 @@ read_and_refactor_chapter <- function(input_path) {
     apx_text <- NA
   }
 
+  # Preprocess read text.
+  # Remove in text removes.
+  for (itr in in_text_removes) {
+    body_text <- body_text[-grep(itr, body_text)]
+  }
+
+  for (af in add_afters) {
+    loc <- which(body_text %in% af[2])
+    body_text <- c(body_text[1:loc], af[1], body_text[(loc + 1):length(body_text)])
+  }
+
+
+
   out <- list(title            = title,
               authors          = authors,
               usepackage_lines = pkg_lines,
@@ -57,6 +72,8 @@ read_and_refactor_chapter <- function(input_path) {
 read_and_save_multiple_chapters <- function(filepaths,
                                             outloc = "C:/Dropbox/Research/PhDDissertationBCS/",
                                             remove_preamble_lines = character(0),
+                                            in_text_removes = NULL,
+                                            add_afters = NULL,
                                             copy_figs = TRUE) {
 
   outloc_ch <- paste0(outloc, "chapters/")
@@ -75,7 +92,9 @@ read_and_save_multiple_chapters <- function(filepaths,
   # Refactor and save.
   for (filepath_nm in nms) {
     filepath <- filepaths[filepath_nm]
-    chapter <- read_and_refactor_chapter(filepath)
+    chapter <- read_and_refactor_chapter(filepath,
+                                         in_text_removes,
+                                         add_afters)
 
     cat("Read chapter '", chapter$title, "'. Processing...\n", sep = "")
 
@@ -83,9 +102,6 @@ read_and_save_multiple_chapters <- function(filepaths,
     preamble_lines <- c(preamble_lines,
                         chapter$usepackage_lines,
                         chapter$new_commands)
-
-    # Split the appendix.
-
 
     # Save the full object.
     saveRDS(chapter, file = paste0(outloc_ch, filepath_nm, ".rds"))
@@ -97,10 +113,12 @@ read_and_save_multiple_chapters <- function(filepaths,
 
     # Save the appendix.
     if (!is.na(chapter$appendix[1])) {
-      chapter$appendix %>%
-        str_replace("\\\\section", "\\\\chapter") %>%
-        str_replace("\\\\subsection", "\\\\section") ->
-        apx
+      apx <- chapter$appendix
+      # %>%
+      #   str_replace("\\\\section", "\\\\chapter") %>%
+      #   str_replace("\\\\subsection", "\\\\section")
+      # ->
+
 
       # Save the chapter tex.
       filecon <- file(paste0(outloc_ch, filepath_nm, "_appendix.tex"))
@@ -165,6 +183,8 @@ manual_fixes <- c("\\newcommand{\\sumin}{\\sum_{i = 1}^n}",
                   "\\usepackage{upquote}}{}",
                   "\\usepackage{fullpage}",
                   "\\usepackage{caption,subcaption}")
+in_text_removes <- c("^\\\\hypertarget")
+# add_afters      <- list(c("\\\\section"))
 
 
 resfol <- "C:/Dropbox/Research/"
@@ -176,4 +196,5 @@ filepaths <- c(circ_glm = paste0(resfol, "BayesMultCircCovariates/Article JMP/Es
                dpm_crim = paste0(resfol, "AoristicAnalysis/Spread/Article/DealingWithPartiallyObservedCrimeTimes.tex"),
                circbays = paste0(resfol, "circbayes_paper/circbayes_RPackageForBayesianCircularStatistics/circbayes_RPackageForBayesianCircularStatistics.tex"))
 
-read_and_save_multiple_chapters(filepaths, remove_preamble_lines = manual_fixes)
+read_and_save_multiple_chapters(filepaths, remove_preamble_lines = manual_fixes,
+                                in_text_removes = NULL)

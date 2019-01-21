@@ -46,3 +46,13 @@ figure/*
 *.pdf
 *.toc
 Dissertation_KeesMulder_BayesianCircularStatistics.pdf
+chapters/circbayes_RPackageForBayesianCircularStatistics_files/figure-latex/plot_mix-1.tex
+chapters/circbayes_RPackageForBayesianCircularStatistics_files/figure-latex/plot_reg-1.tex
+chapters/circbayes_RPackageForBayesianCircularStatistics_files/figure-latex/plot_vm-1.tex
+circbayes_RPackageForBayesianCircularStatistics_files/figure-latex/plot_mix-1.tex
+circbayes_RPackageForBayesianCircularStatistics_files/figure-latex/plot_reg-1.tex
+circbayes_RPackageForBayesianCircularStatistics_files/figure-latex/plot_vm-1.tex
+plot_mix-1.tex
+plot_vm-1.tex
+plot_reg-1.tex
+chapters/circbays_test.blg

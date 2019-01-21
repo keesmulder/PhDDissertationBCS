@@ -58,6 +58,18 @@
 	urlcolor=blue
 }
 
+
+% Extra packages.
+\usepackage{graphicx}
+\usepackage{appendix}
+\usepackage{natbib}
+\usepackage{fancyvrb}
+\usepackage{keyval}
+\usepackage{ae}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage[T1]{fontenc}
 \usepackage{titling}
 \newcommand{\subtitle}[1]{%
   \posttitle{%
@@ -65,12 +77,36 @@
     \begin{center}\large#1\end{center}
     \vskip0.5em}%
 }
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
+
 
 % Manual additions to automatic newcommands.
 \DeclareMathOperator{\atantwo}{atan2}
 
 
-\newcommand{\pkg}[1]{\textsf{#1}}
+
+%%% Extra options to get JSS paper working.
+
+
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\lstset{language=R}
+
+\let\proglang=\textsf
+\newcommand{\pkg}[1]{\textbf{#1}}
+
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{fontshape=sl}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{}
+\DefineVerbatimEnvironment{Scode}{Verbatim}{fontshape=sl}
+\newenvironment{Schunk}{}{}
+\DefineVerbatimEnvironment{Code}{Verbatim}{}
+\DefineVerbatimEnvironment{CodeInput}{Verbatim}{fontshape=sl}
+\DefineVerbatimEnvironment{CodeOutput}{Verbatim}{}
+\newenvironment{CodeChunk}{}{}
+
+\setkeys{Gin}{width=0.8\textwidth}
 
 
 \title{Bayesian Circular Statistics}
@@ -92,7 +128,6 @@
 
 
 
-\mainmatter
 \chapter{Introduction}
 \label{intro}
 
@@ -107,7 +142,7 @@ Pondering over this somewhat odd question, the friends first conclude that the q
 \includegraphics[width=\maxwidth]{figure/birthday_example-1} 
 
 \end{knitrout}
-\caption{Birthdays of our group of friends (black dots), and average birthday progression (in red) for our group of friends, as friends keep arriving.}
+\caption{Birthdays of our group of friends (black dots), and average birthday progression (red line) for our group of friends, as friends keep arriving.}
 \label{birthday_example}
 \end{figure}
 
@@ -140,7 +175,7 @@ So what happened here? Within the month of February, the days nicely follow each
 So, the friends go home unsatiated, mulling over possible solutions every once in a while in the weeks to follow. However, we will see that the solution to this problem is much simpler if we think of the days of the year not on the real line, but on the circle (see Figure \ref{birthday_example_circle}). Because the ends of the scale (December 31 and January 1) are now connected correctly, there is no longer ambiguity about the average.
 
 
-\section{Circular data}
+\section*{Circular data}
 
 As it turns out, this `average birthday' problem is not as frivolous as it seems at first glance.  A birthday is simply an example of an observed day of the year. Throughout statistics, examples can be found where the interest is in statistical modeling and prediction when in a year certain events occur. One example is modeling the distribution of extreme weather events (such as hurricanes) over the year. In contrast, the question of whether extreme weather events have increased in number over the last 30 years is quite different, because it is interested in the linear aspects of time, that is, temporal trends over multiple years. If we wish to truly understand extreme weather events, both parts must be modeled, although the linear temporal aspects have traditionally received more attention.
 
@@ -152,7 +187,7 @@ Besides directly observing circular data, in some cases it has turned out to be 
 
 Regardless of the origin of the data, any data whose sample space is periodic requires us to treat the data while taking into account the periodicity. This periodic type of data is what is generally referred to as \textit{circular data} (or rarely \textit{angular data}), and this dissertation consists of methods to treat circular data problems.
 
-\subsection{Applications}
+\subsection*{Applications}
 
 Interestingly, circular data tend to be encountered in almost every scientific field. Therefore, circular statistics are used by a large number of somewhat disconnected research communities. These communities partly use their own specialized circular data methods, but also build on the general framework of circular statistics. To build some intuition for the variety of research for which circular models are used, we will recap a few examples of circular data applications here.
 
@@ -166,7 +201,7 @@ While these problem vary wildly in flavor, all require a toolkit that can deal w
 
 
 
-\subsection{Units}
+\subsection*{Units}
 
 A circular observation, which we will usually denote by $\theta$, can be represented mathematically in a variety of ways. Among the most common are degrees, hours, radians, unit vectors and complex numbers. Degrees ($\theta \in [0^\circ, 360^\circ)$) are generally obtained from the compass, while hours are usually measured on a 24-hour clock, so $\theta \in [$0:00, 24:00$)$.
 
@@ -177,17 +212,17 @@ In some cases, thinking of angles as unit vectors is also beneficial. In this re
 An angle can be represented as a complex number as $\cos\theta + i \sin \theta,$ where $i$ is the imaginary unit. This can be elegant, particularly because by Euler's formula we have $\cos\theta + i \sin \theta = e^{i\theta},$ which provides a natural mapping between bivariate and univariate representation of angles.
 
 
-\section{Circular statistics}
+\section*{Circular statistics}
 
 Techniques for both descriptive and inferential analysis of circular data can be found in a branch of statistics called \textit{circular statistics}. Circular statistics is can also be seen as a subfield of \textit{directional statistics}, where one considers analysis of data found on (hyper-)spheres. Because the circle is a special case of the hypersphere, methods from directional statistics are often also applicable to circular statistics.
 
 In this section, we will provide a short introduction to circular statistics by first recapping some important literature, then describing three major approaches to dealing with circular data, and finally discussing circular descriptive and summary statistics.
 
-\subsection{Literature}
+\subsection*{Literature}
 
-A limited number of books have been written on the topic of (frequentist) circular and directional statistics. The seminal technical work is \citet{mardia2009directional}. A more practical handbook is given by \citet{fisher1995statistical}, with a more recent book focusing on running circular data models in R is also available in \citet{pewsey2013circular}. Very recently, two more books have been published, one focusing recent statistical developments for directional data \citep{ley2017modern}, another on recent applications of directional statistics \citep{ley2018applied}. Other books exist with a more specialized focus, such as \citet{batschelet1981circular} and \citet{jammalamadaka2001topics}.
+A limited number of books have been written on the topic of (frequentist) circular and directional statistics. The seminal technical work is \citet{mardia2009directional}. A more practical handbook is given by \citet{fisher1995statistical}, with a more recent book focusing on running circular data models in \proglang{R} is also available in \citet{pewsey2013circular}. Very recently, two more books have been published, one focusing recent statistical developments for directional data \citep{ley2017modern}, another on recent applications of directional statistics \citep{ley2018applied}. Other books exist with a more specialized focus, such as \citet{batschelet1981circular} and \citet{jammalamadaka2001topics}.
 
-\subsection{Approaches}
+\subsection*{Approaches}
 
 Three major distinct approaches for analysis of circular data are available in the literature.
 
@@ -206,7 +241,7 @@ Arguably, a fourth approach which is quite common is to simply ignore the circul
 In this dissertation, focus will be almost entirely on the intrinsic approach. More specifically, we will employ the von Mises distribution and distributions derived from the von Mises distribution throughout, for several reasons. First, the von Mises distribution is of fairly simple mathematical form. Second, the von Mises distribution has directly interpretable parameters. Third, Bayesian inference for the von Mises distribution has recently become more computationally feasible \citep{forbes2015fast}. Lastly, Bayesian inference is also facilitated by the fact that conjugate priors are available \citep{mardia1976bayesian}.
 
 
-\subsection{Descriptive and summary statistics}
+\subsection*{Descriptive and summary statistics}
 
 
 Circular statistics requires a new definition of the mean and variance, which are called the mean direction and circular variance. Only the main descriptive and summary statistics will be provided here. For a full overview, see  \citet{mardia2009directional}.
@@ -229,7 +264,7 @@ which increases with concentration and sample size. For the von Mises distributi
 
 
 
-\section{Bayesian statistics}
+\section*{Bayesian statistics}
 
 The methods in this dissertation are almost all Bayesian methods. A discussion of the merits and downfalls of the frequentist or Bayesian approaches to statistics is beyond the scope of this work. However, we will shortly discuss developments in the field of Bayesian circular statistics, along with the avenues along which it may be advantageous above the frequentist approach to circular statistics.
 
@@ -239,40 +274,49 @@ First, Bayesian statistics allows us to include prior knowledge on the parameter
 
 Second, Bayesian algorithms such as MCMC allow us to trivially obtain inference for functions of parameters. This can be exploited to fit a model using parameters which are easy to work with computationally and mathematically, while providing results for functions of parameters that are interpretable (for example, this is used for the Batschelet-type models of Chapter \ref{flexcmix}).
 
-Third, Bayesian hypothesis testing provides a very flexible toolbox providing model comparison that is in some way symmetric. This symmetry refers to the fact that in Bayesian Hypothesis Testing (BHT), all hypothesis under consideration have can be selected as the most likely hypothesis. In traditional frequentist Null Hypothesis Significance Testing (NHST), the null hypothesis is special in that it can never be chosen as more likely than the alternative hypothesis, as it can only be rejected or non-rejected. In NHST, finding evidence for the null hypothesis requires equivalence testing \citep{wellek2010testing}, for example, while BHT provides a unified framework for selecting either hypothesis under consideration (this is used in Chapters~\ref{circglm, hypotest, flexcmix, circbays}). It should be noted that for this major advantage, the price to pay is the necessity to define a proper prior for all parameters in each model.
+Third, Bayesian hypothesis testing provides a very flexible toolbox providing model comparison that is in some way symmetric. This symmetry refers to the fact that in Bayesian Hypothesis Testing (BHT), all hypothesis under consideration have can be selected as the most likely hypothesis. In traditional frequentist Null Hypothesis Significance Testing (NHST), the null hypothesis is special in that it can never be chosen as more likely than the alternative hypothesis, as it can only be rejected or non-rejected. In NHST, finding evidence for the null hypothesis requires equivalence testing \citep{wellek2010testing}, for example, while BHT provides a unified framework for selecting either hypothesis under consideration (this is used in Chapters~\ref{circglm}, \ref{hypotest}, \ref{flexcmix}, \ref{circbays}). % It should be noted that for this major advantage, the price to pay is the necessity to define a proper prior for all parameters in each model.
 
 Finally, in statistical inference, we are generally concerned with not just parameter estimation, but also quantification of the uncertainty around the parameter estimates. However, some circular models are of such mathematical form that it is hard to derive frequentist standard errors. The Bayesian approach naturally takes into account the uncertainty around the parameters of a model.
 
-\section{Aims \& Outline}
+\section*{Aims \& Outline}
 
 The goal of this dissertation is to develop Bayesian methods for circular statistics which solve practical research problems. To this end, it has been a goal to develop collaborations with researchers and organizations working in domains which encounter circular data. Two subgoals can be identified.
 
-First, a solid foundation must be built for the use of Bayesian circular statistics. That is, the properties of these methods must well-studied and understood. However, to allow applied researchers to employ these methods, they must also be available in user-friendly software packages. To this end, the vast majority of methods in this dissertation is available in easy-to-use R packages.
+First, a solid foundation must be built for the use of Bayesian circular statistics. That is, the properties of these methods must well-studied and understood. However, to allow applied researchers to employ these methods, they must also be available in user-friendly software packages. To this end, the vast majority of methods in this dissertation is available in easy-to-use \proglang{R} packages.
 
 Second, specialized models must be developed which are useful for specific problems. While for some problems one can build on general methods for basic questions, researchers often require statistical methods that are geared toward the specific structure of their data or the research questions. Bayesian solutions for a selection of such problems are presented throughout this work.
 
 These goals will be prevalent throughout the following six chapters of this dissertation. The chapters will be shortly described here.
 
-In \textbf{Chapter~\ref{circglm}}, regression with a circular outcome is addressed. A Bayesian version of the circular regression model by \citet{fisher1992regression} is developed. This model is essentially a Generalized Linear Model (GLM) where a linear prediction is mapped onto a circular outcome space, while the residuals have the von Mises distribution. It is shown that if we add categorical variables as dummy variables into the model, that the shape of the regression function is dependent on the arbitrary labeling of the groups. This is undesirable, as it should not matter whether we choose a labeling of, say, $A = 0, B = 1$ or another labeling of $A = 1 B = 0.$ Therefore, an alternative version of this model is proposed, which circumvents this issue. Bayesian inference and hypothesis testing for this model is developed and investigated by means of a simulation study. An example is provided from the field of cognitive psychology, where an experimental design for measurement of haptic ability leads to circular observations \citep{van2013superior}.
+In \textbf{Chapter~\ref{circglm}}, regression with a circular outcome is addressed. A Bayesian version of the circular regression model by \citet{fisher1992regression} is developed. This model is essentially a Generalized Linear Model (GLM) where a linear prediction is mapped onto a circular outcome space, while the residuals have the von Mises distribution. It is shown that if we add categorical variables as dummy variables into the model, that the shape of the regression function is dependent on the arbitrary labeling of the groups. This is undesirable, as it should not matter whether we choose a labeling of, say, $A = 0, B = 1$ or another labeling of $A = 1, B = 0.$ Therefore, an alternative version of this model is proposed, which circumvents this issue. Bayesian inference and hypothesis testing for this model is developed and investigated by means of a simulation study. An example is provided from the field of cognitive psychology, where an experimental design for measurement of haptic ability leads to circular observations \citep{van2013superior}.
 
 Bayesian hypothesis tests for circular uniformity are developed in \textbf{Chapter~\ref{hypotest}}. Testing circular uniformity is a clear example of a hypothesis testing setting where one might be interested in finding evidence in favor of the null hypothesis. Concluding that a set of data is circular uniform can mean we might ignore or otherwise treat the periodical aspects of a dataset. This chapter investigates a selection of proper priors and alternative hypothesis for Bayesian hypothesis tests of circular uniformity. Their performance is investigated by means of a simulation study.
 
-The following three chapters, \textbf{Chapters~\ref{flexcmix, revrjump, dpm_crim}}, all represent research projects which have emerged from collaborations with researchers and organization which provided a motivating data examples for which no satisfactory methods were available previously.
+The following three chapters, \textbf{Chapters~\ref{flexcmix}, \ref{revrjump}, \ref{dpm_crim}}, all represent research projects which have emerged from collaborations with researchers and organization which provided a motivating data examples for which no satisfactory methods were available previously.
 
-\textbf{Chapter~\ref{flexcmix}} is motivated by an example from eye movement research, previously published on in \citet{van2016infants}. In eye movement research, a saccade is the jump one makes from one fixation point to another. The direction of a saccade is one of the properties of interest, and our goal is to adequately model a distribution of saccade directions. In the motivating example, we are interested in quantifying the differences between infants and adults in their respective saccade direction distribution.
+\textbf{Chapter~\ref{flexcmix}} is motivated by an example from eye movement research, previously published on in \citet{van2016infants}. In eye movement research, a saccade is the jump one makes from one fixation point to another. The direction of a saccade is one of the properties of interest, and our goal is to adequately model a distribution of saccade directions. In the motivating example, we are interested in quantifying the differences between infants and adults in their respective saccade direction distribution. To do this, a Batschelet Mixture model is developed that captures the multimodal and peaked nature of saccade distributions. The version of the Inverse Batschelet distribution in \citet{jones2012inverse} fits the peaked nature of the data, but is difficult to compute due because of its mathematical form. We propose an alternative Batschelet distribution which has a similarly shape, but is much simpler to compute. Using bridgesampling \citep{meng1996simulating, gronau2017tutorial}, Bayes factors can be computed for these methods. The model is then applied to saccade direction data, and it is shown that the original research question can now be directly evaluated.
 
-The final chapter, \textbf{Chapter~\ref{circbays}}, is an overview of the package \pkg{circbayes}. The base of this package is a collection of basic models for Bayesian circular statistics. Any researcher interested in applying the methods in this work would do well to start with this chapter, as it provides a short introduction and comparison of different models.
+A different approach to extending circular mixture models is taken in Chapter~\ref{revrjump}. While for saccade direction data the number of components of the mixture can usually be treated as known, this is not always the case. Here, we are motivated by a dataset containing music listening behaviour of a large sample of users of a streaming website. The goal here is to predict for each hour of the day the probability that a certain genre will be listened to. To this end, the temporal distribution of music listening for each genre must be inferred. A mixture model is appropriate, but it the number of components can not easily be prespecified a priori. Therefore, the reversible jump MCMC sampler \citep{richardson1997bayesian} is applied, as this method allows the MCMC sampler to jump between mixture models of different dimension (that is, number of components). As a result, we can infer the number of components. This chapter develops the required steps to apply this sampler for circular data, and applies this new sampler to the music listening data.
 
-Which collects methods from the separate chapters as well as adding several new Bayesian circular methods.
+The motivating example in Chapter~\ref{dpm_crim} comes from the field of criminology. In crime modeling, a large amount of attention is devoted to spatial modeling of crime, while temporal differences receive comparatively less attention. However, understanding at which hour of the day crimes occur is essential in both understanding and predicting crime. However, for many types of crime, such as burglary and theft, crime times are usually not directly observed (as the offender is actively trying to not be observed). Therefore, crime times are usually interval-censored circular observations, which are called \textit{aoristic data.} Some descriptive analysis methods for aoristic data have been developed \citep{ashby2013comparison}. We extend these methods by showing their limitations and developing methods for full statistical inference from aoristic data. Circular statistical models can be fit using the aoristic likelihood approach. Further, we develop nonparametric methods for density estimation of aoristic data, based on Bayesian Dirichlet Process Mixture models, with the von Mises as the base distribution.
+
+The final chapter, \textbf{Chapter~\ref{circbays}}, is an overview of the package \pkg{circbayes}. This package is a collection of basic models for Bayesian circular statistics, some of which have been developed in previous chapters, while others come from elsewhere. Any researcher interested in applying the methods in this work would do well to start with this chapter, as it provides a short introduction and comparison of different models for Bayesian circular statistics. We show how to perform Bayesian inference using several models, including von Mises, Batschelet, Projected Normal, circular regression, mixture models, and Dirichlet Process Mixture models. Also, this package includes methods to perform Bayesian hypothesis testing between any of the models included. To do this, it often performs bridge sampling, using the \proglang{R} package \pkg{bridgesampling} \citep{gronau2017bridgesampling}. As a result, it is able to perform Bayesian versions of most hypothesis tests common in frequentist circular statistics.
+
+With these tools combined, we hope to have provided an accessible entrypoint for the use of Bayesian circular statistics throughout all fields where circular data are encountered.
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\mainmatter
 \chapter{Bayesian Estimation and Hypothesis Tests for a Circular GLM}
 \chaptermark{Bayesian Circular GLM}
 \label{circglm}
 \input{chapters/circ_glm.tex}
+% APPENDIX
+\begin{subappendices}
+\input{chapters/circ_glm_appendix.tex}
+\end{subappendices}
 
 
 \chapter{Bayesian Tests for Circular Uniformity}
@@ -285,36 +329,37 @@ Which collects methods from the separate chapters as well as adding several new 
 \chaptermark{Peaked Circular Mixtures}
 \label{flexcmix}
 \input{chapters/flexcmix.tex}
-%
-%
+% APPENDIX
+\begin{subappendices}
+\input{chapters/flexcmix_appendix.tex}
+\end{subappendices}
+
+
 \chapter{Bayesian inference for mixtures of von Mises distributions using the Reversible Jump MCMC sampler}
 \chaptermark{Reversible Jump vM-Mixture}
 \label{revrjump}
 \input{chapters/revrjump.tex}
-%
+
+
 \chapter{Inference for Interval-Censored Circular Data With Application to Crime Times}
 \chaptermark{Interval-Censored Circular Data}
 \label{dpm_crim}
 \input{chapters/dpm_crim.tex}
-
+\begin{subappendices}
+\input{chapters/dpm_crim_appendix.tex}
+\end{subappendices}
 
 \chapter{circbayes: An R package for Bayesian circular statistics}
+\chaptermark{R Package circbayes}
 \label{circbays}
-% \input{chapters/circbays.tex}
-
-
-\chapter{Discussion}
+\input{chapters/circbays.tex}
 
 
 
 
-\chapter{Appendix}
 
-\appendix
 
-\input{chapters/circ_glm_appendix.tex}
-\input{chapters/flexcmix_appendix.tex}
-\input{chapters/dpm_crim_appendix.tex}
+
 
 
 \backmatter
