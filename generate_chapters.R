@@ -27,28 +27,43 @@ read_and_refactor_chapter <- function(input_path,
   authors    <- inside_curly(grep("\\\\author", strip_text, value = TRUE))
   sections   <- inside_curly(grep("\\\\section", strip_text, value = TRUE))
 
+  # Find abstract.
+  if ("\\Abstract{" %in% strip_text) {
+    abs_start <- grep("\\\\Abstract\\{", strip_text)
+    end_accol <- grep("^\\}", strip_text)
+    abs_end   <- end_accol[end_accol > abs_start][1]
+    abstract  <- c("\\begin{abstract}",
+                   strip_text[(abs_start + 1):(abs_end - 1)],
+                   "\\end{abstract}")
+  } else {
+    abs_start <- grep("\\\\begin\\{abstract\\}", strip_text)
+    abs_end   <- grep("\\\\end\\{abstract\\}", strip_text)
+
+    abstract   <- strip_text[abs_start:abs_end]
+  }
+
   # Indices to remove.
   first_sec  <- grep("\\\\section", strip_text, value = FALSE)[1]
   bib_idx    <- grep("\\\\bibliography", strip_text, value = FALSE)
   end_idx    <- grep("\\\\end\\{document\\}", strip_text, value = FALSE)
   header_idx <- 1:(first_sec)
 
-  body_text <- strip_text[-c(bib_idx, end_idx, header_idx)]
+  if ("\\begin{thebibliography}{}" %in% strip_text) {
+    thebib_start <- which(strip_text %in% "\\begin{thebibliography}{}")
+    thebib_end   <- which(strip_text %in% "\\end{thebibliography}")
 
-  # Split the appendix.
-  apx_start <- grepl("\\\\appendix", body_text)
-  if (any(apx_start)) {
-    apx_idx   <- (which(apx_start)[1]):length(body_text)
-    apx_text  <- body_text[apx_idx[-1]]
-    body_text <- body_text[-apx_idx]
-  } else {
-    apx_text <- NA
+    bib_idx <- c(bib_idx, thebib_start:thebib_end)
   }
+
+  body_text <- c(abstract, strip_text[-c(bib_idx, end_idx, header_idx)])
+
 
   # Preprocess read text.
   # Remove, add and replace in text.
   for (itr in remove_line) {
-    body_text <- body_text[-grep(itr, body_text)]
+    if (any(body_text %in% itr)) {
+      body_text <- body_text[-which(body_text %in% itr)]
+    }
   }
   for (anl in add_near_line) {
     is_addline <- body_text %in% anl[1]
@@ -80,6 +95,17 @@ read_and_refactor_chapter <- function(input_path,
     }
   }
 
+
+
+  # Split the appendix.
+  apx_start <- grepl("\\\\appendix", body_text)
+  if (any(apx_start)) {
+    apx_idx   <- (which(apx_start)[1]):length(body_text)
+    apx_text  <- body_text[apx_idx[-1]]
+    body_text <- body_text[-apx_idx]
+  } else {
+    apx_text <- NA
+  }
 
 
   out <- list(title            = title,
@@ -144,13 +170,8 @@ read_and_save_multiple_chapters <- function(filepaths,
     # Save the appendix.
     if (!is.na(chapter$appendix[1])) {
       apx <- chapter$appendix
-      # %>%
-      #   str_replace("\\\\section", "\\\\chapter") %>%
-      #   str_replace("\\\\subsection", "\\\\section")
-      # ->
 
-
-      # Save the chapter tex.
+      # Save the chapter appendixtex.
       filecon <- file(paste0(outloc_ch, filepath_nm, "_appendix.tex"))
       writeLines(apx, con = filecon)
       close(filecon)
@@ -225,17 +246,48 @@ remove_preamble_lines <- c("\\newcommand{\\sumin}{\\sum_{i = 1}^n}",
                            "\\newcommand{\\wavg}{\\frac{1}{n} \\sum_{i=1}^n}",
                            "\\usepackage{upquote}}{}",
                            "\\usepackage{fullpage}",
+                           "\\usepackage{abstract}",
                            "\\usepackage{caption,subcaption}")
 
-add_near_line <- NULL
+add_near_line <- list(
+  c("\\end{abstract}", "\\newpage", 0),
+  c("\\begin{tabular}{llrrrrrrlrrrrrr}", "\\centerline{", -1),
+  c("Model & Fit function & MCMC & Marginal Likelihood & Nested \\\\ \\hline", "\\centerline{", -2),
+  c("Model & Fit function & MCMC & Marginal Likelihood & Nested \\\\ \\hline", "}", 11),
+  c("\\begin{tabular}{llrrrrrrlrrrrrr}", "}", 22),
+  c("\\section{Properties of the Power Batschelet Distribution} \\label{app:powbat}",
+    "\\chaptermark{Power Batschelet Properties}", 0),
+  c("\\section{Proof of variance overestimation using the aoristic fraction method} \\label{proofvar}",
+    "\\chaptermark{Variance overestimation proof}", 0)
+)
+
+
+hypo_bf_line_1 <- " BF_{10} = \\left[ \\int_0^{\\infty} I_0(R_0 \\kp) I_0(\\kp)^{-c} d\\kp \\right]^{-1}  \\int_0^{\\infty} I_0(R_0 \\kp) I_0(\\kp)^{-(n+c)} \\prod_{j = 1}^n \\sum_{i \\neq j }  \\exp \\left\\{ \\kp \\cos(\\theta_j - \\Theta_i) \\right\\} d\\kp."
+hypo_bf_line_2 <- " BF_{10} = \\left[ 2 \\pi \\int_0^{\\kp_u} \\sqrt{\\kp A(\\kp) A'(\\kp)} d\\kp \\right]^{-1}  \\int_0^{\\kp_u} \\frac{\\sqrt{\\kp A(\\kp) A'(\\kp) } }{I_0(\\kp)^{n+1} } \\prod_{j = 1}^n \\sum_{i \\neq j }  \\exp \\left\\{ \\kp \\cos(\\theta_j - \\Theta_i) \\right\\} d\\kp."
 replace_near_line <- list(
   c("\\label{tableANCOVA}", "\\begin{scriptsize}", -2),
   c("\\label{tableANCOVA}", "\\end{scriptsize}", 14),
   c("The inequality hypothesis tests show a large amount of support for the hypothesis that deaf participants perform better than the controls (\\( BF_{\\mu_{cn} > \\mu_{df}:\\mu_{cn} < \\mu_{df}} = \\) 267.82), and for the hypothesis that deaf participants perform better than sign language interpreters (\\( BF_{\\mu_{in} > \\mu_{df}:\\mu_{in} < \\mu_{df}} = \\) 52.28).",
   "The inequality hypothesis tests show a large amount of support for the hypothesis that deaf participants perform better than the controls (where we have \\( BF_{\\mu_{cn} > \\mu_{df}:\\mu_{cn} < \\mu_{df}} = \\) 267.82), and for the hypothesis that deaf participants perform better than sign language interpreters (\\( BF_{\\mu_{in} > \\mu_{df}:\\mu_{in} < \\mu_{df}} = \\) 52.28).", 0)
+  , c("Denoting the normalizing constant of either prior by \\( g = 2 \\pi \\int_0^{\\infty} I_0(R_0 \\kappa)I_0(\\kappa)^{-c} d\\kappa \\), the marginal likelihood for \\( H_1 \\) for these priors is",
+      "Denoting the normalizing constant of either prior by \\[ g = 2 \\pi \\int_0^{\\infty} I_0(R_0 \\kappa)I_0(\\kappa)^{-c} d\\kappa, \\] the marginal likelihood for \\( H_1 \\) for these priors is", 0)
+  , c(hypo_bf_line_1, "\\begin{align}", -1)
+  , c(hypo_bf_line_1, "\\end{align}", 1)
+  , c(hypo_bf_line_1,
+      " BF_{10} &= \\left[ \\int_0^{\\infty} I_0(R_0 \\kp) I_0(\\kp)^{-c} d\\kp \\right]^{-1} \\times \\\\ &\\int_0^{\\infty} I_0(R_0 \\kp) I_0(\\kp)^{-(n+c)} \\prod_{j = 1}^n \\sum_{i \\neq j }  \\exp \\left\\{ \\kp \\cos(\\theta_j - \\Theta_i) \\right\\} d\\kp.", 0)
+  , c(hypo_bf_line_2, "\\begin{align}", -1)
+  , c(hypo_bf_line_2, "\\end{align}", 1)
+  , c(hypo_bf_line_2,
+      " BF_{10} &= \\left[ 2 \\pi \\int_0^{\\kp_u} \\sqrt{\\kp A(\\kp) A'(\\kp)} d\\kp \\right]^{-1} \\times \\\\ & \\int_0^{\\kp_u} \\frac{\\sqrt{\\kp A(\\kp) A'(\\kp) } }{I_0(\\kp)^{n+1} } \\prod_{j = 1}^n \\sum_{i \\neq j }  \\exp \\left\\{ \\kp \\cos(\\theta_j - \\Theta_i) \\right\\} d\\kp.", 0)
+  , c("\\{ &85^\\circ, 135^\\circ, 135^\\circ, 140^\\circ, 145^\\circ, 150^\\circ, 150^\\circ, 150^\\circ, 160^\\circ, 285^\\circ, 200^\\circ, 210^\\circ, 220^\\circ, 225^\\circ, 270^\\circ \\},",
+      "&\\{ &85^\\circ, 135^\\circ, 135^\\circ, 140^\\circ, 145^\\circ, 150^\\circ, 150^\\circ, 150^\\circ, \\\\ &160^\\circ, 285^\\circ, 200^\\circ, 210^\\circ, 220^\\circ, 225^\\circ, 270^\\circ \\},", 0)
+  , c("All code for both the statistical tools, the simulation study and the paper is available online at \\url{https://github.com/keesmulder/BayesMultCircCovariates}.",
+      "All code for both the statistical tools, the simulation study and the paper is available online at \\\\ \\url{https://github.com/keesmulder/BayesMultCircCovariates}.", 0)
+  , c("The distribution of $\\theta$ is unknown, but let's assume it has a population mean direction $\\mu$. An unbiased estimator of $\\mu$ is given by $\\bar\\theta = \\text{atan2}(\\sum_{i=1}^n \\sin(\\theta_i), \\sum_{i=1}^n \\cos(\\theta_i))$ \\citep{mardia2009directional}. For aoristic data, an unbiased estimator of $\\mu$ is",
+      "The distribution of $\\theta$ is unknown, but let's assume it has a population mean direction $\\mu$. An unbiased estimator of $\\mu$ is given by \\[\\bar\\theta = \\text{atan2}(\\sum_{i=1}^n \\sin(\\theta_i), \\sum_{i=1}^n \\cos(\\theta_i))\\] \\citep{mardia2009directional}. For aoristic data, an unbiased estimator of $\\mu$ is", 0)
 )
 
-remove_line <- NULL
+remove_line <- "This work was supported by a ------ grant awarded to ------ from ----- (------)."
 
 read_and_save_multiple_chapters(filepaths,
                                 remove_preamble_lines = remove_preamble_lines,

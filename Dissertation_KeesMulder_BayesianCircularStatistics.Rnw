@@ -27,9 +27,19 @@
     \begin{center}\large#1\end{center}
     \vskip0.5em}%
 }
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 
 
+% Add abstract environment to book.
+\newcommand\abstractname{Abstract}  %%% here
+\makeatletter
+  \newenvironment{abstract}{%
+        \begin{center}%
+          {\bfseries \abstractname\vspace{-.5em}\vspace{\z@}}%
+        \end{center}%
+        \begin{small}
+        \quotation
+      }{\endquotation \end{small}}
+\makeatother
 
 % Manual additions to automatic newcommands.
 \DeclareMathOperator{\atantwo}{atan2}
@@ -39,10 +49,7 @@
 %%% Extra options to get JSS paper working.
 
 
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-
 \newcommand{\code}[1]{\texttt{\detokenize{#1}}}
-\lstset{language=R}
 
 \let\proglang=\textsf
 \newcommand{\pkg}[1]{\textbf{#1}}
@@ -136,8 +143,6 @@ p <- ggplot() +
           axis.title.y = element_blank(),
           axis.text.y =  element_blank())
 
-
-
 hjust <- 1
 vjust <- .5
 angle <- 0
@@ -179,8 +184,6 @@ p3 <- p +
   geom_point(data = dates3, mapping = aes(x, y))
 # + geom_point(data = data_frame(x = ymd("2019-01-01") + 190, y = c(ymin + .01)),
 #             mapping = aes(x, y), col = "tomato")
-
-
 grid.arrange(p1, p2, p3, ncol = 1)
 @
 \caption{Birthdays of our group of friends (black dots), and the average birthday (red line) progression for our group of friends, as friends keep arriving.}
@@ -212,6 +215,7 @@ ggplot() +
 # +
 #   geom_point(data = data_frame(x = atan2(sum(sin(rads)), sum(cos(rads))), y = c(.01)),
             # mapping = aes(x, y), col = "tomato")
+
 @
 \caption{On the circle, the circular mean (red line) of the sample of birthdays (black dots)  is a natural central tendency.}
 \label{birthday_example_circle}
@@ -364,10 +368,13 @@ As a result, it is able to perform Bayesian versions of most hypothesis tests co
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \mainmatter
-\chapter{Bayesian Estimation and Hypothesis Tests for a Circular GLM}\footnote{
-This chapter is published as Mulder, K., \& Klugkist, I. (2017). Bayesian estimation and hypothesis tests for a circular Generalized Linear Model. \textit{Journal of Mathematical Psychology, 80}, 4–14.
+\chapter{Bayesian Estimation and Hypothesis Tests for a Circular GLM}
 
-KM designed the statistical wrote the paper. IK provided feedback on earliers drafts of the paper.}
+% \footnote{
+% This chapter is published as Mulder, K., \& Klugkist, I. (2017). Bayesian estimation and hypothesis tests for a circular Generalized Linear Model. \textit{Journal of Mathematical Psychology, 80}, 4–14.
+%
+% KM designed the statistical wrote the paper. IK provided feedback on earliers drafts of the paper.}
+
 \chaptermark{Bayesian Circular GLM}
 \label{circglm}
 \input{chapters/circ_glm.tex}

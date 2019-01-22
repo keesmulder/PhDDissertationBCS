@@ -77,9 +77,19 @@
     \begin{center}\large#1\end{center}
     \vskip0.5em}%
 }
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 
 
+% Add abstract environment to book.
+\newcommand\abstractname{Abstract}  %%% here
+\makeatletter
+  \newenvironment{abstract}{%
+        \begin{center}%
+          {\bfseries \abstractname\vspace{-.5em}\vspace{\z@}}%
+        \end{center}%
+        \begin{small}
+        \quotation
+      }{\endquotation \end{small}}
+\makeatother
 
 % Manual additions to automatic newcommands.
 \DeclareMathOperator{\atantwo}{atan2}
@@ -89,10 +99,7 @@
 %%% Extra options to get JSS paper working.
 
 
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-
 \newcommand{\code}[1]{\texttt{\detokenize{#1}}}
-\lstset{language=R}
 
 \let\proglang=\textsf
 \newcommand{\pkg}[1]{\textbf{#1}}
@@ -142,7 +149,7 @@ Pondering over this somewhat odd question, the friends first conclude that the q
 \includegraphics[width=\maxwidth]{figure/birthday_example-1} 
 
 \end{knitrout}
-\caption{Birthdays of our group of friends (black dots), and average birthday (red line) progression  for our group of friends, as friends keep arriving.}
+\caption{Birthdays of our group of friends (black dots), and the average birthday (red line) progression for our group of friends, as friends keep arriving.}
 \label{birthday_example}
 \end{figure}
 
@@ -315,10 +322,13 @@ As a result, it is able to perform Bayesian versions of most hypothesis tests co
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \mainmatter
-\chapter{Bayesian Estimation and Hypothesis Tests for a Circular GLM}\footnote{
-This chapter is published as Mulder, K., \& Klugkist, I. (2017). Bayesian estimation and hypothesis tests for a circular Generalized Linear Model. \textit{Journal of Mathematical Psychology, 80}, 4–14.
+\chapter{Bayesian Estimation and Hypothesis Tests for a Circular GLM}
 
-KM designed the statistical wrote the paper. IK provided feedback on earliers drafts of the paper.}
+% \footnote{
+% This chapter is published as Mulder, K., \& Klugkist, I. (2017). Bayesian estimation and hypothesis tests for a circular Generalized Linear Model. \textit{Journal of Mathematical Psychology, 80}, 4–14.
+%
+% KM designed the statistical wrote the paper. IK provided feedback on earliers drafts of the paper.}
+
 \chaptermark{Bayesian Circular GLM}
 \label{circglm}
 \input{chapters/circ_glm.tex}

@@ -1,3 +1,9 @@
+\begin{abstract}
+
+Circular data are encountered throughout a variety of scientific disciplines, such as in eye movement research as the direction of saccades. Motivated by such applications, mixtures of peaked circular distributions are developed. The peaked distributions are a novel family of Batschelet-type distributions, where the shape of the distribution is warped by means of a transformation function. Because the Inverse Batschelet distribution features an implicit inverse that is not computationally feasible for large or complex data, an alternative called the Power Batschelet distribution is introduced. This distribution is easy to compute and mimics the behaviour of the Inverse Batschelet distribution. Inference is performed in both the frequentist framework, through Expectation-Maximization (EM) and the bootstrap, and the Bayesian framework, through MCMC. All parameters can be fixed, which may be done by assumption to reduce the number of parameters. Model comparison can be performed through information criteria or through bridge sampling in the Bayesian framework, which allows performing a wealth of hypothesis tests through the Bayes factor. An \texttt{R} package, \texttt{flexcircmix}, is available to perform these analyses.
+
+\end{abstract}
+\newpage
 
 Eye movements are commonly used to study aspects of cognition and its development \citep{itti2001computational, henderson2003human}. Eye movements consist of point fixations and movements between fixations called saccades. In particular, eye movements are of paramount importance in studying the top-down division of attention. For a review, see \citet{rayner2009eye}.
 
@@ -228,7 +234,7 @@ Note that the EM algorithm is not guaranteed to find a global maximum. Therefore
 
 In addition to obtaining estimates of the mixture model, it is essential to infer the uncertainty around these estimates. For mixture models, asymptotic standard errors obtained from inverting the Fisher Information generally require very large datasets in order to have desirable properties \citep{mclachlan2004finite}. Therefore, parameter uncertainty will need to be assessed either through bootstrapping, or through MCMC.
 
-Bootstrapping was implemented through a non-parametric bootstrap \citep{efron1994introduction}. In order to reduce computational burden, the EM algorithm of each bootstrap sample was given the full data estimates as starting values.
+Bootstrapping was implemented through a nonparametric bootstrap \citep{efron1994introduction}. In order to reduce computational burden, the EM algorithm of each bootstrap sample was given the full data estimates as starting values.
 
 \subsection{Bayesian inference}
 \label{sub:bayes}
@@ -244,7 +250,7 @@ Although subjective priors can be chosen in practical use, attention here will b
 
 The component weights \(\alpha_j\) are given the conjugate Dirichlet prior distribution, with vector prior parameter \(\boldsymbol{n}_0 \in \left[\mathbb{R}^+\right]^{J}.\) If \(\boldsymbol{n}_0 = \boldsymbol{1}_J,\) this prior is uninformative.
 
-The mean directions \(\mu_j\) are given a circular uniform prior, \(p(\mu_j) = [2\pi]^{-1}, \mu_j \in [-\pi, \pi),\) which is proper.
+The mean directions \(\mu_j \in [-\pi, \pi) \) are given a circular uniform prior, \(p(\mu_j) = [2\pi]^{-1}\) which is proper.
 
 The concentration parameters \(\kappa_j\) are given a constant prior \(p(\kappa_j) \propto 1,\) which is improper. In principle, the Jeffreys prior for the von Mises distribution could also be used. The Jeffreys prior is proportional to the square root of the determinant of the Fisher Information Matrix \( \mathcal{I}(\bph),\) so that for the von Mises distribution it is given by
 \begin{equation}
@@ -550,6 +556,7 @@ Finally, the assumption that the means can be fixed to the cardinal directions c
 \caption{Free-viewing fit using the Power Batschelet mixture model, for adults (left) and infants (right). Mean directions were fixed at \(\mu_1 = -\pi / 2 ~\text{(upward)},\mu_2 = 0 ~\text{(rightward)},\mu_3 = \pi / 2 ~\text{(downward)},\mu_4 = \pi ~\text{(leftward)}\).} 
 \label{tab:fv}
 \begingroup\scriptsize
+\centerline{
 \begin{tabular}{llrrrrrrlrrrrrr}
   && \multicolumn{6}{c}{Adults} & & \multicolumn{6}{c}{Infants} \\
 & &EM & \multicolumn{2}{c}{Boot. CI} & \multicolumn{3}{c}{Bayes (MCMC)} & &EM & \multicolumn{2}{c}{Boot. CI} & \multicolumn{3}{c}{Bayes (MCMC)}\\  \hline
@@ -573,6 +580,7 @@ Finally, the assumption that the means can be fixed to the cardinal directions c
    & $\sigma_{c4}$ & 0.89 & 0.81 & 0.96 & 1.00 & 0.79 & 1.07 &  & 1.16 & 1.04 & 1.26 & 1.16 & 0.75 & 1.39 \\ 
    \hline
 \end{tabular}
+}
 \endgroup
 \end{table}
 
@@ -584,7 +592,7 @@ In this paper, a new mixture model for flexible circular distributions was devel
 
 The method developed here can be used as a method to investigate whether two sets of saccade directions differ from each other, as shown in Section \ref{sub:fv}. This allows eye-tracking researchers to answer more complex questions about their saccade data, and draw inference where this was previously not possible.
 
-Although developed in the context of saccade directions, the method has potentially much broader applications. For example, wind directions are commonly modeled with circular distributions \citep{bowers2000directional, holzmann2006hidden, bao2010bias}, and sometimes feature peaked distributions. Also, observed arrival times can sometimes be governed by an event occuring at a single time point, causing strongly peaked distributions as well. Also, the method is a strong contender for any form of non-parametric fit on a set of univariate circular data. In that case, the current method functions as a flexible parametric alternative to a fully non-parametric analysis. The mixture of Batschelet distributions then allows much more extensive interpretation and inference than a non-parametric analysis typically would, at a minor cost of flexibility.
+Although developed in the context of saccade directions, the method has potentially much broader applications. For example, wind directions are commonly modeled with circular distributions \citep{bowers2000directional, holzmann2006hidden, bao2010bias}, and sometimes feature peaked distributions. Also, observed arrival times can sometimes be governed by an event occuring at a single time point, causing strongly peaked distributions as well. Also, the method is a strong contender for any form of nonparametric fit on a set of univariate circular data. In that case, the current method functions as a flexible parametric alternative to a fully nonparametric analysis. The mixture of Batschelet distributions then allows much more extensive interpretation and inference than a nonparametric analysis typically would, at a minor cost of flexibility.
 
 It should be noted that in general saccade data is time-series data where each observation is correlated with the previous observations. In the free-viewing paradigm, this autocorrelation is not of core interest, as the time series consist of only 3-5 saccades per viewed image. In general, fitting the saccade directions with a flexible model such as the one provided here while ignoring the time-series structure violates an assumption of the model. However, the time series structure of saccade directions usually does not follow a traditional autocorrelation structure, because, for example, reaching the end of a page results in negative autocorrelation. Therefore, this issue should be addressed separately. The current approach does allow a powerful parametric comparison of different groups of saccade direction data, even when ignoring the autocorrelation. For some applications however, interest might specifically lie in the autocorrelation structure, and for those settings different models might be preferred.
 
@@ -596,7 +604,6 @@ Finally, it should be noted that methods developed here are made accessible to e
 
 \section{Acknowledgements}
 
-This work was supported by a ------ grant awarded to ------ from ----- (------).
 
 
 

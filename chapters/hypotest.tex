@@ -1,3 +1,14 @@
+\begin{abstract}
+Circular data are data measured in angles or directions, which occur in a wide variety of scientific fields.
+An often investigated hypothesis is that of circular uniformity, or isotropy.
+Frequentist methods for assessing the circular uniformity null hypothesis exist, but do not allow the user faced with an insignificant result to distinguish lack of power and support for the null hypothesis.
+Bayesian hypothesis tests, which solve this issue and several others, are developed here. 
+They are easy to compute and perform well, which is shown in a simulation.
+Two alternative hypotheses are considered. 
+One is based on the von Mises distribution and performs well against unimodal alternatives. Another is based on a kernel density, which acts as an omnibus test against all other scenarios.
+Assessing the performance of the tests using different priors, it is shown that they are powerful and allow more elaborate conclusions than classical tests of circular uniformity.
+\end{abstract}
+\newpage
 
 Circular data are measured in angles or directions. They are frequently encountered in scientific fields as diverse as life sciences \citep{mardianew}, behavioural biology \citep{bulbert2015danger}, cognitive psychology \citep{kaas2006haptic}, bioinformatics \citep{mardia2008multivariate}, political sciences \citep{gill2010} and environmental sciences \citep{arnold2006recent}. In psychology, circular data occur often in motor behaviour research \citep{mechsner2001perceptual, mechsner2007bimanual, postma2008keep, baayen2012test}, as well as in the application of circumplex models \citep{gurtman2003circumplex, gurtman2009exploring, Leary1957}. Circular data differ from linear data in the sense that circular data are measured in a periodical sample space. For example, an angle of $1^{\circ}$ is quite close to an angle $359^{\circ},$ although linear intuition suggests otherwise.
 
@@ -20,7 +31,7 @@ Several other tests for circular uniformity exist, among which Rao's equal spaci
 
 
 
-\section{A Bayesian test for circular uniformity with a von Mises alternative} \label{isotestvm}
+\section{Tests with a von Mises alternative} \label{isotestvm}
 
 In this section, a Bayesian hypothesis test for circular uniformity against a von Mises alternative will be developed. The von Mises distribution is a natural distribution on the circle, given by
 \begin{equation}
@@ -113,7 +124,7 @@ This prior will be referred to as prior \ref{RAPrior}, and is displayed in Figur
 \label{fig:exampleprior}
 \end{figure}
 
-Denoting the normalizing constant of either prior by \( g = 2 \pi \int_0^{\infty} I_0(R_0 \kappa)I_0(\kappa)^{-c} d\kappa \), the marginal likelihood for \( H_1 \) for these priors is
+Denoting the normalizing constant of either prior by \[ g = 2 \pi \int_0^{\infty} I_0(R_0 \kappa)I_0(\kappa)^{-c} d\kappa, \] the marginal likelihood for \( H_1 \) for these priors is
 \begin{align}
 m_1(\bth) &= \int_0^{\infty}  \int_0^{2\pi} p(\mu, \kappa ) f (\bth \mid \mu, \kappa)  d\mu d\kappa \\
 &= g \left[ 2 \pi \right]^{-n} \int_0^{\infty}  \frac{I_0(R_0 \kappa)}{I_0(\kappa)^{c}}  I_0 (\kappa)^{-n} \int_0^{2\pi} \exp \left\{ R \kappa \cos \left( \bar{\theta} - \mu \right) \right\}  d\mu d\kappa \\
@@ -221,7 +232,7 @@ Compared to the error rates of the Rayleigh test, the current test has better po
 It can be seen that in some cases, such as in \ref{fig:ErrorRatePlotConjugate} with \(\kappa = 0.5\), increasing the sample size from 1 to 10 actually decreases the probability of selecting \(H_1\), even though it is the true hypothesis. This is a known property of some Bayesian hypothesis tests. It should be noted that in these cases, the Bayes factor is shows indecision. 
 
 
-\section{A Bayesian test for circular uniformity against a Kernel Density alternative}
+\section{Tests with a Kernel Density alternative}
 \label{sec:KDE}
 
 If the von Mises alternative is insufficient, the correct alternative distribution to test against is often unknown. A pure Bayesian approach could be to formulate a set of possible models, and choose between this set of alternatives. However, this requires attempting to fit an infinite set of models which might be hard to do in practice.
@@ -254,14 +265,14 @@ The Bayes factor is given by
 which is once again computed by univariate numerical integration.
 
 For priors of the type discussed in Section \ref{sub:ConjugatePrior}, the Bayes factor for some \( R_0\) and \(c\) can be written as
-\begin{equation}
- BF_{10} = \left[ \int_0^{\infty} I_0(R_0 \kp) I_0(\kp)^{-c} d\kp \right]^{-1}  \int_0^{\infty} I_0(R_0 \kp) I_0(\kp)^{-(n+c)} \prod_{j = 1}^n \sum_{i \neq j }  \exp \left\{ \kp \cos(\theta_j - \Theta_i) \right\} d\kp.
-\end{equation}
+\begin{align}
+ BF_{10} &= \left[ \int_0^{\infty} I_0(R_0 \kp) I_0(\kp)^{-c} d\kp \right]^{-1} \times \\ &\int_0^{\infty} I_0(R_0 \kp) I_0(\kp)^{-(n+c)} \prod_{j = 1}^n \sum_{i \neq j }  \exp \left\{ \kp \cos(\theta_j - \Theta_i) \right\} d\kp.
+\end{align}
 
 Another good option for the kernel density model specifically is the Jeffreys prior discussed in \ref{sub:jeffprior}, as it allows tuning \( \kp_u \) to accomodate reasonably high values for the concentration. For this prior, the Bayes factor can be written as
-\begin{equation}
- BF_{10} = \left[ 2 \pi \int_0^{\kp_u} \sqrt{\kp A(\kp) A'(\kp)} d\kp \right]^{-1}  \int_0^{\kp_u} \frac{\sqrt{\kp A(\kp) A'(\kp) } }{I_0(\kp)^{n+1} } \prod_{j = 1}^n \sum_{i \neq j }  \exp \left\{ \kp \cos(\theta_j - \Theta_i) \right\} d\kp.
-\end{equation}
+\begin{align}
+ BF_{10} &= \left[ 2 \pi \int_0^{\kp_u} \sqrt{\kp A(\kp) A'(\kp)} d\kp \right]^{-1} \times \\ & \int_0^{\kp_u} \frac{\sqrt{\kp A(\kp) A'(\kp) } }{I_0(\kp)^{n+1} } \prod_{j = 1}^n \sum_{i \neq j }  \exp \left\{ \kp \cos(\theta_j - \Theta_i) \right\} d\kp.
+\end{align}
 
 \subsection{Simulation}
 
@@ -304,7 +315,15 @@ In this section, the method will be applied to two examples.
 
 
 
-In a classic experiment on pigeon homing \citep{schmidt1963role}, the vanishing angles of homing pigeons were measured, with the initial question of whether the vanishing direction is circular uniform or follows some other circular distribution. Two datasets from this experiment are depicted in Figure \ref{fig:ex1}. In one experiment, also provided in \citet{fisher1995statistical}, fifteen homing pigeons were measured to have vanishing directions given by \[ \{ 85^\circ, 135^\circ, 135^\circ, 140^\circ, 145^\circ, 150^\circ, 150^\circ, 150^\circ, 160^\circ, 285^\circ, 200^\circ, 210^\circ, 220^\circ, 225^\circ, 270^\circ \} \] (Figure \ref{fig:ex1a}). In another dataset, provided in \citet{mardia2009directional}, ten pigeons were measured to have vanishing directions \(\{ 55^\circ, 60^\circ, 65^\circ, 95^\circ, 100^\circ, 110^\circ, 260^\circ, 275^\circ, 285^\circ, 295^\circ\}\) (Figure \ref{fig:ex1b}).
+In a classic experiment on pigeon homing \citep{schmidt1963role}, the vanishing angles of homing pigeons were measured, with the initial question of whether the vanishing direction is circular uniform or follows some other circular distribution. Two datasets from this experiment are depicted in Figure \ref{fig:ex1}. In one experiment, also provided in \citet{fisher1995statistical}, fifteen homing pigeons were measured to have vanishing directions given by 
+\begin{align}
+&\{ 85^\circ, 135^\circ, 135^\circ, 140^\circ, 145^\circ, 150^\circ, 150^\circ, 150^\circ, 160^\circ, 285^\circ, 200^\circ, 210^\circ, 220^\circ, 225^\circ, 270^\circ \},
+\end{align} 
+shown in Figure \ref{fig:ex1a}). In another dataset, provided in \citet{mardia2009directional}, ten pigeons were measured to have vanishing directions 
+\begin{align}
+&\{ 55^\circ, 60^\circ, 65^\circ, 95^\circ, 100^\circ, 110^\circ, 260^\circ, 275^\circ, 285^\circ, 295^\circ\},
+\end{align} 
+ shown in Figure \ref{fig:ex1b}).
 
 \begin{figure}
   \begin{subfigure}[t]{0.5\linewidth}\centering
@@ -398,6 +417,5 @@ Finally, the approach of this paper is to apply Bayesian hypothesis testing to b
 
 \section{Acknowledgements}
 
-This work was supported by a ------ grant awarded to ------ from ----- (------).
 
 

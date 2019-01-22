@@ -1,4 +1,5 @@
 \section{Properties of the Power Batschelet Distribution} \label{app:powbat}
+\chaptermark{Power Batschelet Properties}
 
 The probability density function of the Power Batschelet distribution is defined as
 \begin{equation} \label{eqn:powbatpdf}
@@ -27,7 +28,7 @@ so that, assuming $\theta_i \neq \mu ~ \forall ~ i \in 1, \dots, n,$ the score f
 \frac{\partial  \ell(\mu, \kappa, \lambda \mid \bth)}{\partial \lambda} &= - \left[K^\ast_{\kappa, \lambda}\right]^{-1}  \int_{-\pi}^\pi h(\theta, \mu, \kappa, \lambda) e^{\kappa \cos t^\ast_\lambda(\theta)} d\theta  + \sumin h(\theta_i, \mu, \kappa, \lambda)
 \end{align}
 where
-\begin{equation}
-h(\theta, \mu, \kappa, \lambda) = \frac{\partial \kappa \cos t^\ast_\lambda(\theta - \mu)}{\partial \lambda} =  \frac{ \kappa \gamma'(\lambda) \vert \theta - \mu \vert^{\gamlam}}{\pi^{\gamlam - 1}}  \sin \left( \frac{\vert \theta - \mu \vert^{\gamlam}}{\pi^{\gamlam - 1}} \right) \log\left(\frac{\pi}{\vert \theta - \mu \vert} \right)
-\end{equation}
-where \(\gamma'(\lambda) = \frac{2c}{(1 + c \lambda)}.\) Due to the form of the score functions, as well as the condition that $\theta_i \neq \mu ~ \forall ~ i \in 1, \dots, n,$ it is clear that the Hessian and Fisher Information will not be easy to work with. Therefore, it is preferred to work directly with the log-likelihood.
+\begin{align}
+h(\theta, \mu, \kappa, \lambda) &= \frac{\partial \kappa \cos t^\ast_\lambda(\theta - \mu)}{\partial \lambda} \\ &=  \frac{ \kappa \gamma'(\lambda) \vert \theta - \mu \vert^{\gamlam}}{\pi^{\gamlam - 1}}  \sin \left( \frac{\vert \theta - \mu \vert^{\gamlam}}{\pi^{\gamlam - 1}} \right) \log\left(\frac{\pi}{\vert \theta - \mu \vert} \right),
+\end{align}
+with \(\gamma'(\lambda) = \frac{2c}{(1 + c \lambda)}.\) Due to the form of the score functions, as well as the condition that $\theta_i \neq \mu ~ \forall ~ i \in 1, \dots, n,$ it is clear that the Hessian and Fisher Information will not be easy to work with. Therefore, it is preferred to work directly with the log-likelihood.

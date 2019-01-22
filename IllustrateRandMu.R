@@ -474,7 +474,7 @@ gg_plotExampleRMu <- function(th, res = 360,
 
     # Resultant vector.
     geom_segment(aes(x = 0, y = 0, xend = prog_x, yend = prog_y), df[n, ],
-                 arrow = arrow(length = the_length), alpha = alpha, linetype = "dashed") +
+                 arrow = arrow(length = the_length), alpha = alpha, linetype = "longdash") +
 
     # Text
     geom_text(aes(x, y, label = lab), th_bar_loc_df) +

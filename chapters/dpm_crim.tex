@@ -1,3 +1,7 @@
+\begin{abstract}
+Temporal data are ubiquitous throughout crime analysis, but victims often do not know the exact crime time, instead only providing a time interval. However, methods currently available and for this type of data, called aoristic data, are shown here to be systematically biased upwards in their estimate of the spread of the data and are limited in their inferential ability. To solve these issues, we propose two other statistical approaches to recover the true crime time density. The first is based on the likelihood, and can be used to obtain maximum likelihood estimates for circular data models using aoristic data. The second is a non-parametric approach based on the Dirichlet Process that is more flexible in the types of true crime time densities it can recover. In several examples, these methods are shown work very well in practice, allowing better prediction and inference for the crime time density. The methods developed here are available in an easy-to-use R package called \href{https://github.com/keesmulder/aoristicinference}{aoristicinference}. Future work should incorporate these methods more fully into spatio-temporal models.
+\end{abstract}
+\newpage
 
 Crime analysis is concerned with understanding and predicting crime by evaluating core aspects of crimes such as their location, time, targets, offenders and the availability of guardians. When tasked with understanding or predicting whether a certain crime is likely to occur, one must know where the crime is to occur, but also at what time of the day. Burglaries, for example, are less likely to occur in the evening. Temporal variation, such as the hour of day, contributes more to the overall variation in crime likelihood than any other type of variation \citep{felson2003simple}. However, in the crime analysis literature the temporal dimension is routinely ignored \citep{ratcliffe1998aoristic, ratcliffe2000aoristic}.
 
@@ -404,7 +408,6 @@ With these tools for addressing aoristic data, future work should focus on combi
 
 \section{Acknowledgements}
 
-This work was supported by a ------ grant awarded to ------ from ----- (------).
 
 The authors are grateful to Matthew Ashby for providing the data from \citet{ashby2013comparison}.
 

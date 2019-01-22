@@ -2,6 +2,7 @@
 
 
 \section{Proof of variance overestimation using the aoristic fraction method} \label{proofvar}
+\chaptermark{Variance overestimation proof}
 
 
 The fact that the variance of the data in density estimation methods such as the aoristic fraction method can be proven mathematically. First, for familiarity, this will be done for the linear case, where the data lies on the real line. Second, we will show the same proof for circular interval censored data, such as aoristic data.
@@ -34,13 +35,14 @@ For simplicity, we will assume that the data are centered so that $\hat\mu = 0.$
 \end{align}
 Then, expanding the bounds, and taking the expectation over $\dli$ and $\dui,$
 \begin{align}
-E_\dli [E_\dui [\hat{\sigma}^2_{ICH}]] &=  E_\dli \left[ E_\dui \left[ \frac{1}{3} \wavgmn 3 x_i^2 - 2\dli x_i + \dli^2 + \dui x_i - \dli \dui + 2 \dui x_i + \dui^2 \right] \right] \\
+E_\dli [E_\dui [\hat{\sigma}^2_{ICH}]] &=  E_\dli \Big[ E_\dui \Big[ \frac{1}{3} \wavgmn 3 x_i^2 - 2\dli x_i + \dli^2 + \dui x_i - \\ &
+\qquad \qquad \qquad \qquad \qquad \qquad \dli \dui + 2 \dui x_i + \dui^2 \Big]  \Big] \\
  &= \frac{1}{3} \left\{ \wavgmn 3 x_i^2 +  E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli \dui \right] \right]  \right\} \\
  &= \left\{ \wavgmn x_i^2  \right\}   + \frac{1}{3} \left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right] \right] \right\}.
 \end{align}
 We can recognize that $\wavgmn{x_i^2}$ is simply an unbiased estimator of the variance. Therefore, taking the expectation over $x$,
 \begin{align}
-E_x[E_\dli [E_\dui [\hat{\sigma}^2_{ICH}]]] &= E_x\left[ \wavgmn x_i^2 \right] +  \frac{1}{3}\left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right]\right] \right\} \\
+E_x[E_\dli [E_\dui [\hat{\sigma}^2_{ICH}]]] &= E_x \left[ \wavgmn x_i^2 \right] +  \\ & \qquad \qquad  \frac{1}{3}\left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right]\right] \right\} \\
 &= \sigma^2 +  \frac{1}{3}\left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right] \right] \right\}
 \end{align}
 However, note that  $\dli^2 + \dui^2 - \dli\dui \geq 0,$ with equality if and only if $\dli = \dui = 0,$ which would mean there was no interval-censoring. Because the second term is positive, we have that the variance is overestimated by $\hat{\sigma}^2_{ICH},$ that is, it is biased upwards. From this last equation, it is clear that the upwards bias depends on the distribution of $\dli$ and $\dui.$ Specifically, the bias is $E[\hat{\sigma}^2_{ICH} - \sigma] =   \frac{1}{3}\left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right]\right] \right\}.$
@@ -49,7 +51,7 @@ However, note that  $\dli^2 + \dui^2 - \dli\dui \geq 0,$ with equality if and on
 
 In the circular case, let $\theta \in [0, 2\pi)$ be a circular random variable, which again  is not directly observed, but rather only up to an interval $a_i \leq \theta \leq b_i,$ with again $a = \theta - \dli$ and $b = \theta + \dui.$ This time, the intervals are assumed to be bounded on the semicircle, that is $\dli \in [0, \pi),$ and $\dui \in [0, \pi).$ Again, assume that $\dli$ and $\dui$ have some unknown distribution.
 
-The distribution of $\theta$ is unknown, but let's assume it has a population mean direction $\mu$. An unbiased estimator of $\mu$ is given by $\bar\theta = \text{atan2}(\sum_{i=1}^n \sin(\theta_i), \sum_{i=1}^n \cos(\theta_i))$ \citep{mardia2009directional}. For aoristic data, an unbiased estimator of $\mu$ is
+The distribution of $\theta$ is unknown, but let's assume it has a population mean direction $\mu$. An unbiased estimator of $\mu$ is given by \[\bar\theta = \text{atan2}(\sum_{i=1}^n \sin(\theta_i), \sum_{i=1}^n \cos(\theta_i))\] \citep{mardia2009directional}. For aoristic data, an unbiased estimator of $\mu$ is
 \begin{equation}
 \tilde\theta = \text{atan2} \left( \sum_{i=1}^n \sin(a_i) + \sin(b_i), \sum_{i=1}^n \cos(a_i) + \cos(b_i) \right).
 \end{equation}
@@ -58,7 +60,11 @@ This is equal to taking the mean direction of the midpoints of the aorisitic int
 E_{\dli, \dui} \left[\sum_{i=1}^n \cos(a_i) + \cos(b_i)\right] &= \sum_{i=1}^n \cos(\theta_i) E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right] \\
 E_{\dli, \dui} \left[\sum_{i=1}^n \sin(a_i) + \sin(b_i)\right] &= \sum_{i=1}^n \sin(\theta_i) E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right].
 \end{align}
-Note that this last term $E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right]$ is the same for both components. Also, for any constant $q > 0$ we have $\text{atan2}(qs, qc) = \text{atan2}(s, c).$ So, if we set $q = E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right] > 0,$ we can see $\text{atan2}(q \sum_{i=1}^n \sin(\theta_i), q \sum_{i=1}^n \cos(\theta_i)) = \bar\theta,$ which is an unbiased estimator of $\mu$.
+Note that this last term $E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right]$ is the same for both components. Also, for any constant $q > 0$ we have $\text{atan2}(qs, qc) = \text{atan2}(s, c).$ So, if we set $q = E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right] > 0,$ we can see
+\begin{equation}
+\text{atan2}(q \sum_{i=1}^n \sin(\theta_i), q \sum_{i=1}^n \cos(\theta_i)) = \text{atan2}(\sum_{i=1}^n \sin(\theta_i), \sum_{i=1}^n \cos(\theta_i)) = \bar\theta,
+\end{equation}
+which is an unbiased estimator of $\mu$.
 
 The population variance is given by $1 - \rho$, where $\rho = \int_0^{2\pi} \cos(\theta - \mu) p(\theta) d\theta$ is the population resultant length. If we center data by subtracting the mean direction estimate  $\tilde\theta$ such that the mean direction is zero, then we simply have $\rho = \int_0^{2\pi} \cos\theta p(\theta) d\theta,$ with an unbiased estimator being $\wavg \cos\theta_i.$
 
@@ -73,7 +79,8 @@ The aoristic fraction method leads us to estimate the resultant length as
 \end{align}
 Then, taking the expectation over $\theta,$ $\dli$ and $\dui,$ recalling $E[\sin\theta] = 0,$ this gives
 \begin{align}
-E[\hrho] &= \wavg \frac{E[\sin \theta_i] E[\cos\dui] + E[\cos \theta_i] E[ \sin\dui] - E[\sin \theta_i] E[\cos\dli] + E[\cos \theta_i] E[\sin\dli]}{E[\dli] + E[\dui]} \\
+E[\hrho] &= \wavg \frac{1}{E[\dli] + E[\dui]} \Big[ E[\sin \theta_i] E[\cos\dui] + E[\cos \theta_i] E[ \sin\dui] \\
+& \qquad \qquad \qquad \qquad \qquad  - E[\sin \theta_i] E[\cos\dli] + E[\cos \theta_i] E[\sin\dli] \Big] \\
 &= \wavg \frac{E[\cos \theta_i] E[\sin\dui] + E[\cos \theta_i] E[\sin\dli]}{E[\dli] + E[\dui]}  \\
 &= \wavg \rho  \frac{E[\sin\dli] + E[\sin\dui]}{E[\dli] + E[\dui]}.
 \end{align}
@@ -89,7 +96,7 @@ Therefore, the estimate of the resultant length given by the aoristic fraction m
 
 \newpage
 
-\section{Von Mises based Dirichlet Process Mixture model} \label{dpmdetails}
+\section{Von Mises Dirichlet Process Mixture model} \label{dpmdetails}
 
 We propose to use a von Mises based Dirichlet Process mixture (DPM) model. The von Mises DPM model on circular observation $\theta_i \in [0, 2\pi)$ can be written as
 \begin{align}
@@ -114,7 +121,11 @@ For computation, we also require the prior predictive distribution of a data poi
 p(\tilde{y}\mid \mu_0, R_0, n_0) &= \int_{0}^\infty \int_0^{2\pi} p(\mu, \kp \mid \mu_0, R_0, n_0) \mathcal{M}(\tilde{y} \mid \mu, \kp) d\mu d\kp \\
 &= \frac{1}{C}  \frac{1}{(2\pi)^{n_0}} \int_{0}^\infty \frac{I_0(R_p\kp)}{I_0(\kp)^{n_p}} d\kp
 \end{align}
-where $p(\mu, \kp \mid \mu_0, R_0, n_0)$ is the base distribution $P_0$, $ \mathcal{M}(\tilde{y} \mid \mu, \kp)$ is the probability density function of the von Mises distribution, $R_p = \sqrt{\left(\cos{\tilde{y}} + R_0 \cos \mu_0 \right)^2 + \left(\sin{\tilde{y}} + R_0 \sin \mu_0 \right)^2},$ $n_p = n_0 + 1,$ and
+where $p(\mu, \kp \mid \mu_0, R_0, n_0)$ is the base distribution $P_0$, $ \mathcal{M}(\tilde{y} \mid \mu, \kp)$ is the probability density function of the von Mises distribution,
+\begin{equation}
+R_p = \sqrt{\left(\cos{\tilde{y}} + R_0 \cos \mu_0 \right)^2 + \left(\sin{\tilde{y}} + R_0 \sin \mu_0 \right)^2},
+\end{equation}
+$n_p = n_0 + 1,$ and
 \begin{equation}
 C = (2\pi)^{1 - n_0} \int_{0}^\infty \frac{I_0(R_0\kp)}{I_0(\kp)^{n_0}} d\kp
 \end{equation}

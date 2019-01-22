@@ -1,3 +1,7 @@
+\begin{abstract}
+Motivated by a study from cognitive psychology, we develop a Generalized Linear Model for circular data within the Bayesian framework, using the von Mises distribution. Although circular data arise in a wide variety of scientific fields, the number of methods for their analysis is limited. Our model allows inclusion of both continuous and categorical covariates. In a frequentist setting, this type of model is plagued by the likelihood surface of its regression coefficients, which is not logarithmically concave. In a Bayesian context, a weakly informative prior solves this issue, while for other paramaters noninformative priors are available. In addition to an MCMC sampling algorithm, we develop Bayesian hypothesis tests based on the Bayes factor for both equality and inequality constrained hypotheses. In a simulation study, it can be seen that our method performs well. The analyses are available in the package \href{https://github.com/keesmulder/CircGLMBayes}{CircGLMBayes}. Finally, we apply this model to a dataset from experimental psychology, and show that it provides valuable insight for applied researchers. Extensions to dependent observations are within reach by means of the multivariate von Mises distribution.
+\end{abstract}
+\newpage
 
 Circular data are measured in angles or directions, and are frequently encountered in scientific fields as diverse as life sciences \citep{mardianew}, behavioural biology \citep{bulbert2015danger}, cognitive psychology \citep{kaas2006haptic}, bioinformatics \citep{mardia2008multivariate}, political science \citep{gill2010} and environmental sciences \citep{lagona2016regression, lagona2015hidden, arnold2006recent}. In psychology, circular data occur often in motor behaviour research \citep{mechsner2001perceptual, mechsner2007bimanual, postma2008keep, baayen2012test}, as well as in the application of circumplex models \citep{Leary1957, gurtman2003circumplex, gurtman2009exploring}. Circular data differ from linear data in the sense that circular data are measured in a periodical sample space. For example, an angle of $1^{\circ}$ is quite close to an angle $359^{\circ},$ although linear intuition suggests otherwise.
 
@@ -619,7 +623,7 @@ The authors are grateful to A. Postma for providing the illustrative data.
 
 User-friendly code for the main analyses of the paper can be found in a GitHub package at \url{https://github.com/keesmulder/CircGLMBayes}.
 
-All code for both the statistical tools, the simulation study and the paper is available online at \url{https://github.com/keesmulder/BayesMultCircCovariates}.
+All code for both the statistical tools, the simulation study and the paper is available online at \\ \url{https://github.com/keesmulder/BayesMultCircCovariates}.
 
 
 
