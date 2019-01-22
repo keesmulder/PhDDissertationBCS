@@ -387,7 +387,7 @@ Table \ref{tableFacANOVA} shows the results of the simulation study. Once again,
 
 \begin{table}[btp]
 \centering
-\begin{small}
+\begin{scriptsize}
 \caption{Results of the simulation study for the ANCOVA scenario. 'Cov.' denotes the 95\% coverage for a specific parameter, while 'Acc.' denotes the acceptance probability. MCT denotes the mean computation time in seconds.} 
 \label{tableANCOVA}
 \begin{tabular}{rrrrrrrrrrrrrr}
@@ -403,7 +403,7 @@ Table \ref{tableFacANOVA} shows the results of the simulation study. Once again,
    &  & 100 & -0.00 & 0.70 & 13.18 & 0.69 & 0.80 & 0.82 & 0.78 & 0.40 & 0.70 & 0.46 & 4.31 \\ 
    \bottomrule
 \end{tabular}
-\end{small}
+\end{scriptsize}
 \end{table}
 
 
@@ -528,7 +528,7 @@ A more sophisticated approach is to employ the hypothesis tests that were develo
 
 This highlights that this method is conservative in supporting alternative hypotheses such as \( H_1 : \mu_{in} \neq \mu_{df}.\) This is a result of the circular uniform prior on \( \delta \), which suggests that more subjective approach could be less conservative and more likely to pick up on group differences. For example, a von Mises prior on \( \delta \) with \( \kappa > 0\) could be used. This subjective prior represents the knowledge that mean directions of different groups are usually somewhat close together. In this case, selection of the \( \kappa \) to be used becomes a core issue, which represents a trade-off between the amount additional power for the hypothesis test and the amount of (potentially unwanted) prior information included in the analysis.
 
-The inequality hypothesis tests show a large amount of support for the hypothesis that deaf participants perform better than the controls (\( BF_{\mu_{cn} > \mu_{df}:\mu_{cn} < \mu_{df}} = \) 267.82), and for the hypothesis that deaf participants perform better than sign language interpreters (\( BF_{\mu_{in} > \mu_{df}:\mu_{in} < \mu_{df}} = \) 52.28).
+The inequality hypothesis tests show a large amount of support for the hypothesis that deaf participants perform better than the controls (where we have \( BF_{\mu_{cn} > \mu_{df}:\mu_{cn} < \mu_{df}} = \) 267.82), and for the hypothesis that deaf participants perform better than sign language interpreters (\( BF_{\mu_{in} > \mu_{df}:\mu_{in} < \mu_{df}} = \) 52.28).
 
 
 

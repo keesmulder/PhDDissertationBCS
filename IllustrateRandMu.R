@@ -413,6 +413,105 @@ plotExampleRMu <- function(th, r=0.4, col=FALSE) {
   text(cos(th_bar/2)*0.6*r, sin(th_bar/2)*0.6*r, labels="$\\bar{\\theta}$")
 }
 
+
+
+
+
+
+
+library(ggplot2)
+library(tidyverse)
+library(viridis)
+
+gg_plotExampleRMu <- function(th, res = 360,
+                              alpha = .6) {
+
+  # Get sample size
+  n <- length(th)
+
+  the_length <- unit(0.15, "inches")
+  the_arrow <- arrow(type = "closed", length = the_length)
+
+
+
+  df <- data.frame(orig_x = cos(th), orig_y = sin(th),
+                   prog_x = cumsum(cos(th)), prog_y = cumsum(sin(th)),
+                   prev_x = c(0, cumsum(cos(th))[-n]),
+                   prev_y = c(0, cumsum(sin(th))[-n]),
+                   id = factor(1:n))
+
+  # Compute mean direction
+  th_bar <- meanDir(th)
+  th_bar_loc_df <- data_frame(x = cos(th_bar/2)*0.6,
+                              y = sin(th_bar/2)*0.6,
+                              lab = "$\\bar{\\theta}$")
+  ends <- df[n, c("prog_x", "prog_y")]
+  rloc <- 0.7 * ends + c(-1, 1) * 0.07 * ends
+  r_text_df <- data_frame(x = rloc[1, 1], y = rloc[1, 2], lab = "R")
+
+
+  # Circular sequences.
+  csq <- seq(0, 2*pi, length.out = res)
+  # Draw a part of a circle to the mean direction.
+  th_bar_pts <- seq(from=0, to=th_bar, length.out=100)
+
+
+  # Draw empty plot
+  p <- ggplot(data = df) +
+    # xlim(-lim, lim) + ylim(-lim, lim) +
+    xlab("") + ylab("") + theme_void() +
+    coord_fixed()
+
+
+  p +
+    # Arrows from origin to circle.
+    geom_segment(aes(x = 0, y = 0, xend = orig_x, yend = orig_y, col = id), df,
+                 arrow = the_arrow, alpha = alpha) +
+
+    # Sequential arrows to resultant vector.
+    geom_segment(aes(x = prev_x, y = prev_y, xend = prog_x, yend = prog_y, col = id), df,
+                 arrow = the_arrow, alpha = alpha) +
+
+    # Resultant vector.
+    geom_segment(aes(x = 0, y = 0, xend = prog_x, yend = prog_y), df[n, ],
+                 arrow = arrow(length = the_length), alpha = alpha, linetype = "dashed") +
+
+    # Text
+    geom_text(aes(x, y, label = lab), th_bar_loc_df) +
+    geom_text(aes(x, y, label = lab), r_text_df) +
+
+    # Circle.
+    geom_path(mapping = aes(x, y),
+                data = data_frame(x = cos(csq), y = sin(csq))) +
+    geom_path(mapping = aes(x, y),
+                data = data_frame(x = 0.5*cos(th_bar_pts), y = 0.5*sin(th_bar_pts)),
+              alpha = .4) +
+    geom_path(mapping = aes(x, y),
+                data = data_frame(x = c(0, 1), y = c(0, 0)),
+              alpha = .4, size = .9, color = "grey60") +
+
+
+    # Options.
+    theme(legend.position = "none") +
+    scale_colour_brewer(palette = "Accent")
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #
 # th <- c(1.7, -0.28, 1.1)-.2
 #

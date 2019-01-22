@@ -1,6 +1,6 @@
 \contentsline {chapter}{Introduction}{vii}{chapter*.2}
 \contentsline {chapter}{\numberline {1}Bayesian Estimation and Hypothesis Tests for a Circular GLM}{1}{chapter.1}
-\contentsline {section}{\numberline {1.1}Bayesian circular GLM}{3}{section.1.1}
+\contentsline {section}{\numberline {1.1}Bayesian circular GLM}{4}{section.1.1}
 \contentsline {subsection}{\numberline {1.1.1}Likelihood}{5}{subsection.1.1.1}
 \contentsline {subsection}{\numberline {1.1.2}Priors}{6}{subsection.1.1.2}
 \contentsline {subsubsection}{$p(\delta _j)$}{6}{section*.16}
@@ -18,7 +18,7 @@
 \contentsline {subsection}{\numberline {1.4.1}Simple regression}{14}{subsection.1.4.1}
 \contentsline {subsection}{\numberline {1.4.2}Factorial ANOVA}{15}{subsection.1.4.2}
 \contentsline {subsection}{\numberline {1.4.3}ANCOVA with four covariates}{16}{subsection.1.4.3}
-\contentsline {subsection}{\numberline {1.4.4}Bayes factors and posterior model probabilities}{17}{subsection.1.4.4}
+\contentsline {subsection}{\numberline {1.4.4}Bayes factors and posterior model probabilities}{16}{subsection.1.4.4}
 \contentsline {section}{\numberline {1.5}Example}{17}{section.1.5}
 \contentsline {subsection}{\numberline {1.5.1}ANOVA model}{19}{subsection.1.5.1}
 \contentsline {subsection}{\numberline {1.5.2}ANCOVA model}{21}{subsection.1.5.2}

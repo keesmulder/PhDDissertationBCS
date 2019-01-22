@@ -11,8 +11,9 @@ inside_curly <- Vectorize(function(string) {
 
 # Read a phd chapter and remove junk.
 read_and_refactor_chapter <- function(input_path,
-                                      in_text_removes = NULL,
-                                      add_afters = NULL) {
+                                      remove_line = NULL,
+                                      add_near_line = NULL,
+                                      replace_near_line = NULL) {
   text <- readLines(input_path)
 
   # Remove commented out lines.
@@ -45,14 +46,38 @@ read_and_refactor_chapter <- function(input_path,
   }
 
   # Preprocess read text.
-  # Remove in text removes.
-  for (itr in in_text_removes) {
+  # Remove, add and replace in text.
+  for (itr in remove_line) {
     body_text <- body_text[-grep(itr, body_text)]
   }
+  for (anl in add_near_line) {
+    is_addline <- body_text %in% anl[1]
 
-  for (af in add_afters) {
-    loc <- which(body_text %in% af[2])
-    body_text <- c(body_text[1:loc], af[1], body_text[(loc + 1):length(body_text)])
+    if (sum(is_addline) == 1) {
+
+      loc <- which(is_addline) + as.numeric(anl[3])
+      cat("    Adding at line ",
+          loc, " in ", title,
+          ":\n", body_text[loc], "\n with extra line: \n", anl[2])
+      body_text <- c(body_text[1:loc],
+                     anl[2],
+                     body_text[(loc + 1):length(body_text)])
+      cat("\n-\n")
+    }
+  }
+  for (rnl in replace_near_line) {
+    is_replaceline <- body_text %in% rnl[1]
+
+    if (sum(is_replaceline) == 1) {
+      loc <- which(body_text %in% rnl[1]) + as.numeric(rnl[3])
+      cat("    Replacing line ",
+          loc, " in ", title,
+          ":\n", body_text[loc], "\n with: \n", rnl[2])
+      body_text <- c(body_text[1:(loc - 1)],
+                     rnl[2],
+                     body_text[(loc + 1):length(body_text)])
+      cat("\n-\n")
+    }
   }
 
 
@@ -68,12 +93,15 @@ read_and_refactor_chapter <- function(input_path,
   out
 }
 
+# add_near_line is a 3-vector with (the line where to add, the line to add, number to move)
+# replace_near_line is a 3-vector with (the line where to add, the line to add, number to move)
 
 read_and_save_multiple_chapters <- function(filepaths,
                                             outloc = "C:/Dropbox/Research/PhDDissertationBCS/",
                                             remove_preamble_lines = character(0),
-                                            in_text_removes = NULL,
-                                            add_afters = NULL,
+                                            remove_line = NULL,
+                                            add_near_line = NULL,
+                                            replace_near_line = NULL,
                                             copy_figs = TRUE) {
 
   outloc_ch <- paste0(outloc, "chapters/")
@@ -92,11 +120,13 @@ read_and_save_multiple_chapters <- function(filepaths,
   # Refactor and save.
   for (filepath_nm in nms) {
     filepath <- filepaths[filepath_nm]
+    cat("Reading file ", filepath, ":\n", sep = "")
     chapter <- read_and_refactor_chapter(filepath,
-                                         in_text_removes,
-                                         add_afters)
-
+                                         remove_line,
+                                         add_near_line,
+                                         replace_near_line)
     cat("Read chapter '", chapter$title, "'. Processing...\n", sep = "")
+
 
     # Add preamble lines/
     preamble_lines <- c(preamble_lines,
@@ -139,7 +169,8 @@ read_and_save_multiple_chapters <- function(filepaths,
 
     }
 
-    cat("---\n")
+    cat("----------------------\n")
+    cat("----------------------\n")
   }
 
 
@@ -175,18 +206,6 @@ read_and_save_multiple_chapters <- function(filepaths,
 }
 
 
-manual_fixes <- c("\\newcommand{\\sumin}{\\sum_{i = 1}^n}",
-                  "\\newcommand{\\bX}{\\boldsymbol{\\Theta}}",
-                  "\\newcommand{\\bx}{\\boldsymbol{\\theta}}",
-                  "\\newcommand{\\thedata}{\\bt, \\bX, \\bd}",
-                  "\\newcommand{\\wavg}{\\frac{1}{n} \\sum_{i=1}^n}",
-                  "\\usepackage{upquote}}{}",
-                  "\\usepackage{fullpage}",
-                  "\\usepackage{caption,subcaption}")
-in_text_removes <- c("^\\\\hypertarget")
-# add_afters      <- list(c("\\\\section"))
-
-
 resfol <- "C:/Dropbox/Research/"
 
 filepaths <- c(circ_glm = paste0(resfol, "BayesMultCircCovariates/Article JMP/EstAndHypTestBayesCircGLM.tex"),
@@ -196,5 +215,32 @@ filepaths <- c(circ_glm = paste0(resfol, "BayesMultCircCovariates/Article JMP/Es
                dpm_crim = paste0(resfol, "AoristicAnalysis/Spread/Article/DealingWithPartiallyObservedCrimeTimes.tex"),
                circbays = paste0(resfol, "circbayes_paper/circbayes_RPackageForBayesianCircularStatistics/circbayes_RPackageForBayesianCircularStatistics.tex"))
 
-read_and_save_multiple_chapters(filepaths, remove_preamble_lines = manual_fixes,
-                                in_text_removes = NULL)
+
+
+
+remove_preamble_lines <- c("\\newcommand{\\sumin}{\\sum_{i = 1}^n}",
+                           "\\newcommand{\\bX}{\\boldsymbol{\\Theta}}",
+                           "\\newcommand{\\bx}{\\boldsymbol{\\theta}}",
+                           "\\newcommand{\\thedata}{\\bt, \\bX, \\bd}",
+                           "\\newcommand{\\wavg}{\\frac{1}{n} \\sum_{i=1}^n}",
+                           "\\usepackage{upquote}}{}",
+                           "\\usepackage{fullpage}",
+                           "\\usepackage{caption,subcaption}")
+
+add_near_line <- NULL
+replace_near_line <- list(
+  c("\\label{tableANCOVA}", "\\begin{scriptsize}", -2),
+  c("\\label{tableANCOVA}", "\\end{scriptsize}", 14),
+  c("The inequality hypothesis tests show a large amount of support for the hypothesis that deaf participants perform better than the controls (\\( BF_{\\mu_{cn} > \\mu_{df}:\\mu_{cn} < \\mu_{df}} = \\) 267.82), and for the hypothesis that deaf participants perform better than sign language interpreters (\\( BF_{\\mu_{in} > \\mu_{df}:\\mu_{in} < \\mu_{df}} = \\) 52.28).",
+  "The inequality hypothesis tests show a large amount of support for the hypothesis that deaf participants perform better than the controls (where we have \\( BF_{\\mu_{cn} > \\mu_{df}:\\mu_{cn} < \\mu_{df}} = \\) 267.82), and for the hypothesis that deaf participants perform better than sign language interpreters (\\( BF_{\\mu_{in} > \\mu_{df}:\\mu_{in} < \\mu_{df}} = \\) 52.28).", 0)
+)
+
+remove_line <- NULL
+
+read_and_save_multiple_chapters(filepaths,
+                                remove_preamble_lines = remove_preamble_lines,
+                                add_near_line = add_near_line,
+                                replace_near_line = replace_near_line,
+                                remove_line = remove_line)
+
+
