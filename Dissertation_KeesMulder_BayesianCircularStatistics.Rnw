@@ -143,8 +143,8 @@ vjust <- .5
 angle <- 0
 ylinemax <- 0.2
 direction <- "both"
-linesize <- 1.5
-linecol  <- "grey70"
+linesize <- 1.6
+linecol  <- "tomato"
 p1 <- p +
   # geom_text_repel(data = dates1, direction = direction,
   #                         mapping = aes(x, y, label = format(x, "%b %d")),
@@ -183,7 +183,7 @@ p3 <- p +
 
 grid.arrange(p1, p2, p3, ncol = 1)
 @
-\caption{Birthdays of our group of friends (black dots), and average birthday (dotted line) progression  for our group of friends, as friends keep arriving.}
+\caption{Birthdays of our group of friends (black dots), and the average birthday (red line) progression for our group of friends, as friends keep arriving.}
 \label{birthday_example}
 \end{figure}
 
@@ -202,17 +202,18 @@ First, the average birthday of July 9th is a summer day, and is nowhere near the
 \begin{figure}
 <<birthday_example_circle, echo = FALSE>>=
 rads <- as.numeric(dates3$x - ymd("2019-01-01")) * 2 * pi / 365
-ggplot() + geom_point(data = data.frame(x = rads, y = .05), mapping = aes(x, y)) +
+ggplot() +
+  geom_line(data = data_frame(x = atan2(sum(sin(rads)), sum(cos(rads))), y = c(-.02, 0.12)),
+            mapping = aes(x, y), col = linecol, size = linesize) +
+  geom_point(data = data.frame(x = rads, y = .05), mapping = aes(x, y)) +
   theme_void() +
   circbayes:::gg_circular_elems(r = 1, start = 0, direction = 1) +
-  circbayes:::gg_inside_labels("months_abb", nticks = 12, labdist = .17) +
-  geom_line(data = data_frame(x = atan2(sum(sin(rads)), sum(cos(rads))), y = c(-.02, 0.12)),
-            mapping = aes(x, y), col = "grey60", size = 1.3)
+  circbayes:::gg_inside_labels("months_abb", nticks = 12, labdist = .17)
 # +
 #   geom_point(data = data_frame(x = atan2(sum(sin(rads)), sum(cos(rads))), y = c(.01)),
             # mapping = aes(x, y), col = "tomato")
 @
-\caption{On the circle, the circular mean (straight line) of the sample of birthdays (black dots)  is a natural central tendency.}
+\caption{On the circle, the circular mean (red line) of the sample of birthdays (black dots)  is a natural central tendency.}
 \label{birthday_example_circle}
 \end{figure}
 
