@@ -405,9 +405,10 @@ Author contributions: KM and IK designed the study. KM developed the statistical
 \blfootnote{This chapter is submitted to Journal of Mathematical Psychology as Mulder, K., Klugkist, I., van Renswoude, D. \& Visser, I. (tbd) Mixtures of Peaked Power Batschelet Distributions for Circular Data  With Application to Saccade Directions.
 
 Author contributions: KM, DVR, IV and IK developed the goals for the study. KM developed the statistical methods, simulation study and software package. DVR and IV provided the data for the motivating example. KM wrote the paper. IK, IV and DVR provided feedback on written work.}
-
+\vspace{-2cm}
 \input{chapters/flexcmix.tex}
 % APPENDIX
+\newpage
 \begin{subappendices}
 \input{chapters/flexcmix_appendix.tex}
 \end{subappendices}
@@ -448,33 +449,29 @@ Author contributions: KM developed the new software package, building on package
 
 \chapter{Nederlandse samenvatting}
 
-Circulaire data bevinden zich op een periodieke schaal. Dat wil zeggen, een circulaire is gemeten in richtingen of hoeken, waarbij de uiteinden van de schaal naast elkaar liggen, zoals $359^\circ$ en $0^\circ$ dat doen. Zo kun je bijvoorbeeld denken aan het probleem van het bepalen van de gemiddelde verjaardag van een groep vrienden. Omdat het jaar na 31 december direct doorgaat in 1 januari, is het moeilijk om direct een gemiddelde te kiezen.
+Circulaire data bevinden zich op een periodieke schaal. Dat wil zeggen, een circulaire is gemeten in richtingen of hoeken, waarbij de uiteinden van de schaal naast elkaar liggen, zoals $359^\circ$ en $0^\circ$ dat doen. Zo kun je bijvoorbeeld denken aan het probleem van het bepalen van de gemiddelde verjaardag van een groep vrienden. Omdat het jaar na 31 december direct doorgaat in 1 januari, is het moeilijk om direct een goede keus voor het gemiddelde te kiezen. Simpelweg het aantal dagen tellen vanaf 1 januari levert rare resultaten op, bijvoorbeeld als twee mensen in januari en december zijn geboren: dan ligt hun gemiddelde verjaardag in de zomer. Voor circulaire data zijn dus aparte statistische methoden nodig.
 
-De tak van de statistiek die \textit{circulaire statistiek} wordt genoemd geeft ons een oplossing in de vorm van een nieuwe definitie van het gemiddelde, namelijk de gemiddelde richting.
+We komen deze circulaire data tegen in allerlei applicaties. Zo kun je denken aan windrichtingen gemeten met een windhaan, het uur van de dag waarop een patienten op de eerste hulp binnen komen of de richting waarop een kikker wegduikt als hij door een vogel of een slang wordt bedreigd (voor wie benieuwd is: van een slang weg, maar naar een vogel toe in de hoop er onderdoor te glippen \citep{bulbert2015danger}). In sociale wetenschappen voegen we daar bijvoorbeeld ook nog de zogenheten \textit{circumplexmodellen} aan toe. De roos van Leary \citep{Leary1957} is een van de bekendste voorbeelden. Circumplexmodellen zijn latente factormodellen, waarbij dus een onobserveerbare eigenschap ge\"extraheerd wordt uit een vragenlijst. Echter, waar normaal gesproken de latente factoren als re\"eele getallen worden weergegeven, worden ze in een circumplex model weergegeven als een circulaire variabele, door in de correlatiematrix een circulaire ordening te vereisen \citep{browne1992circumplex}. Dit levert een meetinstrument op met minder parameters waarvan de interpretatie makkelijker is.
 
-Zoals als categorische en continue data een verschillende statistische aanpak vereisen, is circulaire data een type data waarvoor aparte methoden nodig zijn.
+Deze verschillende voorbeelden leveren obervaties op, die we $\theta$ noemen, die vervolgens gemeten is in bijvoorbeeld graden ($\theta \in [0^\circ - 360^\circ)$), uren van de dag (op de 24-uursklok, dus $\theta \in [$0:00$ - $24:00)), eenheidsvectoren of radialen.
+
+De tak van de statistiek zich bezig houdt met analyse van circulaire data wordt \textit{circulaire statistiek} genoemd. De circulaire statistiek biedt een nieuwe definitie van het gemiddelde en de variantie. Het circulaire gemiddelde, de \textit{gemiddelde richting}, van een dataset $\boldsymbol{\theta} = \{\theta_1, \dots, \theta_n\}$ wordt berekend door te kijken naar de richting waarin de resultante vector $(\sumin\cos\theta_i, \sumin\sin\theta_i)^T$ zich bevindt (voor een voorbeeld, zie Figuur~\ref{ExampleRMu} voorin dit boek). De variantie is gerelateerd aan de lengte $R$ van de resultante vector. Voorbij deze basis bestaat het veld van circulaire statistiek uit een grote vari\"eteit van modellen voor verschillende onderzoeksvragen, zoals regressiemodellen, hypothesetoetsen en het schatten van multimodale kansverdelingen. Voor een overzicht, zie \citet{fisher1995statistical}, \citet{mardia2009directional} of \citet{pewsey2013circular}.
+
+Het doel van dit proefschrift is om Bayesiaanse circulaire statistiek te ontwikkelen waarmee praktische problemen opgelost kunnen worden uit verschillende onderzoeksvelden. Daarom is contact gezocht met verscheidene onderzoekers die werken met circulaire data. Hierin zijn twee subdoelen te onderscheiden.
+
+Eerst moeten de eigenschappen van basale Bayesiaanse circulaire methoden worden bestudeerd en begrepen. Daarnaast moeten deze methoden beschikbaar zijn in makkelijk te gebruiken software-pakketten, zodat gevorderde  kennis van wiskundige statistiek geen vereiste is om de modellen te kunnen draaien. Om dit te bewerkstelligen zijn voor het merendeel van de methoden in deze dissertatie gebruikersvriendelijke softwarepakketen gemaakt in de statistische programmeertaal \proglang{R}.
+
+Ten tweede is het belangrijk om gespecialiseerde methoden te ontwikkelen voor specifieke problemen. In dit proefschrift staan enkele van zulke problemen, waarin een probleem van een toegepaste onderzoeker in sociale wetenschappen worden opgelost aan de hand van geavanceerde Bayesiaanse circulaire statistische methoden.
+
+Deze doelen zullen aangepakt worden in een zestal hoofdstukken. Hierna volgt een kort overzicht van de belangrijkste bevindingen van elk.
+
+In \textbf{Hoofdstuk~\ref{circglm}} ontwikkelen we regressiemodellen met een circulaire uitkomst. Dit leidt tot een Bayesiaanse versie van het circulaire regressiemodel van \citet{fisher1992regression}, in essentie een circulaire vorm van het gegeneraliseerde lineaire model (GLM). Omdat het oorspronkelijke model een andere vorm aanneemt als de arbitraire labeling van categorische predictors wordt veranderd, passen we dit model aan door categorische predictoren apart te behandelen. Daarnaast wordt Bayesiaanse inferentie mogelijk gemaakt, zowel schatting als hypothesetoetsing, door middel van Markovketting Monte Carlo (MKMC) methoden. Dit nieuwe model wordt toegepast op een voorbeeld uit de cognitieve psychologie.
+
+\textbf{Hoofdstuk~\ref{hypotest}} behandelt Bayesiaanse hypothesetoetsen voor circulaire uniformiteit. Bayesiaanse hypothesetoetsen hebben het voordeel dat ze niet alleen een verwerping of niet-verwerping van een nulhypothese kunnen opleveren, maar ook evidentie kunnen vinden voor het aannemen van de nulhypothese. Dit is een gewenste eigenschap als we testen of een circulaire dataset uniform verdeeld is over de cirkel of niet. We ontwikkelen verschillende hypothesetoetsen, en testen deze in een simulatiestudie.
+
+Het volgende hoofdstuk,
 
 
-Het doel van dit proefschrift is om Bayesiaanse circulaire statistiek te ontwikkelen waarmee problemen opgelost kunnen worden uit verschillende onderzoeksvelden. Daarom is contact gezocht met verscheidene onderzoekers die werken met circulaire data. Hierin zijn twee subdoelen te onderscheiden.
-
-Eerst moeten de eigenschappen van basale Bayesiaanse circulaire methoden worden bestudeerd en begrepen. Daarnaast moeten deze methoden beschikbaar zijn in makkelijk te gebruiken software-pakketten, zodat gevorderde  kennis van wiskundige statistiek geen vereiste is om de modellen te kunnen draaien.
-
-Ten tweede is het belangrijk om gespecialiseerde methoden te hebben voor specifieke problemen. In dit proefschrift staan drie hoofdstukken waarin een probleem van een toegepaste onderzoeker in sociale wetenschappen worden opgelost aan de hand van geavanceerde circulaire statistische methoden.
-
-
-
-
-%
-%
-%
-%
-% The goal of this dissertation is to develop Bayesian methods for circular statistics which solve practical research problems. To this end, it has been a goal to develop collaborations with researchers and organizations working in domains which encounter circular data. Two subgoals can be identified.
-%
-% First, a solid foundation must be built for the use of Bayesian circular statistics. That is, the properties of these methods must be well-studied and understood. In addition, to allow applied researchers to employ these methods, they must also be available in user-friendly software packages. To this end, the vast majority of methods in this dissertation is available in easy-to-use \proglang{R} packages.
-%
-% Second, specialized models must be developed which are useful for specific problems. While for some problems one can build on general methods for basic questions, researchers often require statistical methods that are geared toward the specific structure of their data or the research questions. Bayesian solutions for a selection of such problems are presented throughout this work.
-%
-% These goals will be prevalent throughout the following six chapters of this dissertation. The chapters will be shortly described here.
 %
 % In \textbf{Chapter~\ref{circglm}}, regression with a circular outcome is addressed. A Bayesian version of the circular regression model by \citet{fisher1992regression} is developed. This model is essentially a Generalized Linear Model (GLM) where a linear prediction is mapped onto a circular outcome space, while the residuals have the von Mises distribution. It is shown that if we add categorical variables as dummy variables into the model, that the shape of the regression function is dependent on the arbitrary labeling of the groups.
 % %This is undesirable, as it should not matter whether we choose a labeling of, say, $A = 0, B = 1$ or another labeling of $A = 1, B = 0.$
