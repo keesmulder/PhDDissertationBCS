@@ -13,11 +13,16 @@ inside_curly <- Vectorize(function(string) {
 read_and_refactor_chapter <- function(input_path,
                                       remove_line = NULL,
                                       add_near_line = NULL,
-                                      replace_near_line = NULL) {
+                                      replace_near_line = NULL,
+                                      all_text_gsubs = NULL) {
   text <- readLines(input_path)
 
   # Remove commented out lines.
   strip_text <- text[!grepl("^%", text)]
+
+  for (atg in all_text_gsubs) {
+    strip_text <- gsub(atg[1], atg[2], strip_text, ignore.case = TRUE)
+  }
 
   # Information to extract as metadata.
   pkg_lines  <- grep("\\usepackage", strip_text, value = TRUE)
@@ -65,6 +70,9 @@ read_and_refactor_chapter <- function(input_path,
       body_text <- body_text[-which(body_text %in% itr)]
     }
   }
+
+
+
   for (anl in add_near_line) {
     is_addline <- body_text %in% anl[1]
 
@@ -107,6 +115,13 @@ read_and_refactor_chapter <- function(input_path,
     apx_text <- NA
   }
 
+  # Check if the acknowledgements are now empty.
+  if (grepl("FlexibleModelingOfSaccadeDirectionDistributions", input_path)
+      | grepl("BayesIsop", input_path)) {
+    ack_loc <- grep("section\\{Acknowledgements", body_text)
+    body_text <- body_text[-(ack_loc:length(body_text))]
+  }
+
 
   out <- list(title            = title,
               authors          = authors,
@@ -119,6 +134,11 @@ read_and_refactor_chapter <- function(input_path,
   out
 }
 
+
+
+
+
+
 # add_near_line is a 3-vector with (the line where to add, the line to add, number to move)
 # replace_near_line is a 3-vector with (the line where to add, the line to add, number to move)
 
@@ -128,7 +148,8 @@ read_and_save_multiple_chapters <- function(filepaths,
                                             remove_line = NULL,
                                             add_near_line = NULL,
                                             replace_near_line = NULL,
-                                            copy_figs = TRUE) {
+                                            copy_figs = TRUE,
+                                            all_text_gsubs = NULL) {
 
   outloc_ch <- paste0(outloc, "chapters/")
   outloc_ch
@@ -150,7 +171,8 @@ read_and_save_multiple_chapters <- function(filepaths,
     chapter <- read_and_refactor_chapter(filepath,
                                          remove_line,
                                          add_near_line,
-                                         replace_near_line)
+                                         replace_near_line,
+                                         all_text_gsubs = all_text_gsubs)
     cat("Read chapter '", chapter$title, "'. Processing...\n", sep = "")
 
 
@@ -238,6 +260,8 @@ filepaths <- c(circ_glm = paste0(resfol, "BayesMultCircCovariates/Article JMP/Es
 
 
 
+# These terms will be replaced throughout all the papers.
+all_text_gsubs <- list(c("circglmbayes", "circglmbayes"))
 
 remove_preamble_lines <- c("\\newcommand{\\sumin}{\\sum_{i = 1}^n}",
                            "\\newcommand{\\bX}{\\boldsymbol{\\Theta}}",
@@ -293,6 +317,7 @@ read_and_save_multiple_chapters(filepaths,
                                 remove_preamble_lines = remove_preamble_lines,
                                 add_near_line = add_near_line,
                                 replace_near_line = replace_near_line,
-                                remove_line = remove_line)
+                                remove_line = remove_line,
+                                all_text_gsubs = all_text_gsubs)
 
 

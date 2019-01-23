@@ -32,6 +32,9 @@
 % Add abstract environment to book.
 \newcommand\abstractname{Abstract}  %%% here
 \makeatletter
+\def\blfootnote{\xdef\@thefnmark{}\@footnotetext}
+\makeatother
+\makeatletter
   \newenvironment{abstract}{%
         \begin{center}%
           {\bfseries \abstractname\vspace{-.5em}\vspace{\z@}}%
@@ -246,12 +249,13 @@ Interestingly, circular data tend to be encountered in a niche of almost every s
 
 In meteorology, one is often concerned with modeling wind directions \citep{bowers2000directional}. Wind directions can be directly measured, for example using a wind vane. A question of interest could be whether a certain condition, such as the SO2 concentration, is related to the observed wind direction \citep{garcia2013exploring}. Another question is to extract underlying groups of wind direction, using mixture models \citep{masseran2013fitting}.
 
-In bioinformatics, interest is can be in modeling torsional angles in molecules such as proteins \citep{mardia2008multivariate}. For such problems, we wish to obtain a joint distribution of two angles, correctly capturing how these angles are correlated.
+In biology, circular data can arise while investigating vanishing directions of birds. For example, in one experiment, the question of interest how homing pigeons use magnetic information to navigate \citep{gagliardo2008navigational}. To this end, groups of homing pigeons were subjected to sections of their nerves in different ways. Their navigational ability was compared to a control group by measuring in what direction the pigeons would fly when released. A different circular distribution, here, tells us that the bisected nerve is useful in navigation.
 
 In political science, quantifying how average crime times differ between cities can influence policy \citep{gill2010}. Here, the problem requires us to model the crime times over the hours of the day, and infer in what way cities differ in their crime time patterns.
 
-While these problem vary wildly in flavor, all require a toolkit that can deal with circular data. Other examples can be found in fields such as biology \citep{nunez2018bayesian}, aerospace \citep{kurz2017deterministic},  machine learning \citep{gopal2014mises}, signal processing \citep{traa2013wrapped}, life sciences \citep{mardianew}, motor behaviour research \citep{mechsner2001perceptual, mechsner2007bimanual, postma2008keep, baayen2012test}, behavioural biology \citep{bulbert2015danger}, psychology \citep{Leary1957, gurtman2003circumplex, kaas2006haptic,  gurtman2009exploring} and environmental sciences \citep{lagona2016regression, lagona2015hidden, arnold2006recent}.
+Other examples can be found in fields such as aerospace \citep{kurz2017deterministic},  machine learning \citep{gopal2014mises}, signal processing \citep{traa2013wrapped}, behavioural biology \citep{nunez2018bayesian}, life sciences \citep{mardianew}, behavioural biology \citep{bulbert2015danger} and environmental sciences \citep{lagona2016regression, lagona2015hidden, arnold2006recent}.
 
+ While these problem vary wildly in flavor, all require a toolkit that can deal with circular data. In this dissertation, most motivating examples come from the field of social and behavioural sciences, where circular data is obtained from eye movements \citep{tatler2009prominence}, experimental designs in  motor behaviour research \citep{mechsner2001perceptual, kaas2006haptic, mechsner2007bimanual, postma2008keep} and the aforementioned circumplex models \citep{Leary1957, gurtman2003circumplex,  gurtman2009exploring}, to name a few.
 
 
 \subsection*{Units}
@@ -369,14 +373,13 @@ As a result, it is able to perform Bayesian versions of most hypothesis tests co
 
 \mainmatter
 \chapter{Bayesian Estimation and Hypothesis Tests for a Circular GLM}
-
-% \footnote{
-% This chapter is published as Mulder, K., \& Klugkist, I. (2017). Bayesian estimation and hypothesis tests for a circular Generalized Linear Model. \textit{Journal of Mathematical Psychology, 80}, 4–14.
-%
-% KM designed the statistical wrote the paper. IK provided feedback on earliers drafts of the paper.}
-
 \chaptermark{Bayesian Circular GLM}
 \label{circglm}
+
+\blfootnote{This chapter is published as Mulder, K., \& Klugkist, I. (2017). Bayesian estimation and hypothesis tests for a circular Generalized Linear Model. \textit{Journal of Mathematical Psychology, 80}, 4–14. \url{https://doi.org/10.1016/j.jmp.2017.07.001}.
+
+Author contributions: KM and IK designed the study. KM developed the statistical methods, simulation study and software package. KM wrote the paper. IK provided feedback on written work.}
+
 \input{chapters/circ_glm.tex}
 % APPENDIX
 \begin{subappendices}
@@ -388,12 +391,21 @@ As a result, it is able to perform Bayesian versions of most hypothesis tests co
 \chapter{Bayesian Tests for Circular Uniformity}
 \chaptermark{Bayesian Circular Uniformity Tests}
 \label{hypotest}
+
+\blfootnote{This chapter is submitted to Journal of Statistical Planning and Inference as Mulder, K., \& Klugkist, I. (tbd) Bayesian Tests for Circular Uniformity.
+
+Author contributions: KM and IK designed the study. KM developed the statistical methods, simulation study and software package. KM wrote the paper. IK provided feedback on written work.}
 \input{chapters/hypotest.tex}
 
 
 \chapter{Mixtures of Peaked Power Batschelet Distributions for Circular Data  With Application to Saccade Directions}
 \chaptermark{Peaked Circular Mixtures}
 \label{flexcmix}
+
+\blfootnote{This chapter is submitted to Journal of Mathematical Psychology as Mulder, K., Klugkist, I., van Renswoude, D. \& Visser, I. (tbd) Mixtures of Peaked Power Batschelet Distributions for Circular Data  With Application to Saccade Directions.
+
+Author contributions: KM, DVR, IV and IK developed the goals for the study. KM developed the statistical methods, simulation study and software package. DVR and IV provided the data for the motivating example. KM wrote the paper. IK, IV and DVR provided feedback on written work.}
+
 \input{chapters/flexcmix.tex}
 % APPENDIX
 \begin{subappendices}
@@ -403,6 +415,10 @@ As a result, it is able to perform Bayesian versions of most hypothesis tests co
 
 \chapter{Bayesian inference for mixtures of von Mises distributions using the Reversible Jump MCMC sampler}
 \chaptermark{Reversible Jump vM-Mixture}
+\blfootnote{This chapter is submitted to Journal of Statistical Computation and Simulation as Mulder, K., Jongsma, P., Klugkist, I. (tbd) Bayesian inference for mixtures of von Mises distributions using the Reversible Jump MCMC sampler.
+
+Author contributions: KM, PJ and IK designed the study. PJ and KM developed the statistical methods. PJ programmed the sampler and performed the simulation study. KM and PJ wrote the paper. KM and IK provided feedback on written work.}
+
 \label{revrjump}
 \input{chapters/revrjump.tex}
 
@@ -410,6 +426,10 @@ As a result, it is able to perform Bayesian versions of most hypothesis tests co
 \chapter{Inference for Interval-Censored Circular Data With Application to Crime Times}
 \chaptermark{Interval-Censored Circular Data}
 \label{dpm_crim}
+\blfootnote{This chapter is in preparation for submission to Journal Quantitative Criminology as Mulder, K. and Ruiter, S. (tbd) Dealing With Partially Observed Crime Times
+
+Author contributions: KM and SR designed the study. KM developed the statistical methods, created the software package and performed the analyses. KM wrote the paper. SR provided the motivating data example and gave feedback on written work.}
+
 \input{chapters/dpm_crim.tex}
 \begin{subappendices}
 \input{chapters/dpm_crim_appendix.tex}
@@ -417,18 +437,63 @@ As a result, it is able to perform Bayesian versions of most hypothesis tests co
 
 \chapter{circbayes: An R package for Bayesian circular statistics}
 \chaptermark{R Package circbayes}
+\blfootnote{This chapter is in preparation for submission to Journal of Statistical Software as Mulder, K., Cremers, J. and Klugkist, I. (tbd) \pkg{circbayes}: An \proglang{R} package for Bayesian circular statistics
+
+Author contributions: KM developed the new software package, building on packages by KM and JC. KM wrote the paper. IK and JC gave feedback on written work.}
+
 \label{circbays}
 \input{chapters/circbays.tex}
 
-
-
-
-
-
-
-
-
 \backmatter
+
+\chapter{Nederlandse samenvatting}
+
+Circulaire data bevinden zich op een periodieke schaal. Dat wil zeggen, een circulaire is gemeten in richtingen of hoeken, waarbij de uiteinden van de schaal naast elkaar liggen, zoals ^$359\circ$ en $0^\circ$ dat doen. Zo kun je bijvoorbeeld denken aan het probleem van het bepalen van de gemiddelde verjaardag van een groep vrienden. Omdat het jaar na 31 december direct doorgaat in 1 januari, is het moeilijk om direct een gemiddelde te kiezen.
+
+De tak van de statistiek die \textit{circulaire statistiek} wordt genoemd geeft ons een oplossing in de vorm van een nieuwe definitie van het gemiddelde, namelijk de gemiddelde richting.
+
+Zoals als categorische en continue data een verschillende statistische aanpak vereisen, is circulaire data een type data waarvoor aparte methoden nodig zijn.
+
+
+Het doel van dit proefschrift is om Bayesiaanse circulaire statistiek te ontwikkelen waarmee problemen opgelost kunnen worden uit verschillende onderzoeksvelden. Daarom is contact gezocht met verscheidene onderzoekers die werken met circulaire data. Hierin zijn twee subdoelen te onderscheiden.
+
+Eerst moeten de eigenschappen van basale Bayesiaanse circulaire methoden worden bestudeerd en begrepen. Daarnaast moeten deze methoden beschikbaar zijn in makkelijk te gebruiken software-pakketten, zodat gevorderde  kennis van wiskundige statistiek geen vereiste is om de modellen te kunnen draaien.
+
+Ten tweede is het belangrijk om gespecialiseerde methoden te hebben voor specifieke problemen. In dit proefschrift staan drie hoofdstukken waarin een probleem van een toegepaste onderzoeker in sociale wetenschappen worden opgelost aan de hand van geavanceerde circulaire statistische methoden.
+
+
+
+
+%
+%
+%
+%
+% The goal of this dissertation is to develop Bayesian methods for circular statistics which solve practical research problems. To this end, it has been a goal to develop collaborations with researchers and organizations working in domains which encounter circular data. Two subgoals can be identified.
+%
+% First, a solid foundation must be built for the use of Bayesian circular statistics. That is, the properties of these methods must be well-studied and understood. In addition, to allow applied researchers to employ these methods, they must also be available in user-friendly software packages. To this end, the vast majority of methods in this dissertation is available in easy-to-use \proglang{R} packages.
+%
+% Second, specialized models must be developed which are useful for specific problems. While for some problems one can build on general methods for basic questions, researchers often require statistical methods that are geared toward the specific structure of their data or the research questions. Bayesian solutions for a selection of such problems are presented throughout this work.
+%
+% These goals will be prevalent throughout the following six chapters of this dissertation. The chapters will be shortly described here.
+%
+% In \textbf{Chapter~\ref{circglm}}, regression with a circular outcome is addressed. A Bayesian version of the circular regression model by \citet{fisher1992regression} is developed. This model is essentially a Generalized Linear Model (GLM) where a linear prediction is mapped onto a circular outcome space, while the residuals have the von Mises distribution. It is shown that if we add categorical variables as dummy variables into the model, that the shape of the regression function is dependent on the arbitrary labeling of the groups.
+% %This is undesirable, as it should not matter whether we choose a labeling of, say, $A = 0, B = 1$ or another labeling of $A = 1, B = 0.$
+% Therefore, an alternative version of this model is proposed, which circumvents this issue. Bayesian inference and hypothesis testing for this model is developed and investigated by means of a simulation study. An example is provided from the field of cognitive psychology, where an experimental design for measurement of haptic ability leads to circular observations \citep{van2013superior}.
+%
+% Bayesian hypothesis tests for circular uniformity are developed in \textbf{Chapter~\ref{hypotest}}. Testing circular uniformity is a clear example of a hypothesis testing setting where one might be interested in finding evidence in favor of the null hypothesis. This chapter investigates a selection of proper priors and alternative hypotheses for Bayesian hypothesis tests of circular uniformity. Their performance is investigated by means of a simulation study.
+%
+% The following three chapters, \textbf{Chapters~\ref{flexcmix}, \ref{revrjump}, and \ref{dpm_crim}}, all represent research projects which have emerged from collaborations with researchers which provided motivating data examples for which no satisfactory methods were available previously.
+%
+% \textbf{Chapter~\ref{flexcmix}} is motivated by an example from eye movement research, previously published on in \citet{van2016infants}. In eye movement research, a saccade is the jump one makes from one fixation point to another. The direction of a saccade is one of the properties of interest, and our goal is to adequately model a distribution of saccade directions. In the motivating example, we are interested in quantifying the differences between infants and adults in their respective saccade direction distribution. To do this, a Batschelet Mixture model is developed that captures the multimodal and peaked nature of saccade distributions. The version of the Inverse Batschelet distribution in \citet{jones2012inverse} fits the peaked nature of the data, but is difficult to compute due because of its mathematical form. We propose an alternative Batschelet distribution which has a similar shape, but is much simpler to compute. Using bridge sampling \citep{meng1996simulating, gronau2017tutorial}, Bayes factors can be computed for these models. The model is then applied to saccade direction data, and it is shown that the original research question can now be directly evaluated.
+%
+% A different approach to extending circular mixture models is taken in \textbf{Chapter~\ref{revrjump}}. While for saccade direction data the number of components of the mixture can usually be treated as known, this is not always the case. Here, we are motivated by a dataset containing music listening behaviour of a large sample of users of a streaming website. The goal here is to predict for each hour of the day the probability that a certain genre will be listened to. To this end, the temporal distribution of music listening for each genre must be inferred. A mixture model is appropriate, but the number of components can not easily be prespecified a priori. Therefore, the reversible jump MCMC sampler \citep{richardson1997bayesian} is applied, as this method allows the MCMC sampler to jump between mixture models of different dimension (that is, number of components). As a result, we can infer the number of components. We develop the required steps to apply this sampler for circular data, and apply this new sampler to the music listening data.
+%
+% The motivating example in \textbf{Chapter~\ref{dpm_crim}} comes from the field of criminology. In crime modeling, a large amount of attention is devoted to spatial modeling of crime, while temporal differences receive comparatively less attention. However, understanding at which hour of the day crimes occur is essential in both understanding and predicting crime. However, for many types of crime, such as burglary and theft, crime times are usually not directly observed (as the offender is actively trying to not be observed). Therefore, crime times are usually interval-censored circular observations, which are called \textit{aoristic data.} Some descriptive analysis methods for aoristic data have been developed \citep{ashby2013comparison}. We extend these methods by showing their limitations and developing methods for full statistical inference from aoristic data. Circular statistical models can be fit using the aoristic likelihood approach. Further, we develop nonparametric methods for density estimation of aoristic data, based on Bayesian Dirichlet Process Mixture models, with the von Mises as the base distribution.
+%
+% The final chapter, \textbf{Chapter~\ref{circbays}}, is an overview of the package \pkg{circbayes}. This package is a collection of  models for Bayesian circular statistics, some of which have been developed in previous chapters. Any researcher interested in applying the methods in this work would do well to start with this chapter, as it provides a short introduction and comparison of different models for Bayesian circular statistics. We show how to perform Bayesian inference for several models, including von Mises, Batschelet, Projected Normal, circular regression, mixture models, and Dirichlet Process Mixture models. The package also includes methods to perform Bayesian hypothesis testing between any of the models included.
+% %To do this, it often performs bridge sampling, using the \proglang{R} package \pkg{bridgesampling} \citep{gronau2017bridgesampling}.
+% As a result, it is able to perform Bayesian versions of most hypothesis tests common in frequentist circular statistics. With this toolbox, we hope to have provided an accessible entrypoint for the use of Bayesian circular statistics.
+
 
 \bibliographystyle{apacite}
 \bibliography{C:/Dropbox/LiteratureCircular/CircularData}
