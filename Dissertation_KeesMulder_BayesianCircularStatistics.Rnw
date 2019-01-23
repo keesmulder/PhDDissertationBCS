@@ -39,9 +39,9 @@
         \begin{center}%
           {\bfseries \abstractname\vspace{-.5em}\vspace{\z@}}%
         \end{center}%
-        \begin{small}
+        \begin{footnotesize}
         \quotation
-      }{\endquotation \end{small}}
+      }{\endquotation \end{footnotesize}}
 \makeatother
 
 % Manual additions to automatic newcommands.
@@ -82,9 +82,11 @@ library(ggplot2)
 library(tidyverse)
 library(lubridate)
 library(gridExtra)
+library(knitr)
 library(ggrepel)
 source('C:/Dropbox/Research/PhDDissertationBCS/IllustrateRandMu.R')
 
+knit_hooks$set(document = function(x) {sub('\\usepackage[]{color}', '\\usepackage{xcolor}', x, fixed = TRUE)})
 
 knitr::opts_chunk$set(eval = TRUE,
                       echo = FALSE,

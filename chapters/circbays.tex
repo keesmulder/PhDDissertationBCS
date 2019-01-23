@@ -113,7 +113,7 @@ both parametric in form as well as using a Dirichlet Process prior.
 Section \ref{hyptest} provides several Bayesian hypothesis tests,
 including examples for testing circular uniformity as well as tests for
 group differences (such as ANOVA). Finally, some concluding remarks are
-given in Section \ref{discussion}.
+given in Section \ref{secjss:discussion}.
 
 \hypertarget{related-work}{%
 \section{Related work}\label{related-work}}
@@ -351,7 +351,8 @@ Bessel function in the normalizing constant makes direct inference for
 
 To facilitate computation, we use conjugate priors where possible. A
 conjugate prior for \((\mu, \kappa)\) is given by
-\citet{guttorp1988finding} as \begin{equation} \label{eqn:vmconjprior}
+\citet{guttorp1988finding} as
+\begin{equation} \label{eqnjss:vmconjprior}
 p(\mu, \kappa) \propto [I_0(\kappa)]^{-c}  \exp \left\{ R_0 \kappa \cos(\mu - \mu_0) \right\},
 \end{equation} where \(\mu_0\) is the prior mean direction, \(R_0\) is
 the prior resultant length, and \(c\) can be interpreted as a prior
@@ -421,9 +422,9 @@ distribution as the base density.
 
 The von Mises based symmetric Inverse Batschelet (IB) density as given
 in \citet{jones2012inverse} can be written as
-\begin{equation} \label{eqn:invbatpdf}
+\begin{equation} \label{eqnjss:invbatpdf}
  f_{IB}(\theta \mid \mu, \kappa, \lambda) = [2\pi I_0(\kappa)K_{\kappa, \lambda}]^{-1} \exp\{\kappa \cos t_\lambda(\theta - \mu)\}
-\end{equation} where \begin{equation} \label{eqn:invbattransform}
+\end{equation} where \begin{equation} \label{eqnjss:invbattransform}
   t_\lambda(\theta) = \frac{1 - \lambda}{1 + \lambda}\theta + \frac{2\lambda}{1 + \lambda} s_\lambda^{-1}(\theta),
 \end{equation} with \(s_\lambda^{-1}(\theta)\) is the inverse of
 \(s_\lambda(\theta) = \theta - \frac{1}{2} (1 + \lambda) \sin(\theta),\)
@@ -437,7 +438,8 @@ Therefore, an alternative transformation function is also available
 which gives the distribution we call the Power Batschelet distribution.
 It is constructed to approximate shape of the IB distribution, while
 being easier to compute. The transformation function used for the Power
-Batschelet distribution is given by \begin{equation}
+Batschelet distribution is given by
+\begin{equation} \label{eqnjss:powbattransform}
   t_{\lambda}^\ast(\theta) = \text{sign}(\theta)\pi \left( \frac{\vert\theta\vert}{\pi} \right)^{\gamma(\lambda)},
 \end{equation} where
 \(\gamma(\lambda) = \frac{1 - c\lambda}{1 + c\lambda},\) where \(c\) is
@@ -1034,12 +1036,12 @@ G &\sim \text{DP}(P_0, \alpha),
 the parameters of the von Mises distribution, and \(\alpha\) is a
 parameter of the Dirichlet Process which influences the number of
 mixture components used. We use the conjugate prior given in Equation
-\ref{eqn:vmconjprior} as the base distribution. In contrast to earlier
-applications of this prior, it must be proper here (that is, integrate
-to 1). It is generally sufficient to set \(c \geq 1,\) although note
-that this means that if we also set \(R_0 > 0,\) the prior is
-informative towards the mean direction \(\mu_0\). Therefore, the default
-sets \(\{\mu_0 = 0, R_0 = 0, c = 1\}.\)
+\ref{eqnjss:vmconjprior} as the base distribution. In contrast to
+earlier applications of this prior, it must be proper here (that is,
+integrate to 1). It is generally sufficient to set \(c \geq 1,\)
+although note that this means that if we also set \(R_0 > 0,\) the prior
+is informative towards the mean direction \(\mu_0\). Therefore, the
+default sets \(\{\mu_0 = 0, R_0 = 0, c = 1\}.\)
 
 The parameter \(\alpha\) is given a \(\text{Gamma}(a, b)\) prior and
 sampled in the MCMC algorithm to avoid the need to tune this parameter.
@@ -1104,7 +1106,7 @@ them as model \(M_s\) with an associated set of parameters
 ratio of the marginal likelihoods of the two models \begin{equation}
 BF_{12} = \frac{p(D \mid M_1)}{p(D \mid M_2)},
 \end{equation} where \(D\) represents the data, and the marginal
-likelihood is given by \begin{equation} \label{eqn:marglik}
+likelihood is given by \begin{equation} \label{eqnjss:marglik}
 p(D \mid M_s) = \int p(D, \boldsymbol{\phi}_s \mid H_s) d \boldsymbol{\phi}_s,
 \end{equation} where the integral is over the parameter space of
 \(\boldsymbol{\phi}_s.\)
@@ -1204,10 +1206,10 @@ computation}\label{marginal-likelihood-computation}}
 
 \label{sec:bridge}
 
-To compute the marginal likelihood in Equation \ref{eqn:marglik} we must
-integrate once over each parameter of the model. Therefore, models with
-more than a few parameters tend to have a marginal likelihood that is
-difficult to compute, because numerical integration is no longer an
+To compute the marginal likelihood in Equation \ref{eqnjss:marglik} we
+must integrate once over each parameter of the model. Therefore, models
+with more than a few parameters tend to have a marginal likelihood that
+is difficult to compute, because numerical integration is no longer an
 option. For those models, there exists a literature of methods to
 approximate the marginal likelihood (for an overview, see
 \citet{friel2012estimating} and \citet{ardia2012comparative}).
@@ -1416,6 +1418,8 @@ the mean direction and the circular variance.
 
 \hypertarget{discussion}{%
 \section{Discussion}\label{discussion}}
+
+\label{secjss:discussion}
 
 The \proglang{R} package \pkg{circbayes} was introduced which performs
 Bayesian inference for a wide variety of circular data models. The

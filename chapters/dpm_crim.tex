@@ -27,7 +27,7 @@ From a statistical point of view, this crime time density is an estimate of a pr
 
 Currently available methods, such as the one described by \citet{ashby2013comparison}, have several major drawbacks. The drawbacks we will address here are that the currently available methods (a) systematically overrepresent the variance of the data, (b)  are not built on a solid statistical foundation so that they do not provide valid statistical inference about the true distribution of crime times, (c) do not take into account model uncertainty caused by small samples, (d) can not  be embedded  in a larger statistical model, (e) split time in categories which leads to arbitrary choices, and (f) do not allow mixing aoristic data with data where times are directly observed. These drawbacks limit both predictive performance as well as the use of these models for understanding patterns in crime. In this work, methods will be developed which are easier to use, built on a more solid statistical foundation, and which can be embedded in a larger model. This method is rooted in circular statistics, which is the branch of statistics that deals with periodical sample spaces, such as the 24-hour clock in this case. It should be noted that all examples and discussion will be based on aoristic data on the 24-hour clock, but all methods are equally applicable to other time periods, such as weeks, months and years.
 
-Throughout this paper, these drawbacks will be expanded on and addressed. The rest of this paper will be structured as follows. In Section \ref{aodata}, a general introduction to aoristic data will be given. The Aoristic Fraction method and its drawbacks will be addressed in Section \ref{afmethod}. Section \ref{param} will provide a way to estimate parametric statistical models using aoristic data, while Section \ref{dpm} will add a non-parametric Bayesian method to these approaches, which is more realistic for multimodal crime time data. Section \ref{applications} will show how this method can be applied to several problems in crime time analysis. Finally, \ref{discussion} has some concluding remarks.
+Throughout this paper, these drawbacks will be expanded on and addressed. The rest of this paper will be structured as follows. In Section \ref{aodata}, a general introduction to aoristic data will be given. The Aoristic Fraction method and its drawbacks will be addressed in Section \ref{afmethod}. Section \ref{param} will provide a way to estimate parametric statistical models using aoristic data, while Section \ref{dpm} will add a non-parametric Bayesian method to these approaches, which is more realistic for multimodal crime time data. Section \ref{applications} will show how this method can be applied to several problems in crime time analysis. Finally, \ref{secaor:discussion} has some concluding remarks.
 
 
 
@@ -390,7 +390,7 @@ The DPM model can also provide inference for any function of the parameters of t
 
 
 
-\section{Discussion} \label{discussion}
+\section{Discussion} \label{secaor:discussion}
 
 In this paper, we have developed novel methods for dealing with aoristic data in crime analysis and beyond. Three methods were presented. The aoristic fraction method is a descriptive method for which major downsides have been established, primarily a systematic overestimation of the variance of the crime time density. We have shown how the aoristic likelihood method provides a solid method for fitting unimodal crime times, using all information contained in the aoristic data.
 

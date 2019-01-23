@@ -26,7 +26,7 @@ Several alternative approaches for Bayesian modeling of multi-modal circular dat
 
 Therefore, the approach taken in this paper can be seen as a useful in-between step between mixture models with a fixed number of components and non-parametric approaches. Compared to fixed-component mixture models, our approach is more realistic in the uncertainty about the amount of components, allows performing inference about the number of components, but also enables leaving the number of components to be uncertain. In particular, while information criteria based methods also allow selection of the most likely number of components, our approach provides a posterior probability distribution around the number of components, and as such acknowledges that the selected number of components can be wrong. Compared to non-parametric approaches, our approach feature much more interpretable parameters and inference, at the cost of taking more assumptions about the shape of the distribution. Concluding, if the number of components is known or not of interest, a fixed-component mixture model can be preferred for simplicity, while if density estimation is the goal a fully non-parametric approach may be the best choice. If the number of components is not known, of interest, and interpretation of the parameters of subpopulations is of interest, our method aligns the best with these goals.
 
-The paper is organized as follows. Section~\ref{design} describes the model and chosen priors. Section~\ref{implementation} contains the description and implementation of each of the steps involved in sampling the model parameters. In Section~\ref{simulations} the performance of the sampler is investigated in a simulation study. The sampler is applied to the \textit{22tracks} data in Section~\ref{22tracks}. Finally, the results are discussed in Section~\ref{discussion}.
+The paper is organized as follows. Section~\ref{design} describes the model and chosen priors. Section~\ref{implementation} contains the description and implementation of each of the steps involved in sampling the model parameters. In Section~\ref{simulations} the performance of the sampler is investigated in a simulation study. The sampler is applied to the \textit{22tracks} data in Section~\ref{22tracks}. Finally, the results are discussed in Section~\ref{secrev:discussion}.
 
 
 \section{Von Mises Mixture Model}
@@ -536,7 +536,7 @@ Compared to a kernel density model, this provides a much simpler and more interp
 
 
 \section{Discussion}
-\label{discussion}
+\label{secrev:discussion}
 We have presented a method for Bayesian inference of von Mises mixture distribution. Previous work has assumed the number of components to be known, which is an assumption we have relaxed by employing the reversible jump MCMC algorithm. The main contributions included a novel set of dimensionality changing moves based on the trigonometric properties of the von Mises distribution. In addition, the performance of the method was investigated in a simulation study. Generally, the method performed well. An illustration was provided on music listening behavior, showing the interpretation of this method.
 
 

@@ -28,7 +28,7 @@ Recent work has provided a multivariate extension of the von Mises distribution 
 
 There are three main drawbacks of the circular GLM approach  to circular data analysis currently. First, the GLM approach is not free from the lack of concavity as described in \citet{gill2010}, although this has not yet been investigated in detail. Second, the current approach does not have separate parameters for differences in group mean direction, which precludes the popular ANCOVA model to some extent. Third, Bayesian hypothesis tests for this model are not available, which limits its applicability.
 
-The structure of this paper is as follows. The circular data GLM model is developed in a fully Bayesian setting in Section \ref{themodel}. The lack of concavity in the likelihood function will be examined, and suggestions will be formulated on how to deal with this issue. Details on the MCMC sampler are provided in Section \ref{MCMC}. Section \ref{hypothesis} outlines Bayesian hypothesis tests for this model, both for equality and inequality constrained hypotheses. Then, a simulation study for the method is provided in Section \ref{sim}. Section \ref{example} provides an application of our method to empirical data from cognitive psychology. Finally, Section \ref{discussion} provides a short discussion.
+The structure of this paper is as follows. The circular data GLM model is developed in a fully Bayesian setting in Section \ref{themodel}. The lack of concavity in the likelihood function will be examined, and suggestions will be formulated on how to deal with this issue. Details on the MCMC sampler are provided in Section \ref{MCMC}. Section \ref{hypothesis} outlines Bayesian hypothesis tests for this model, both for equality and inequality constrained hypotheses. Then, a simulation study for the method is provided in Section \ref{sim}. Section \ref{example} provides an application of our method to empirical data from cognitive psychology. Finally, Section \ref{secglm:discussion} provides a short discussion.
 
 
 
@@ -596,7 +596,7 @@ Following this method, we find that \( H_1 \) is true in 97.9\% of the MCMC iter
 
 \section{Discussion}
 
-\label{discussion}
+\label{secglm:discussion}
 
 
 We developed a Bayesian circular GLM, with appropriate priors, proper treatment of dichotomous variables, and Bayesian hypothesis tests. Our method forms a middle ground between two veins of research into Bayesian analysis of circular data. On one hand, analysis of complex data shapes \citep{ghosh2003semiparametric, ferreira2008directional, fernandez2016bayesian} provides modeling for a broad class of datasets but few possibilities for prediction and covariate models. On the other hand, circular regression models \citep{fisher1992regression, gill2010, lagona2016regression} provide prediction and covariates, but encounter problems with likelihood shapes and a lack of available hypothesis tests. The GLM aproach is promising because of its flexibility to allow for many different kinds of models, while also allowing straightforward extensions. Our method brings three main contributions to the literature.

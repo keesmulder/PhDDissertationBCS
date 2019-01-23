@@ -65,7 +65,7 @@
 \contentsline {subsection}{\numberline {4.1.1}Von Mises mixture density}{76}{subsection.4.1.1}
 \contentsline {subsection}{\numberline {4.1.2}Likelihood}{77}{subsection.4.1.2}
 \contentsline {subsection}{\numberline {4.1.3}Prior distributions}{78}{subsection.4.1.3}
-\contentsline {section}{\numberline {4.2}Reversible jump MCMC for von Mises Mixtures}{78}{section.4.2}
+\contentsline {section}{\numberline {4.2}Reversible jump MCMC for von Mises Mixtures}{79}{section.4.2}
 \contentsline {subsection}{\numberline {4.2.1}Updating the weights $w$}{79}{subsection.4.2.1}
 \contentsline {subsection}{\numberline {4.2.2}Updating component parameters $\mu $ and $\kappa $}{80}{subsection.4.2.2}
 \contentsline {subsection}{\numberline {4.2.3}Updating the allocation $z$}{80}{subsection.4.2.3}
@@ -73,14 +73,14 @@
 \contentsline {subsubsection}{Split or combine move}{81}{section*.49}
 \contentsline {subsubsection}{Birth or death move}{84}{section*.51}
 \contentsline {subsection}{\numberline {4.2.5}Label switching}{85}{subsection.4.2.5}
-\contentsline {section}{\numberline {4.3}Simulation study}{85}{section.4.3}
+\contentsline {section}{\numberline {4.3}Simulation study}{86}{section.4.3}
 \contentsline {subsection}{\numberline {4.3.1}Simulation scenarios}{86}{subsection.4.3.1}
 \contentsline {subsection}{\numberline {4.3.2}Starting values}{86}{subsection.4.3.2}
 \contentsline {subsection}{\numberline {4.3.3}Convergence}{87}{subsection.4.3.3}
 \contentsline {subsection}{\numberline {4.3.4}Results}{87}{subsection.4.3.4}
 \contentsline {subsubsection}{Number of components $g$}{87}{section*.54}
 \contentsline {subsubsection}{Parameter estimates}{89}{section*.55}
-\contentsline {section}{\numberline {4.4}Illustration}{89}{section.4.4}
+\contentsline {section}{\numberline {4.4}Illustration}{90}{section.4.4}
 \contentsline {subsection}{\numberline {4.4.1}Dataset}{90}{subsection.4.4.1}
 \contentsline {subsection}{\numberline {4.4.2}Results}{91}{subsection.4.4.2}
 \contentsline {section}{\numberline {4.5}Discussion}{92}{section.4.5}

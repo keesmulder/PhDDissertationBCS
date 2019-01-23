@@ -44,7 +44,7 @@ The model that will be developed in this paper for saccade direction data has tw
 
 As a motivating example, this study will rely on saccade direction data which was previously published on in \citet{van2016infants}. The main interest in this work is in describing behavioural differences in free-viewing between adults and infants (see also \citet{aslin2007s}). The data consists of 12367  saccades from adults and 4832 saccades from infants. For details on data collection, see \citet{van2016infants}. This data is plotted in Figure \ref{scd_ex}. Because the hypotheses of interest inform the development of the model, they will be revisited here. First, the researchers are interested in reaffirming a horizontal bias, that is, there are more saccade directions along the horizontal axis than the vertical axis. Second, infants are expected to have larger variance in their saccade directions. Third, the researchers are interested in the difference in the horizontal bias of infants and adults. For all of these hypotheses, currently one would be limited to descriptive analyses. The methods developed in this paper will allow full statistical inference. The methods are available in the \texttt{R} package \texttt{flexcircmix}, freely available on GitHub.
 
-The structure of this paper will proceed as follows. In Section \ref{sec:model}, the base distribution of the mixture model will be discussed, and the Power Batschelet distribution will be introduced. Inference for the resulting mixture model will be discussed in Section \ref{sec:infer}. The method will be illustrated on both synthetic data and the van Renswoude data in Section \ref{sec:ill}. Finally, some concluding remarks will be given in Section \ref{sec:discussion}.
+The structure of this paper will proceed as follows. In Section \ref{sec:model}, the base distribution of the mixture model will be discussed, and the Power Batschelet distribution will be introduced. Inference for the resulting mixture model will be discussed in Section \ref{sec:infer}. The method will be illustrated on both synthetic data and the van Renswoude data in Section \ref{sec:ill}. Finally, some concluding remarks will be given in Section \ref{secflexmix:discussion}.
 
 
 
@@ -586,7 +586,7 @@ Finally, the assumption that the means can be fixed to the cardinal directions c
 
 
 
-\section{Discussion} \label{sec:discussion}
+\section{Discussion} \label{secflexmix:discussion}
 
 In this paper, a new mixture model for flexible circular distributions was developed. It can be used to distinguish clusters in samples of directions, for example those obtained from saccade directions. The main contribution is the development of mixture models for circular data that allow for peaked and flat-topped shapes. In order to do this, a new family of distributions was introduced, the Power Batschelet distributions, that mimic the distributions developed in \citet{jones2012inverse}, but that enjoy more appealing computational properties.
 
