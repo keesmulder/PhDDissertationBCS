@@ -62,7 +62,7 @@ E_{\dli, \dui} \left[\sum_{i=1}^n \sin(a_i) + \sin(b_i)\right] &= \sum_{i=1}^n \
 \end{align}
 Note that this last term $E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right]$ is the same for both components. Also, for any constant $q > 0$ we have $\text{atan2}(qs, qc) = \text{atan2}(s, c).$ So, if we set $q = E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right] > 0,$ we can see
 \begin{equation}
-\text{atan2}(q \sum_{i=1}^n \sin(\theta_i), q \sum_{i=1}^n \cos(\theta_i)) = \text{atan2}(\sum_{i=1}^n \sin(\theta_i), \sum_{i=1}^n \cos(\theta_i)) = \bar\theta,
+\text{atan2}\left(q \sum_{i=1}^n \sin(\theta_i), q \sum_{i=1}^n \cos(\theta_i) \right) = \text{atan2}\left(\sum_{i=1}^n \sin(\theta_i), \sum_{i=1}^n \cos(\theta_i)\right) = \bar\theta,
 \end{equation}
 which is an unbiased estimator of $\mu$.
 

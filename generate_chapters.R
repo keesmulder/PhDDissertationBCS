@@ -117,7 +117,9 @@ read_and_refactor_chapter <- function(input_path,
 
   # Check if the acknowledgements are now empty.
   if (grepl("FlexibleModelingOfSaccadeDirectionDistributions", input_path)
-      | grepl("BayesIsop", input_path)) {
+      | grepl("BayesIsop", input_path)
+      | grepl("circbayes", input_path)
+      ) {
     ack_loc <- grep("section\\{Acknowledgements", body_text)
     body_text <- body_text[-(ack_loc:length(body_text))]
   }
