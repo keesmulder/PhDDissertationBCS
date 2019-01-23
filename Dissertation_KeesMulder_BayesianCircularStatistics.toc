@@ -117,21 +117,21 @@
 \contentsline {paragraph}{Von Mises distribution}{136}{section*.71}
 \contentsline {paragraph}{Batschelet Distribution}{137}{section*.72}
 \contentsline {subsubsection}{Embedding approach}{138}{section*.73}
-\contentsline {subsubsection}{Alternatives}{139}{section*.75}
+\contentsline {subsubsection}{Alternatives}{140}{section*.75}
 \contentsline {section}{\numberline {6.4}Bayesian Circular regression}{140}{section.6.4}
 \contentsline {subsection}{\numberline {6.4.1}Circular regression with von Mises residuals}{141}{subsection.6.4.1}
 \contentsline {subsection}{\numberline {6.4.2}Circular regression with Projected Normal residuals}{142}{subsection.6.4.2}
 \contentsline {subsubsection}{Regression Coefficients}{143}{section*.76}
-\contentsline {subsection}{\numberline {6.4.3}Comparison between the two regression models}{143}{subsection.6.4.3}
-\contentsline {subsection}{\numberline {6.4.4}Hierarchical Projected Normal regression}{144}{subsection.6.4.4}
+\contentsline {subsection}{\numberline {6.4.3}Comparison between the two regression models}{144}{subsection.6.4.3}
+\contentsline {subsection}{\numberline {6.4.4}Hierarchical Projected Normal regression}{145}{subsection.6.4.4}
 \contentsline {subsubsection}{Regression Coefficients}{145}{section*.78}
-\contentsline {section}{\numberline {6.5}Density estimation problems}{145}{section.6.5}
-\contentsline {subsection}{\numberline {6.5.1}Mixture models}{146}{subsection.6.5.1}
+\contentsline {section}{\numberline {6.5}Density estimation problems}{146}{section.6.5}
+\contentsline {subsection}{\numberline {6.5.1}Mixture models}{147}{subsection.6.5.1}
 \contentsline {subsection}{\numberline {6.5.2}Bayesian Nonparametrics for Circular data}{148}{subsection.6.5.2}
 \contentsline {section}{\numberline {6.6}Hypothesis tests and model comparison}{149}{section.6.6}
-\contentsline {subsection}{\numberline {6.6.1}Information criteria}{150}{subsection.6.6.1}
+\contentsline {subsection}{\numberline {6.6.1}Information criteria}{151}{subsection.6.6.1}
 \contentsline {subsection}{\numberline {6.6.2}Nested comparison Bayes Factors}{151}{subsection.6.6.2}
-\contentsline {subsection}{\numberline {6.6.3}Marginal Likelihood computation}{151}{subsection.6.6.3}
+\contentsline {subsection}{\numberline {6.6.3}Marginal Likelihood computation}{152}{subsection.6.6.3}
 \contentsline {subsection}{\numberline {6.6.4}Hypothesis testing examples}{152}{subsection.6.6.4}
 \contentsline {subsubsection}{Testing for circular uniformity}{152}{section*.80}
 \contentsline {subsubsection}{Goodness-of-fit}{153}{section*.81}
