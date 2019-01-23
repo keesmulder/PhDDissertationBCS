@@ -97,11 +97,13 @@
 % Manual additions to automatic newcommands.
 \DeclareMathOperator{\atantwo}{atan2}
 
-
+\newenvironment{changemargin}[1]{
+  \begin{list}{}{
+    \setlength{\voffset}{#1}
+  }
+  \item[]}{\end{list}}
 
 %%% Extra options to get JSS paper working.
-
-
 \newcommand{\code}[1]{\texttt{\detokenize{#1}}}
 
 \let\proglang=\textsf
@@ -351,7 +353,7 @@ Author contributions: KM and IK designed the study. KM developed the statistical
 Author contributions: KM and IK designed the study. KM developed the statistical methods, simulation study and software package. KM wrote the paper. IK provided feedback on written work.}
 \input{chapters/hypotest.tex}
 
-
+\begin{changemargin}{5cm}
 \chapter{Mixtures of Peaked Power Batschelet Distributions for Circular Data  With Application to Saccade Directions}
 \chaptermark{Peaked Circular Mixtures}
 \label{flexcmix}
@@ -359,14 +361,14 @@ Author contributions: KM and IK designed the study. KM developed the statistical
 \blfootnote{This chapter is submitted to Journal of Mathematical Psychology as Mulder, K., Klugkist, I., van Renswoude, D. \& Visser, I. (tbd) Mixtures of Peaked Power Batschelet Distributions for Circular Data  With Application to Saccade Directions.
 
 Author contributions: KM, DVR, IV and IK developed the goals for the study. KM developed the statistical methods, simulation study and software package. DVR and IV provided the data for the motivating example. KM wrote the paper. IK, IV and DVR provided feedback on written work.}
-\vspace{-2cm}
+\end{changemargin}
+
 \input{chapters/flexcmix.tex}
 % APPENDIX
 \newpage
 \begin{subappendices}
 \input{chapters/flexcmix_appendix.tex}
 \end{subappendices}
-
 
 \chapter{Bayesian inference for mixtures of von Mises distributions using the Reversible Jump MCMC sampler}
 \chaptermark{Reversible Jump vM-Mixture}
@@ -409,7 +411,7 @@ We komen deze circulaire data tegen in allerlei applicaties. Zo kun je denken aa
 
 Deze verschillende voorbeelden leveren obervaties op, die we $\theta$ noemen, die vervolgens gemeten is in bijvoorbeeld graden ($\theta \in [0^\circ - 360^\circ)$), uren van de dag (op de 24-uursklok, dus $\theta \in [$0:00$ - $24:00)), eenheidsvectoren of radialen.
 
-De tak van de statistiek zich bezig houdt met analyse van circulaire data wordt \textit{circulaire statistiek} genoemd. De circulaire statistiek biedt een nieuwe definitie van het gemiddelde en de variantie. Het circulaire gemiddelde, de \textit{gemiddelde richting}, van een dataset $\boldsymbol{\theta} = \{\theta_1, \dots, \theta_n\}$ wordt berekend door te kijken naar de richting waarin de resultante vector $(\sumin\cos\theta_i, \sumin\sin\theta_i)^T$ zich bevindt (voor een voorbeeld, zie Figuur~\ref{ExampleRMu} voorin dit boek). De variantie is gerelateerd aan de lengte $R$ van de resultante vector. Voorbij deze basis bestaat het veld van circulaire statistiek uit een grote vari\"eteit van modellen voor verschillende onderzoeksvragen, zoals regressiemodellen, hypothesetoetsen en het schatten van multimodale kansverdelingen. Voor een overzicht, zie \citet{fisher1995statistical}, \citet{mardia2009directional} of \citet{pewsey2013circular}.
+De tak van de statistiek zich bezig houdt met analyse van circulaire data wordt \textit{circulaire statistiek} genoemd. De circulaire statistiek biedt een nieuwe definitie van het gemiddelde en de variantie. Het circulaire gemiddelde, de \textit{gemiddelde richting}, van een dataset $\boldsymbol{\theta} = \{\theta_1, \dots, \theta_n\}$ wordt berekend door te kijken naar de richting waarin de resultante vector $(\sumin\cos\theta_i, \sumin\sin\theta_i)^T$ zich bevindt (voor een voorbeeld, zie Figuur~\ref{exampleRMu} voorin dit boek). De variantie is gerelateerd aan de lengte $R$ van de resultante vector. Voorbij deze basis bestaat het veld van circulaire statistiek uit een grote vari\"eteit van modellen voor verschillende onderzoeksvragen, zoals regressiemodellen, hypothesetoetsen en het schatten van multimodale kansverdelingen. Voor een overzicht, zie \citet{fisher1995statistical}, \citet{mardia2009directional} of \citet{pewsey2013circular}.
 
 Het doel van dit proefschrift is om Bayesiaanse circulaire statistiek te ontwikkelen waarmee praktische problemen opgelost kunnen worden uit verschillende onderzoeksvelden. Daarom is contact gezocht met verscheidene onderzoekers die werken met circulaire data. Hierin zijn twee subdoelen te onderscheiden.
 
@@ -429,7 +431,7 @@ In \textbf{Hoofdstuk~\ref{revrjump}} worden ook mixture-modellen gebruikt, maar 
 
 Het voorbeeld in \textbf{Hoofdstuk~\ref{flexcmix}} komt uit de criminologie. Sommige misdaden komen veel vaker op bepaalde tijden van de dag voor dan op andere tijden. Fietsendiefstal op een station komt bijvoorbeeld 's nachts veel meer voor. Echter, als we de geobserveerde tijden willen modelleren lopen we tegen een probleem aan: er zijn meestal geen geobserveerde tijden, omdat de dief nu juist probeert om niet te worden geobserveerd. We krijgen dus intervallen van tijd waarin het slachtoffer niet aanwezig was bij het gestolen object in plaats van directe observaties. Dit soort data heet \textit{aoristische} data. Hiervoor zijn basale descriptieve tools ontwikkeld \citep{ashby2013comparison} in de criminologie. We laten zien dat zulke methoden nuttig zijn om de data te plotten, maar als schatting van de diefstaltijdkansverdeling de variantie overschatten. Daarom voegen wij methoden toe voor statistische inferentie toe aan de huidige methoden. We laten zien hoe een circulaire kansverdeling kan worden geschat aan de hand van aoristische data. Daarnaast ontwikkelen we Bayesiaanse Dirichletprocesmodellen die ook de multimodale vormen van realistische aoristische data goed kunnen vatten.
 
-Tot slot wordt in \textbf{Hoofdstuk~\ref{circbays}} een softwarepakket gepresenteerd, genaamd \pkg{circbayes}, waarmee Bayesiaanse circulaire statistiek kan worden uitgevoerd. Hierin vinden we veel basale modellen, alsmede sommige modellen die in eerdere hoofdstukken zijn gepresenteerd. Zo zitten er methoden in voor von Mises, Batschelet en \textit{Projected Normal} (geprojecteerde normaal-) verdelingen, alsmede circulaire regressiemodellen, mixture-modellen en Dirichletprocesmodellen. Daarnaast kunnen al deze modellen met elkaar worden vergeleken aan de hand van Bayesiaanse hypothesetoetsen, door gebruik te maken van het \proglang{R} pakket \pkg{bridgesampling} \citep{gronau2017bridgesampling}. Hierdoor zijn de meeste frequentistische circulaire hypothesetoetsen ook beschikbaar in dit pakket. Met deze gereedschapsdoos hopen we dat toegepaste onderzoekers een toegankelijke ingang hebben in het gebruik van Bayesiaanse circulaire statistiek.
+Tot slot wordt in \textbf{Hoofdstuk~\ref{circbays}} een softwarepakket gepresenteerd, genaamd \pkg{circbayes}, waarmee Bayesiaanse circulaire statistiek kan worden uitgevoerd. Hierin vinden we veel basale modellen, alsmede sommige modellen die in eerdere hoofdstukken zijn gepresenteerd. Zo zitten er methoden in voor von Mises, Batschelet en \textit{Projected Normal} (geprojecteerde normaal-) verdelingen, alsmede circulaire regressiemodellen, mixture-modellen en Dirichletprocesmodellen. Daarnaast kunnen al deze modellen met elkaar worden vergeleken aan de hand van Bayesiaanse hypothesetoetsen, door gebruik te maken van het \proglang{R} pakket \pkg{bridgesampling} \citep{gronau2017bridgesampling}. Hierdoor zijn van de meeste frequentistische circulaire hypothesetoetsen ook Bayesiaanse versies beschikbaar in dit pakket. Met deze gereedschapsdoos hopen we dat toegepaste onderzoekers een toegankelijke ingang hebben in het gebruik van Bayesiaanse circulaire statistiek.
 
 
 \bibliographystyle{apacite}

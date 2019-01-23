@@ -313,7 +313,8 @@ replace_near_line <- list(
       "The distribution of $\\theta$ is unknown, but let's assume it has a population mean direction $\\mu$. An unbiased estimator of $\\mu$ is given by \\[\\bar\\theta = \\text{atan2}(\\sum_{i=1}^n \\sin(\\theta_i), \\sum_{i=1}^n \\cos(\\theta_i))\\] \\citep{mardia2009directional}. For aoristic data, an unbiased estimator of $\\mu$ is", 0)
 )
 
-remove_line <- "This work was supported by a ------ grant awarded to ------ from ----- (------)."
+remove_line <- c("This work was supported by a ------ grant awarded to ------ from ----- (------).",
+                 "\\hypertarget{acknowledgements}{%")
 
 read_and_save_multiple_chapters(filepaths,
                                 remove_preamble_lines = remove_preamble_lines,
