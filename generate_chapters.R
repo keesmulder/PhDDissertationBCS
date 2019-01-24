@@ -278,13 +278,15 @@ remove_preamble_lines <- c("\\newcommand{\\sumin}{\\sum_{i = 1}^n}",
 add_near_line <- list(
   c("\\end{abstract}", "\\newpage", 0),
   c("\\begin{tabular}{llrrrrrrlrrrrrr}", "\\centerline{", -1),
-  c("Model & Fit function & MCMC & Marginal Likelihood & Nested \\\\ \\hline", "\\centerline{", -2),
-  c("Model & Fit function & MCMC & Marginal Likelihood & Nested \\\\ \\hline", "}", 11),
   c("\\begin{tabular}{llrrrrrrlrrrrrr}", "}", 22),
+  c("Model & Fit function & MCMC & Marginal Likelihood & Nested \\\\ \\hline", "\\begin{scriptsize} \\centerline{", -2),
+  c("Model & Fit function & MCMC & Marginal Likelihood & Nested \\\\ \\hline", "} \\end{scriptsize}", 11),
   c("\\section{Properties of the Power Batschelet Distribution} \\label{app:powbat}",
     "\\chaptermark{Power Batschelet Properties}", 0),
   c("\\section{Proof of variance overestimation using the aoristic fraction method} \\label{proofvar}",
-    "\\chaptermark{Variance overestimation proof}", 0)
+    "\\chaptermark{Variance overestimation proof}", 0),
+  c("	\\label{tab:22tracks}", "\\begin{footnotesize}", 0),
+  c("	\\label{tab:22tracks}", "\\end{footnotesize}", 23)
 )
 
 
@@ -311,6 +313,18 @@ replace_near_line <- list(
       "All code for both the statistical tools, the simulation study and the paper is available online at \\\\ \\url{https://github.com/keesmulder/BayesMultCircCovariates}.", 0)
   , c("The distribution of $\\theta$ is unknown, but let's assume it has a population mean direction $\\mu$. An unbiased estimator of $\\mu$ is given by $\\bar\\theta = \\text{atan2}(\\sum_{i=1}^n \\sin(\\theta_i), \\sum_{i=1}^n \\cos(\\theta_i))$ \\citep{mardia2009directional}. For aoristic data, an unbiased estimator of $\\mu$ is",
       "The distribution of $\\theta$ is unknown, but let's assume it has a population mean direction $\\mu$. An unbiased estimator of $\\mu$ is given by \\[\\bar\\theta = \\text{atan2}(\\sum_{i=1}^n \\sin(\\theta_i), \\sum_{i=1}^n \\cos(\\theta_i))\\] \\citep{mardia2009directional}. For aoristic data, an unbiased estimator of $\\mu$ is", 0)
+
+
+  , c(" &= \\left\\{ \\wavgmn x_i^2  \\right\\}   + \\frac{1}{3} \\left\\{ \\wavgmn E_\\dli \\left[ E_\\dui \\left[ \\dli^2 + \\dui^2 - \\dli\\dui \\right] \\right] \\right\\}.",
+      " &= \\left\\{ \\wavgmn x_i^2  \\right\\}  \\\\ & \\quad + \\frac{1}{3} \\left\\{ \\wavgmn E_\\dli \\left[ E_\\dui \\left[ \\dli^2 + \\dui^2 - \\dli\\dui \\right] \\right] \\right\\}.", 0)
+  , c("&\\{ 85^\\circ, 135^\\circ, 135^\\circ, 140^\\circ, 145^\\circ, 150^\\circ, 150^\\circ, 150^\\circ, 160^\\circ, 285^\\circ, 200^\\circ, 210^\\circ, 220^\\circ, 225^\\circ, 270^\\circ \\},",
+      "\\{ 85^\\circ, &135^\\circ, 135^\\circ, 140^\\circ, 145^\\circ, 150^\\circ, 150^\\circ, 150^\\circ, \\\\ &160^\\circ, 285^\\circ, 200^\\circ, 210^\\circ, 220^\\circ, 225^\\circ, 270^\\circ \\},", 0)
+  # , c("",
+  #     "", 0)
+  # , c("",
+  #     "", 0)
+  # , c("",
+  #     "", 0)
 )
 
 remove_line <- c("This work was supported by a ------ grant awarded to ------ from ----- (------).",

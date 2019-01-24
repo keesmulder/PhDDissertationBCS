@@ -38,7 +38,7 @@ Then, expanding the bounds, and taking the expectation over $\dli$ and $\dui,$
 E_\dli [E_\dui [\hat{\sigma}^2_{ICH}]] &=  E_\dli \Big[ E_\dui \Big[ \frac{1}{3} \wavgmn 3 x_i^2 - 2\dli x_i + \dli^2 + \dui x_i - \\ &
 \qquad \qquad \qquad \qquad \qquad \qquad \dli \dui + 2 \dui x_i + \dui^2 \Big]  \Big] \\
  &= \frac{1}{3} \left\{ \wavgmn 3 x_i^2 +  E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli \dui \right] \right]  \right\} \\
- &= \left\{ \wavgmn x_i^2  \right\}   + \frac{1}{3} \left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right] \right] \right\}.
+ &= \left\{ \wavgmn x_i^2  \right\}  \\ & \quad + \frac{1}{3} \left\{ \wavgmn E_\dli \left[ E_\dui \left[ \dli^2 + \dui^2 - \dli\dui \right] \right] \right\}.
 \end{align}
 We can recognize that $\wavgmn{x_i^2}$ is simply an unbiased estimator of the variance. Therefore, taking the expectation over $x$,
 \begin{align}
@@ -55,7 +55,7 @@ The distribution of $\theta$ is unknown, but let's assume it has a population me
 \begin{equation}
 \tilde\theta = \text{atan2} \left( \sum_{i=1}^n \sin(a_i) + \sin(b_i), \sum_{i=1}^n \cos(a_i) + \cos(b_i) \right).
 \end{equation}
-This is equal to taking the mean direction of the midpoints of the aorisitic intervals. To show that this is unbiased, taking the expectation over the distribution of $\dli$ and $\dui,$ we obtain
+This is equal to taking the mean direction of the midpoints of the aoristic intervals. To show that this is unbiased, taking the expectation over the distribution of $\dli$ and $\dui,$ we obtain
 \begin{align}
 E_{\dli, \dui} \left[\sum_{i=1}^n \cos(a_i) + \cos(b_i)\right] &= \sum_{i=1}^n \cos(\theta_i) E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right] \\
 E_{\dli, \dui} \left[\sum_{i=1}^n \sin(a_i) + \sin(b_i)\right] &= \sum_{i=1}^n \sin(\theta_i) E_{\dli, \dui} \left[ \cos(\dli) + \cos(\dui) \right].

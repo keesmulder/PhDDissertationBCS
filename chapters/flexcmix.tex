@@ -218,7 +218,7 @@ Directly maximizing the observed data log-likelihood of a mixture model is gener
 The EM-algorithm consists of the following steps:
 
 \begin{enumerate}
-\item[(Initialization)] Define an \(n \times J\) matrix \(\bolW = \{\bolw_1, \dots, \bolw_J\}^T,\) where \(\bolw_j\) are \(n\)-vectors. Initialize the parameters \( \bmu, \bkp, \blam, \balph\) at some user-specified values.
+\item[(Initialize)] Define an \(n \times J\) matrix \(\bolW = \{\bolw_1, \dots, \bolw_J\}^T,\) where \(\bolw_j\) are \(n\)-vectors. Initialize the parameters \( \bmu, \bkp, \blam, \balph\) at some user-specified values.
 \item[(E-step)] Compute, for all \(i, j,\) the elements of \(\bolW\) as
 \begin{equation}
 w_{i, j} = \frac{\alpha_j f_B(\theta_i \mid \mu_j, \kappa_j, \lambda_j)}{\sum_{s = 1}^J \alpha_s f_B(\theta_i \mid \mu_s, \kappa_s, \lambda_s)}.
@@ -234,7 +234,7 @@ Note that the EM algorithm is not guaranteed to find a global maximum. Therefore
 
 In addition to obtaining estimates of the mixture model, it is essential to infer the uncertainty around these estimates. For mixture models, asymptotic standard errors obtained from inverting the Fisher Information generally require very large datasets in order to have desirable properties \citep{mclachlan2004finite}. Therefore, parameter uncertainty will need to be assessed either through bootstrapping, or through MCMC.
 
-Bootstrapping was implemented through a nonparametric bootstrap \citep{efron1994introduction}. In order to reduce computational burden, the EM algorithm of each bootstrap sample was given the full data estimates as starting values.
+Bootstrapping \citep{efron1994introduction} was implemented through a nonparametric bootstrap. In order to reduce computational burden, the EM algorithm of each bootstrap sample was given the full data estimates as starting values.
 
 \subsection{Bayesian inference}
 \label{sub:bayes}
@@ -268,11 +268,11 @@ In the application of MCMC sampling, only the group assignments in latent variab
 
 \begin{enumerate}
 
-\item[(Sample \(z_i\))]  For each observation $\theta_i$, sample $z_i\in 1, \dots, J$ with group probabilities $$P(z_i = j) = \frac{\alpha_j f_B(\theta_i \mid \mu_j, \kappa_j, \lambda_j)}{\sum_{s=1}^J \alpha_s f_B(\theta_i \mid \mu_s, \kappa_s, \lambda_s)}.$$ This represents assigning this observation to one of the possible mixture components.
+\item[(\(z_i\))]  For each observation $\theta_i$, sample $z_i\in 1, \dots, J$ with group probabilities $$P(z_i = j) = \frac{\alpha_j f_B(\theta_i \mid \mu_j, \kappa_j, \lambda_j)}{\sum_{s=1}^J \alpha_s f_B(\theta_i \mid \mu_s, \kappa_s, \lambda_s)}.$$ This represents assigning this observation to one of the possible mixture components.
 
-\item[(Sample \(\boldsymbol{\alpha}\))] Sample the vector of mixture weights $$\boldsymbol{\alpha} = \alpha_1, \dots, \alpha_J \sim \text{Dirichlet}(\boldsymbol{n} + \boldsymbol{n}_0),$$ where \(\boldsymbol{n} = \left\{\sum_{i = 1}^n I(z_i = 1), \dots, \sum_{i = 1}^n I(z_i = J)\right\}^T,\) with $I(\cdot)$ the indicator function, and $\boldsymbol{n}_0$ the vector prior parameter for the Dirichlet, which is set to  $\boldsymbol{n}_0 = \boldsymbol{1}_n$ by default for an uninformative prior. Note that the definition of $\boldsymbol{n}$ means that all we need to do to sample the mixture weights is counting the number of observations assigned to each group.
+\item[(\(\boldsymbol{\alpha}\))] Sample the vector of mixture weights $$\boldsymbol{\alpha} = \alpha_1, \dots, \alpha_J \sim \text{Dirichlet}(\boldsymbol{n} + \boldsymbol{n}_0),$$ where \(\boldsymbol{n} = \left\{\sum_{i = 1}^n I(z_i = 1), \dots, \sum_{i = 1}^n I(z_i = J)\right\}^T,\) with $I(\cdot)$ the indicator function, and $\boldsymbol{n}_0$ the vector prior parameter for the Dirichlet, which is set to  $\boldsymbol{n}_0 = \boldsymbol{1}_n$ by default for an uninformative prior. Note that the definition of $\boldsymbol{n}$ means that all we need to do to sample the mixture weights is counting the number of observations assigned to each group.
 
-\item[(Sample \(\mu_j, \kappa_j, \lambda_j\))] For each mixture component $j\in 1, \dots, J$, sample parameters $\mu_j, \kappa_j, \lambda_j.$ Note that none of these parameters have known distributions, so we resort to Metropolis-Hastings throughout.
+\item[(\(\mu_j, \kappa_j, \lambda_j\))] For each mixture component $j\in 1, \dots, J$, sample parameters $\mu_j, \kappa_j, \lambda_j.$ Note that none of these parameters have known distributions, so we resort to Metropolis-Hastings throughout.
 
 \begin{enumerate}
     \item Sample $\mu_j$ using an MH-step. As for the proposal $\mu_j^\ast$, we make use of the fact that the distribution reduces to the von Mises distribution if $\lambda = 0$. Therefore, we can draw from the known distribution of the mean of the von Mises distribution, because it will be somewhat close to the desired distribution. We can take either the previously sampled $\mu,$ by sampling from $\mu_j^\ast \sim \mathcal{M}\left(\mu_j^{(m - 1)}, R_j \kappa\right),$ or use the current sample mean direction $\bar{\theta},$ by sampling from $\mu_j^\ast \sim \mathcal{M}\left(\bar{\theta}_j, R_j \kappa\right),$ where $\bar{\theta}_j$ and $R_j$ are computed from the sample assigned to component $j$.

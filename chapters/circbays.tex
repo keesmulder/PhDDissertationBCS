@@ -264,21 +264,21 @@ can be useful to save on memory.
 \begin{table}[t]
 \small
 \centering
-\centerline{
+\begin{scriptsize} \centerline{
 \begin{tabular}{lrrrr}
 Model & Fit function & MCMC & Marginal Likelihood & Nested \\ \hline
 Circular uniform & - & - & \((2\pi)^{-n}\) & - \\
 Von Mises & \code{vm_posterior} & Yes & \(\int_0^\infty I_0(R_n \kappa) / I_0(\kappa)^m d\kappa\) & -\\
+Projected Normal & \code{pn_posterior} & Yes & Bridgesampling & -\\
 Batschelet & \code{bat_posterior} & Yes & Bridgesampling & -\\
 Von Mises Regression & \code{vm_reg} & Yes & Bridgesampling & Yes\\
-Projected Normal & \code{pn_posterior} & Yes & Bridgesampling & -\\
 Projected Normal Regression & \code{pn_reg} & Yes & Bridgesampling & Yes\\
 Hierarchical PN Regression & \code{pn_me_reg} & Yes & Bridgesampling & Yes\\
 VM Mixture Models & \code{vm_mix}& Yes & Bridgesampling & -\\
 Batschelet Mixture Models & \code{bat_mix} & Yes & Bridgesampling & -\\
 Dirichlet Process Models & \code{vm_dpm} & Yes & - & - \\
 \end{tabular}
-}
+} \end{scriptsize}
 \caption{Overview of methods available for each model in \pkg{circbayes}. The columns represent the name of the model, the function to fit the model, whether the model is sampled with MCMC, how the marginal likelihood is calculated (see Section \ref{hyptest}), and whether model comparison through nested submodels is possible.} \label{tab:models}
 \end{table}
 
