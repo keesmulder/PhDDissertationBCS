@@ -317,7 +317,7 @@ par(oma = c(0, 0, 0, 0))
 gg_plotExampleRMu((c(56, 344, 77))*2*pi/360, alpha = 1)
 
 @
-\caption{Example of obtaining the mean direction $\bar{\theta}$ and the mean resultant length $R$. The three grey arrows represent the circular observations, which are stacked on top of each other (by summation) as shown in the black arrows. The resultant vector (dashed line) has direction $\bar{\theta}$ and length $R$.}\label{exampleRMu}
+\caption{Example of obtaining the mean direction $\bar{\theta}$ and the mean resultant length $R$. The arrows inside the circle are unit vectors representing the circular observations. Two arrows are repeated outside the circle in the same color to show the summation of the unit vectors. The resultant vector (dashed line) has direction $\bar{\theta}$ and length $R$.}\label{exampleRMu}
 \end{figure}
 
 To compute the mean direction, each angle in a circular dataset can be viewed as a vector of length 1 in direction $\theta_i$. As illustrated in Figure \ref{exampleRMu}, the summation of these vectors results in a vector in direction $\bar{\theta}$ which has length $R$. The mean direction $\bar{\theta}$ is an unbiased estimator of the mean direction of the von Mises distribution $\mu$.
