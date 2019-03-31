@@ -13,7 +13,7 @@ outcomes on circular, linear or categorical predictors, and can be
 performed with von Mises or Projected Normal residuals. Hierarchical
 (mixed-effects) regression is available in the Projected Normal
 framework. Finite Mixture models and non-parametric Dirichlet Process
-Mixture models provides flexible methods to fit any circular density.
+Mixture models provide flexible methods to fit any circular density.
 Flexible Bayesian Hypothesis testing methods are provided which can
 perform tests between any of the previous models, which leads to
 Bayesian versions of many frequentist hypothesis tests of circular data.
@@ -231,27 +231,27 @@ the function name), which provide easy access to these methods. In
 particular, methods such as \code{posterior_samples()}, \code{plot()},
 \code{print()}, \code{coef()}, \code{marg_lik()} and \code{inf_crit()}
 are available for all models. Throughout all outputs, the circular
-paramaters, such as mean direction parameters (ie. \(\mu\)) are treated
+parameters, such as mean direction parameters (ie. \(\mu\)) are treated
 as such, so `mean' or `median' refers to the circular mean and median,
 for example. Lower and upper bounds given are generally highest
 posterior density (HPD) intervals. Modes are estimated as the midpoint
 of a short (ie. \(10\%\)) HPD interval \citep{venter1967estimation}.
 
 The \code{plot()} methods for each model follow a similar pattern.
-Univariate models can be plot either in polar coordinates (which is
-emphasizes the circular nature of the data) or on the cartesian plane
+Univariate models can be visualized either in polar coordinates (which
+is emphasizes the circular nature of the data) or on the cartesian plane
 (which sometimes facilitates comparisons along the y-axis), along with
 the best fit for the probability density function. Regression models can
 be plot as bivariate plots where a predictor can be selected to place on
-the x-axis. In addition, we exploit the fact each iteration of an MCMC
-implies either a probability density function (given the current
-parameters) or a regression function (given the current parameters). As
-a result, we can plot the uncertainty as a number of samples from the
-probability density or regression functions from the posterior, using
-the option \code{n_samples = 100}, for example. Also, to reduce visual
-noise, the uncertainty can be plotted as credible intervals around the
-probability density or regression functions, using the option
-\code{add_ci = TRUE}.
+the x-axis. In addition, we exploit the fact that each iteration of an
+MCMC sample implies either a probability density function (given the
+current parameters) or a regression function (given the current
+parameters). As a result, we can plot the uncertainty as a number of
+samples from the probability density or regression functions from the
+posterior, using the option \code{n_samples = 100}, for example. Also,
+to reduce visual noise, the uncertainty can be plotted as credible
+intervals around the probability density or regression functions, using
+the option \code{add_ci = TRUE}.
 
 Typical options for MCMC methods are available throughout. Setting
 \code{niter} allows the user to set the number of iterations to sample,
@@ -266,20 +266,20 @@ can be useful to save on memory.
 \centering
 \begin{scriptsize} \centerline{
 \begin{tabular}{lrrrr}
-Model & Fit function & MCMC & Marginal Likelihood & Nested \\ \hline
-Circular uniform & - & - & \((2\pi)^{-n}\) & - \\
-Von Mises & \code{vm_posterior} & Yes & \(\int_0^\infty I_0(R_n \kappa) / I_0(\kappa)^m d\kappa\) & -\\
-Projected Normal & \code{pn_posterior} & Yes & Bridgesampling & -\\
-Batschelet & \code{bat_posterior} & Yes & Bridgesampling & -\\
-Von Mises Regression & \code{vm_reg} & Yes & Bridgesampling & Yes\\
-Projected Normal Regression & \code{pn_reg} & Yes & Bridgesampling & Yes\\
-Hierarchical PN Regression & \code{pn_me_reg} & Yes & Bridgesampling & Yes\\
-VM Mixture Models & \code{vm_mix}& Yes & Bridgesampling & -\\
-Batschelet Mixture Models & \code{bat_mix} & Yes & Bridgesampling & -\\
-Dirichlet Process Models & \code{vm_dpm} & Yes & - & - \\
+Model & Fit function & MCMC & Marginal Likelihood  \\ \hline
+Circular uniform & - & - & \((2\pi)^{-n}\) &  \\
+Von Mises & \code{vm_posterior} & Yes & \(\int_0^\infty I_0(R_n \kappa) / I_0(\kappa)^m d\kappa\) \\
+Projected Normal & \code{pn_posterior} & Yes & Bridgesampling \\
+Batschelet & \code{bat_posterior} & Yes & Bridgesampling \\
+Von Mises Regression & \code{vm_reg} & Yes & Bridgesampling \\
+Projected Normal Regression & \code{pn_reg} & Yes & Bridgesampling \\
+Hierarchical PN Regression & \code{pn_me_reg} & Yes & Bridgesampling \\
+VM Mixture Models & \code{vm_mix}& Yes & Bridgesampling \\
+Batschelet Mixture Models & \code{bat_mix} & Yes & Bridgesampling \\
+Dirichlet Process Models & \code{vm_dpm} & Yes & - \\
 \end{tabular}
 } \end{scriptsize}
-\caption{Overview of methods available for each model in \pkg{circbayes}. The columns represent the name of the model, the function to fit the model, whether the model is sampled with MCMC, how the marginal likelihood is calculated (see Section \ref{hyptest}), and whether model comparison through nested submodels is possible.} \label{tab:models}
+\caption{Overview of methods available for each model in \pkg{circbayes}. The columns represent the name of the model, the function to fit the model, whether the model is sampled with MCMC, how the marginal likelihood is calculated (see Section \ref{hyptest}).} \label{tab:models}
 \end{table}
 
 \hypertarget{circular-statistics}{%
@@ -382,7 +382,7 @@ version was implemented in \proglang{C++} through \pkg{Rcpp}
 \begin{CodeChunk}
 
 \begin{CodeInput}
-R> th_ran <- rvm(100, mu = 2, kp = 10)
+R> th <- rvm(100, mu = 2, kp = 10)
 \end{CodeInput}
 \end{CodeChunk}
 
@@ -406,8 +406,8 @@ R> vm_mod
 
 \begin{CodeOutput}
       estimate    se  2.5% 97.5%
-mu       0.290 0.054 0.182 0.398
-kappa    1.766 0.151 1.460 2.021
+mu       0.293 0.054 0.186 0.400
+kappa    1.728 0.149 1.466 2.053
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -466,10 +466,12 @@ the range of \(\lambda\)), as follows.
 \begin{CodeChunk}
 
 \begin{CodeInput}
-R> kp_logp  <- function(kp) dgamma(kp, 2, 1/10, log = TRUE)
-R> lam_logp <- function(lam) dbeta((lam + 1)/2, 3, 3, log = TRUE)
+R> kp_logp  <- function(kp) dgamma(kp, 2, 1/10, 
+R+                                 log = TRUE)
+R> lam_logp <- function(lam) dbeta((lam + 1)/2, 3, 3, 
+R+                                 log = TRUE)
 R> 
-R> pb_mod <- bat_posterior(th, 
+R> pb_mod <- bat_posterior(circular::wind, 
 R+                         kp_logprior_fun  = kp_logp,
 R+                         lam_logprior_fun = lam_logp)
 R> pb_mod
@@ -477,11 +479,11 @@ R> pb_mod
 
 \begin{CodeOutput}
                mean median    se  2.5% 97.5%
-mu            0.157  0.149 0.023 0.143 0.216
-kp            1.757  1.719 0.175 1.616 1.934
-lam           0.830  0.856 0.145 0.268 0.959
-circ_variance 0.334  0.338 0.028 0.283 0.375
-circ_sd       0.901  0.909 0.047 0.815 0.969
+mu            0.172  0.154 0.035 0.135 0.286
+kp            1.775  1.782 0.179 1.604 1.924
+lam           0.790  0.834 0.190 0.017 0.942
+circ_variance 0.328  0.325 0.031 0.285 0.386
+circ_sd       0.891  0.887 0.052 0.820 0.988
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -530,7 +532,7 @@ distribution can be found in \citet{wang2012directional}.
 
 A conjugate prior for \(\boldsymbol{\mu}\) is a bivariate Normal
 distribution \(N_2(\boldsymbol{\mu}_0, \lambda_0\boldsymbol{I}),\)
-resulting in a bivariate Normal conditional posterior
+resulting in a bivariate Normal conditional posterior given by
 \citep{Nunez-Antonio2005} \begin{equation}
 p(\boldsymbol{\mu} \mid \boldsymbol{X}) = N_2(\boldsymbol{\mu}_n, \boldsymbol{\Lambda}_n),
 \end{equation} where \(\boldsymbol{X}\) is a \(n\times2\) design matrix,
@@ -558,14 +560,14 @@ To obtain an MCMC sample from the Projected Normal posterior we can use
 \begin{CodeChunk}
 
 \begin{CodeInput}
-R> pn_mod <- pn_posterior(th)
+R> pn_mod <- pn_posterior(circular::wind)
 R> pn_mod 
 \end{CodeInput}
 
 \begin{CodeOutput}
      mean  mode    se  2.5% 97.5%
-mu1 1.302 1.326 0.086 1.144 1.447
-mu2 0.308 0.324 0.061 0.188 0.423
+mu1 1.296 1.277 0.085 1.151 1.461
+mu2 0.306 0.289 0.063 0.181 0.431
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -576,7 +578,7 @@ mu2 0.308 0.324 0.061 0.188 0.423
 
 }
 
-\caption[Three posterior fits of univariate symmetric circular probability densities, which are the von Mises distribution, the Projected Normal distribution, and the Power Batschelet distribution]{Three posterior fits of univariate symmetric circular probability densities, which are the von Mises distribution, the Projected Normal distribution, and the Power Batschelet distribution. Dashed lines give the 95 percent credible interval of the probability density.}\label{fig:plot_unifits}
+\caption[Three posterior fits of univariate symmetric circular probability densities, which are the von Mises distribution (left), the Power Batschelet distribution (middle)  and the Projected Normal distribution (right)]{Three posterior fits of univariate symmetric circular probability densities, which are the von Mises distribution (left), the Power Batschelet distribution (middle)  and the Projected Normal distribution (right). Dashed lines give the 95 percent credible interval of the probability density.}\label{fig:plot_unifits}
 \end{figure}
 \end{CodeChunk}
 
@@ -684,26 +686,14 @@ R> Motor$AvAmp <- scale(Motor$AvAmp)
 R> fit_vmreg <- vm_reg(Phaserad ~ AvAmp, data = Motor, 
 R+                     prior_b0kp = c(0, 0, 0),
 R+                     prior_btdt = c(0, 1))
-R> fit_vmreg
+R> coef(fit_vmreg)
 \end{CodeInput}
 
 \begin{CodeOutput}
-Bayesian circular GLM 
-
-Call:
-vm_reg(formula = Phaserad ~ AvAmp, data = Motor, prior_b0kp = c(0, 
-    0, 0), prior_btdt = c(0, 1))
-
-MCMC run for 2000 its, 1000 used. 
-
-Coefficients:
-          estimate    se   2.5% 97.5%
-Intercept    0.613 0.161  0.279 0.912
-Kappa        1.540 0.368  0.761 2.178
-AvAmp        0.060 0.082 -0.088 0.236
-
-DIC:  125.831 
-WAIC: 125.519 
+           estimate         se        2.5%     97.5%
+Intercept 0.6128075 0.15718544  0.29447560 0.8995695
+Kappa     1.4656703 0.38317651  0.85921974 2.3125049
+AvAmp     0.0599043 0.07670142 -0.09664822 0.2016793
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -746,15 +736,15 @@ In \pkg{circbayes} PN regression is implemented through the function
 
 \begin{CodeInput}
 R> fit_pnreg <- pn_reg(Phaserad ~ AvAmp, data = Motor)
-R> coef(fit_pnreg)$linear
+R> print(coef(fit_pnreg)$linear, digits = 3)
 \end{CodeInput}
 
 \begin{CodeOutput}
-                   mean        mode        se       2.5%     97.5%
-(Intercept)  0.97189043  0.98983375 0.1931467  0.5982540 1.3378849
-AvAmp       -0.03403904 -0.08624685 0.1980534 -0.3994491 0.3765813
-(Intercept)  0.65891290  0.65682925 0.1757234  0.3266365 0.9975990
-AvAmp        0.10443282  0.10773670 0.1832027 -0.2368230 0.4708930
+               mean    mode    se   2.5% 97.5%
+(Intercept)  0.9529  0.9317 0.188  0.599 1.339
+AvAmp       -0.0149 -0.0589 0.199 -0.385 0.396
+(Intercept)  0.6640  0.6742 0.183  0.307 0.999
+AvAmp        0.1073  0.1558 0.187 -0.226 0.500
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -799,7 +789,7 @@ returned.
 
 }
 
-\caption[Univariate regression plots for the von Mises and Projected Normal regression models]{Univariate regression plots for the von Mises and Projected Normal regression models. The dashed lines provide the 95 percent credible interval of the regression line.}\label{fig:plot_regfits}
+\caption[Univariate regression plots for the von Mises (left) and Projected Normal (right) regression models]{Univariate regression plots for the von Mises (left) and Projected Normal (right) regression models. The dashed lines provide the 95 percent credible interval of the regression line.}\label{fig:plot_regfits}
 \end{figure}
 \end{CodeChunk}
 
@@ -810,10 +800,10 @@ models}\label{comparison-between-the-two-regression-models}}
 Although the structure of the two models is quite different, both the VM
 and PN regression models predict a point on the circle conditional on a
 set of predictors, and both have a fairly simple residual structure. In
-fact, it can also be seen that both methods feature a regression
-function that takes the shape of an arctangent function. Therefore, one
-might wonder how to select a regression model for any practical problem.
-We will highlight three differences.
+fact, both methods feature a regression function that takes the shape of
+an arctangent function. Therefore, one might wonder how to select a
+regression model for any practical problem. We will highlight three
+differences.
 
 A first major distinction between the two models is that homogeneity of
 variance is enforced for the VM regression model, while the PN
@@ -842,10 +832,9 @@ in Section \ref{hyptest} to make a selection of the best-fitting method.
 \subsection{Hierarchical Projected Normal
 regression}\label{hierarchical-projected-normal-regression}}
 
-The Hierarchical Projected Normal regression model
-\citep{nunez2014bayesian} is useful for modeling dependent circular
-data. We define the mean vector in \eqref{eq:PNdistribution} as
-\begin{equation}
+The Hierarchical Projected Normal regression model is useful for
+modeling dependent circular data \citep{nunez2014bayesian}. We define
+the mean vector in \eqref{eq:PNdistribution} as \begin{equation}
 \boldsymbol{\mu}_{ij} = \begin{pmatrix}
   \mu_{ij}^{I}  \vspace{0.2cm}  \\
 \mu_{ij}^{II}
@@ -873,19 +862,19 @@ follows:
 R> pmer_mod <- pn_me_reg(formula = Error.rad ~ Maze + 
 R+                         Trial.type + L.c + (1 | Subject), 
 R+                       data = Maps)
-R> coef(pmer_mod)$linear
+R> print(coef(pmer_mod)$linear, digits = 3)
 \end{CodeInput}
 
 \begin{CodeOutput}
-                    mean        mode         se        2.5%       97.5%
-(Intercept)  2.359133810  2.27095206 0.25686138  1.89596834  2.84644389
-Maze1       -0.903994114 -0.92657074 0.30005444 -1.46256760 -0.29205615
-Trial.type1  0.384382370  0.39535677 0.26053229 -0.11523313  0.91123628
-L.c          0.002273315  0.01092830 0.04034233 -0.08823473  0.07168172
-(Intercept) -0.564580713 -0.54251394 0.16514339 -0.86298615 -0.21642491
-Maze1        0.507874981  0.35205189 0.21767993  0.07615177  0.93334560
-Trial.type1  1.140930788  1.17578280 0.18339447  0.81166425  1.50050353
-L.c         -0.007023267 -0.01905147 0.03232604 -0.07046604  0.05272091
+                mean     mode     se    2.5%   97.5%
+(Intercept)  2.38992  2.41007 0.2600  1.9144  2.8698
+Maze1       -0.91917 -1.04614 0.3162 -1.5074 -0.3499
+Trial.type1  0.38481  0.40711 0.2550 -0.1355  0.8628
+L.c          0.00546  0.01248 0.0406 -0.0810  0.0772
+(Intercept) -0.57438 -0.58326 0.1598 -0.8888 -0.2594
+Maze1        0.51194  0.43819 0.2121  0.0892  0.8939
+Trial.type1  1.15050  1.16576 0.1852  0.8111  1.5337
+L.c         -0.00778  0.00576 0.0310 -0.0709  0.0478
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -896,11 +885,11 @@ sampling step for \(r\) \citep{hernandez2017general}.
 \subsubsection{Regression
 Coefficients}\label{regression-coefficients-1}}
 
-MCMC samples for the fixed and random effects are given by
-\code{posterior_samples(pmer_mod)}, posterior summaries can be obtained
-through \code{coef_lin(pmer_mod)} and \code{coef_ran(pmer_mod)}. To
-obtain posterior summaries for the circular coefficients
-\citep{longitudinalpaper} we use \code{coef_circ(pmer_mod)} and
+MCMC samples for the fixed and random effects can be obtained by using
+the function \code{posterior_samples()}, posterior summaries can be
+obtained through \code{coef_lin()} and \code{coef_ran()}. To obtain
+posterior summaries for the circular coefficients
+\citep{longitudinalpaper} we use \code{coef_circ()} and
 \code{coef_ran(pmer_mod, type = `circular')}.
 
 \hypertarget{density-estimation-problems}{%
@@ -980,9 +969,9 @@ R> vm_mix_fit
 
 \begin{CodeOutput}
 Mixture of power Batschelet distributions, using method 'bayes'.
-              mu       kp lam      alph  circ_var   circ_sd
-comp_1 -2.079323 9.321815   0 0.1719184 0.0552646 0.3371954
-comp_2  1.107344 2.670828   0 0.8280816 0.2176319 0.7006139
+              mu        kp lam      alph   circ_var   circ_sd
+comp_1 -2.078875 10.334360   0 0.1565991 0.04968782 0.3192640
+comp_2  1.108694  2.464985   0 0.8434009 0.23886648 0.7388457
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -992,24 +981,25 @@ performed using the \code{bat_mix()} command.
 \begin{CodeChunk}
 
 \begin{CodeInput}
-R> pb_mix_fit <- bat_mix(th = th, n_comp = 2, bat_type = "power")
+R> pb_mix_fit <- bat_mix(th = th, n_comp = 2, 
+R+                       bat_type = "power")
 R> pb_mix_fit
 \end{CodeInput}
 
 \begin{CodeOutput}
-             mean median     se   2.5%  97.5%
-mu_1       -2.069 -2.069  0.104 -2.277 -1.883
-mu_2        1.103  1.105  0.067  0.974  1.237
-kp_1       22.491 16.042 20.898  3.153 91.411
-kp_2        2.232  2.268  0.634  1.308  3.601
-lam_1      -0.062 -0.073  0.165 -0.355  0.224
-lam_2       0.275  0.148  0.308 -0.157  0.819
-alph_1      0.150  0.149  0.053  0.052  0.260
-alph_2      0.850  0.851  0.053  0.740  0.948
-circ_var_1  0.053  0.043  0.050  0.004  0.197
-circ_var_2  0.277  0.244  0.089  0.161  0.467
-circ_sd_1   0.306  0.298  0.139  0.091  0.662
-circ_sd_2   0.802  0.749  0.153  0.592  1.121
+              mean  median      se   2.5%    97.5%
+mu_1        -2.107  -2.109   0.089 -2.247   -1.976
+mu_2         1.100   1.097   0.064  0.977    1.223
+kp_1       318.996 230.728 310.043  4.561 1012.603
+kp_2         2.767   2.552   0.870  1.592    4.917
+lam_1       -0.659  -0.745   0.262 -0.994   -0.083
+lam_2       -0.039  -0.096   0.261 -0.420    0.458
+alph_1       0.161   0.160   0.048  0.077    0.273
+alph_2       0.839   0.840   0.048  0.727    0.923
+circ_var_1   0.052   0.047   0.035  0.018    0.142
+circ_var_2   0.248   0.241   0.052  0.155    0.355
+circ_sd_1    0.316   0.310   0.093  0.189    0.554
+circ_sd_2    0.752   0.743   0.092  0.580    0.936
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -1082,8 +1072,8 @@ Dirichlet process object run for 1000 iterations.
   Conjugacy                conjugate
   Sample size                     76
                                     
-  Mean number of clusters       3.63
-  Median alpha                  0.51
+  Mean number of clusters       3.73
+  Median alpha                  0.52
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -1098,7 +1088,7 @@ list.
 
 }
 
-\caption[Density estimation plots, for the von Mises mixture, Batschelet mixture, and Dirichlet Process Mixture Model]{Density estimation plots, for the von Mises mixture, Batschelet mixture, and Dirichlet Process Mixture Model. Dashed lines indicate the 95 percent credible interval of the probability density.}\label{fig:plot_densest}
+\caption[Density estimation plots, for the von Mises mixture (left), Batschelet mixture (middle), and Dirichlet Process Mixture (right) models]{Density estimation plots, for the von Mises mixture (left), Batschelet mixture (middle), and Dirichlet Process Mixture (right) models. Dashed lines indicate the 95 percent credible interval of the probability density.}\label{fig:plot_densest}
 \end{figure}
 \end{CodeChunk}
 
@@ -1167,7 +1157,8 @@ statistical models can be compared as long as their marginal likelihoods
 can be computed. Section \ref{infcrit} will first provide a simple
 alternative form of model comparison, which is to compare models on
 their (Bayesian) information criteria \citep[Ch. 7]{gelman2003bayesian}
-instead of computing Bayes Factors. If nested models are compared, Bayes
+instead of computing Bayes factors. However, Bayes factors are generally
+preferred for model comparison. If nested models are compared, Bayes
 factors can be obtained somewhat easily, as discussed in Section
 \ref{sec:nested}. A more general solution using bridge sampling, which
 works for all models, is discussed in Section \ref{sec:bridge}.
@@ -1188,15 +1179,15 @@ R> inf_crit(fit_vmreg)
 
 \begin{CodeOutput}
                value
-AIC_Bayes 125.097302
-p_DIC       3.366769
-p_DIC_alt   3.744478
-DIC       125.830840
-DIC_alt   126.586258
-p_WAIC1     3.055156
-p_WAIC2     3.240075
-WAIC1     125.519227
-WAIC2     125.889066
+AIC_Bayes 125.193987
+DIC       125.633310
+DIC_alt   126.486741
+p_DIC       3.219662
+p_DIC_alt   3.646377
+p_WAIC1     3.005935
+p_WAIC2     3.226626
+WAIC1     125.419584
+WAIC2     125.860965
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -1226,8 +1217,8 @@ markedly easier to compute than the marginal likelihood. Similarly, if
 one wishes to compare hypotheses related to inequalities, such as
 \(\beta < 0\) versus \(\beta > 0\), then the encompassing prior approach
 is applicable \citet{klugkist2005inequality, wetzels2010encompassing}.
-Bayes factors for both approaches are provided for the VM and PN
-regression model.
+Bayes factors for both approaches are provided for the VM regression
+model.
 
 \hypertarget{marginal-likelihood-computation}{%
 \subsection{Marginal Likelihood
@@ -1287,7 +1278,6 @@ R> vm_mod <- vm_posterior(th, prior = c(0, 0, 1))
 R> 
 R> cu_ml  <- marg_lik_circ_unif(th)
 R> vm_ml  <- marg_lik(vm_mod)
-R> 
 R> bht_compare(uniform = cu_ml, von_mises = vm_ml)
 \end{CodeInput}
 
@@ -1296,20 +1286,14 @@ Bayesian Hypothesis Test
     Comparing 2 models: uniform, von_mises
 
 [Log Marginal Likelihood]
-
   uniform von_mises 
 -512.7677 -513.9991 
 
-
 [Posterior Model Probabilities]
-
   uniform von_mises 
  0.774065  0.225935 
 
-
 [Pairwise log Bayes Factors]
-  (Positive values support models in the rows)
-
                Versus: 
 Support for:      uniform von_mises
       uniform    0.000000  1.231408
@@ -1338,7 +1322,6 @@ R>
 R> vm_ants <- vm_posterior(ants)
 R> pb_ants <- bat_posterior(ants, bat_type = "power")
 R> pn_ants <- pn_posterior(ants)
-R> 
 R> bht_compare(von_mises = marg_lik(vm_ants), 
 R+             powerbat  = marg_lik(pb_ants), 
 R+             projnorm  = marg_lik(pn_ants))
@@ -1349,25 +1332,19 @@ Bayesian Hypothesis Test
     Comparing 3 models: von_mises, powerbat, projnorm
 
 [Log Marginal Likelihood]
-
 von_mises  powerbat  projnorm 
--144.1331 -135.4386 -220.1066 
-
+-144.1331 -135.5867 -223.4015 
 
 [Posterior Model Probabilities]
-
    von_mises     powerbat     projnorm 
-1.674689e-04 9.998325e-01 1.694645e-37 
-
+1.942138e-04 9.998058e-01 7.285745e-39 
 
 [Pairwise log Bayes Factors]
-  (Positive values support models in the rows)
-
                Versus: 
 Support for:     von_mises   powerbat projnorm
-      von_mises   0.000000  -8.694545 75.97346
-      powerbat    8.694545   0.000000 84.66801
-      projnorm  -75.973462 -84.668008  0.00000
+      von_mises   0.000000  -8.546356 79.26835
+      powerbat    8.546356   0.000000 87.81470
+      projnorm  -79.268348 -87.814705  0.00000
 \end{CodeOutput}
 \end{CodeChunk}
 
@@ -1395,23 +1372,26 @@ same time and compare.
 \begin{CodeChunk}
 
 \begin{CodeInput}
-R> pigeons <- circular::pigeons
-R> pigeons$bearing <- circular::circular(pigeons$bearing, units = "degrees")
-R> pig_dummy <- cbind(bearing = pigeons$bearing, 
-R+                    model.matrix(bearing ~ treatment, pigeons)[, -1])
+R> bear <- circular(pigeons$bearing, units = "degrees")
+R> trt  <- pigeons$treatment
+R> pigeons$bearing <- bear
+R> bearc           <- bear[trt == "c"]
+R> bearv1          <- bear[trt == "v1"]
+R> bearon          <- bear[trt == "on"]
 R> 
 R> nodiff_pigeons <- vm_posterior(pigeons$bearing)
-R> hom_pigeons    <- vm_reg(bearing ~ treatmenton + treatmentv1, data = pig_dummy)
-R> het_pigeonsc   <- vm_posterior(pigeons[pigeons$treatment == "c", 'bearing'])
-R> het_pigeonsv1  <- vm_posterior(pigeons[pigeons$treatment == "v1", 'bearing'])
-R> het_pigeonson  <- vm_posterior(pigeons[pigeons$treatment == "on", 'bearing'])
+R> hom_pigeons    <- vm_reg(bearing ~ treatment, 
+R+                          data = pigeons)
+R> het_pigeonsc   <- vm_posterior(bearc)
+R> het_pigeonsv1  <- vm_posterior(bearv1)
+R> het_pigeonson  <- vm_posterior(bearon)
 R> 
 R> 
-R> bht_compare(nodiff     = marg_lik(nodiff_pigeons), 
-R+             homogen    = marg_lik(hom_pigeons), 
-R+             heterogen  = sum(marg_lik(het_pigeonsc), 
-R+                              marg_lik(het_pigeonsv1), 
-R+                              marg_lik(het_pigeonson)))
+R> bht_compare(nodiff    = marg_lik(nodiff_pigeons), 
+R+             homogen   = marg_lik(hom_pigeons), 
+R+             heterogen = sum(marg_lik(het_pigeonsc), 
+R+                             marg_lik(het_pigeonsv1), 
+R+                             marg_lik(het_pigeonson)))
 \end{CodeInput}
 
 \begin{CodeOutput}
@@ -1419,25 +1399,19 @@ Bayesian Hypothesis Test
     Comparing 3 models: nodiff, homogen, heterogen
 
 [Log Marginal Likelihood]
-
    nodiff   homogen heterogen 
--161.5862 -235.0694 -145.8102 
-
+-161.5862 -160.7505 -145.8102 
 
 [Posterior Model Probabilities]
-
       nodiff      homogen    heterogen 
-1.407859e-07 1.718845e-39 9.999999e-01 
-
+1.407858e-07 3.247305e-07 9.999995e-01 
 
 [Pairwise log Bayes Factors]
-  (Positive values support models in the rows)
-
                Versus: 
-Support for:       nodiff  homogen heterogen
-      nodiff      0.00000 73.48314 -15.77603
-      homogen   -73.48314  0.00000 -89.25917
-      heterogen  15.77603 89.25917   0.00000
+Support for:       nodiff   homogen heterogen
+      nodiff     0.000000 -0.835756 -15.77603
+      homogen    0.835756  0.000000 -14.94027
+      heterogen 15.776026 14.940270   0.00000
 \end{CodeOutput}
 \end{CodeChunk}
 

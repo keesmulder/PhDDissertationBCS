@@ -1,3 +1,4 @@
+\select@language {english}
 \contentsline {chapter}{Introduction}{vii}{chapter*.2}
 \contentsline {chapter}{\numberline {1}Bayesian Estimation and Hypothesis Tests for a Circular GLM}{1}{chapter.1}
 \contentsline {section}{\numberline {1.1}Bayesian circular GLM}{4}{section.1.1}
@@ -123,11 +124,11 @@
 \contentsline {subsection}{\numberline {6.4.2}Circular regression with Projected Normal residuals}{142}{subsection.6.4.2}
 \contentsline {subsubsection}{Regression Coefficients}{143}{section*.76}
 \contentsline {subsection}{\numberline {6.4.3}Comparison between the two regression models}{144}{subsection.6.4.3}
-\contentsline {subsection}{\numberline {6.4.4}Hierarchical Projected Normal regression}{145}{subsection.6.4.4}
+\contentsline {subsection}{\numberline {6.4.4}Hierarchical Projected Normal regression}{144}{subsection.6.4.4}
 \contentsline {subsubsection}{Regression Coefficients}{145}{section*.78}
-\contentsline {section}{\numberline {6.5}Density estimation problems}{146}{section.6.5}
-\contentsline {subsection}{\numberline {6.5.1}Mixture models}{147}{subsection.6.5.1}
-\contentsline {subsection}{\numberline {6.5.2}Bayesian Nonparametrics for Circular data}{148}{subsection.6.5.2}
+\contentsline {section}{\numberline {6.5}Density estimation problems}{145}{section.6.5}
+\contentsline {subsection}{\numberline {6.5.1}Mixture models}{146}{subsection.6.5.1}
+\contentsline {subsection}{\numberline {6.5.2}Bayesian Nonparametrics for Circular data}{147}{subsection.6.5.2}
 \contentsline {section}{\numberline {6.6}Hypothesis tests and model comparison}{149}{section.6.6}
 \contentsline {subsection}{\numberline {6.6.1}Information criteria}{151}{subsection.6.6.1}
 \contentsline {subsection}{\numberline {6.6.2}Nested comparison Bayes Factors}{151}{subsection.6.6.2}
@@ -136,5 +137,7 @@
 \contentsline {subsubsection}{Testing for circular uniformity}{152}{section*.80}
 \contentsline {subsubsection}{Goodness-of-fit}{153}{section*.81}
 \contentsline {subsubsection}{Multi-sample (ANOVA-type) test}{154}{section*.82}
-\contentsline {section}{\numberline {6.7}Discussion}{156}{section.6.7}
+\contentsline {section}{\numberline {6.7}Discussion}{155}{section.6.7}
 \contentsline {chapter}{Nederlandse samenvatting}{157}{chapter*.83}
+\select@language {dutch}
+\select@language {english}
