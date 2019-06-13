@@ -1,11 +1,60 @@
-\documentclass[12pt, a4paper]{book}
+\documentclass[12pt, a4paper]{book}\usepackage[]{graphicx}\usepackage{xcolor}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 
 % Commands and packages from the papers.
 \input{usepkg_newcommand.tex}
 \hypersetup{
 	colorlinks=true,
 	citecolor=blue,
-	linkcolor=red,
 	urlcolor=blue
 }
 
@@ -21,10 +70,6 @@
 \usepackage{keyval}
 \usepackage{ae}
 \usepackage{color}
-
-\usepackage{pdfpages}
-\usepackage{pdflscape}
-
 \usepackage{hyperref}
 \usepackage{listings}
 \usepackage[T1]{fontenc}
@@ -85,152 +130,14 @@
 \author{Kees Mulder}
 
 
-<<init, echo = FALSE, include=FALSE>>=
-library(ggplot2)
-library(tidyverse)
-library(lubridate)
-library(gridExtra)
-library(knitr)
-library(ggrepel)
-source('C:/Dropbox/Research/PhDDissertationBCS/IllustrateRandMu.R')
-
-knit_hooks$set(document = function(x) {sub('\\usepackage[]{color}', '\\usepackage{xcolor}', x, fixed = TRUE)})
-
-knitr::opts_chunk$set(eval = TRUE,
-                      echo = FALSE,
-                      cache = TRUE,
-                      fig.width = 8, fig.height = 4,
-                      # fig.retina = TRUE,
-                      dev = 'tikz')
-
-@
 
 
-
-
-
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
-
-\includepdf[pages=1, landscape=true, fitpaper=true]{cover_dissertation_keesmulder_by_estherkuik-compressed.pdf}
 
 \frontmatter
 
-\pagenumbering{gobble}
-%
-% \newpage
-% ~
-% \newpage
-
-\begin{center}
-\huge{\textbf{Bayesian Circular Statistics}}
-
-\Large{von Mises-based solutions for practical problems}
-
-\vspace*{1cm}
-
-\large{\textbf{Bayesiaanse Circulaire Statistiek}}
-
-\normalsize{Oplossingen voor praktische problemen gebaseerd op de von Mises-verdeling}
-
-\vspace*{.3cm}
-
-\normalsize{(met een samenvatting in het Nederlands)}
-
-
-
-\vspace*{2cm}
-
-\Large{\textbf{Proefschrift}}
-
-\vspace*{3cm}
-
-\normalsize
-
-ter verkrijging van de graad van doctor aan de
-
-Universiteit Utrecht
-
-op gezag van de
-
-rector magnificus, prof.dr. H.R.B.M. Kummeling,
-
- ingevolge het besluit van het college voor promoties
-
-in het openbaar te verdedigen op
-
-\vspace*{.5cm}
-vrijdag 21 juni 2019 des middags te 4.15 uur
-
-
-\vspace*{1.5cm}
-
-door
-
-
-\vspace*{1.5cm}
-
-\Large{\textbf{Kees Tim Mulder}}
-\normalsize
-
-\vspace*{1cm}
-
-geboren op 3 mei 1990
-
-te Oegstgeest
-
-\end{center}
-
-
-\newpage
-
-\pagestyle{plain}
-\textbf{Promotoren:}
-
-Prof.dr. I.G. Klugkist
-
-Prof.dr. H.J.A. Hoijtink
-
-% \vspace*{2cm}
-
-\vspace*{\fill}
-
-\noindent The studies in this thesis were funded by the Netherlands Organization for Scientific Research (project 452-12-010).
-
-\newpage
-
-
-\pagestyle{plain}
-\textbf{Beoordelingscommissie:}
-
-A. Postma
-
-D. Borsboom
-
-E. Hamaker
-
-C. Ley
-
-Y. Rosseel
-
-
-
-
-\vspace*{\fill}
-
-\noindent Bayesian Circular Statistics: von Mises-based solutions for practical problems
-
-Proefschrift Universiteit Utrecht, Utrecht. - Met samenvatting in het Nederlands.
-
-% The studies in this thesis were funded by the Netherlands Organization for Scientific Research (project 452-12-010).
-
-% ISBN: 978-90-393-7103-9\\
-Cover illustration by Esther Kuik (\href{http://estherkuik.com/}{estherkuik.com}).
-
-Copyright ~ \textcopyright ~ 2018, K. Mulder. All Rights Reserved
-
-
-\newpage
-
+\maketitle
 
 \tableofcontents
 
@@ -245,79 +152,11 @@ Pondering over this somewhat odd question, the friends first conclude that the q
 
 
 \begin{figure}
-<<birthday_example, fig.height = 3/1.5, fig.width = 8/1.5, echo = FALSE>>=
-dates3 <- data_frame(x = c(ymd(c("2019-02-03", "2019-02-07", "2019-02-26",
-                                 "2019-01-07", "2019-12-05", "2019-12-06",
-                                 "2019-12-16", "2019-12-26"))),
-                     y = 0)
-# brks <- seq(ymd(c("2019-01-01")), ymd(c("2020-01-01")), length.out = 13)
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/birthday_example-1} 
 
-
-dates1 <- dates3[1:3, ]
-dates2 <- dates3[1:4, ]
-
-brks <- ymd(c(paste0("2019-", 1:12, "-01"), "2020-01-01"))
-
-
-
-ymin <- -.05
-ymax <- .2
-
-p <- ggplot() +
-  scale_y_continuous(expand = c(0, 0), limits = c(ymin, ymax)) +
-  scale_x_date(labels = scales::date_format("%b"),
-               breaks = brks,
-               limits = ymd(c("2019-01-01","2019-12-31"))) +
-  xlab("") +
-  theme_classic() +
-    theme(axis.line.y.left = element_line(colour = "white"),
-          axis.ticks.y = element_blank(),
-          axis.title.y = element_blank(),
-          axis.text.y =  element_blank())
-
-hjust <- 1
-vjust <- .5
-angle <- 0
-ylinemax <- 0.2
-direction <- "both"
-linesize <- 1.6
-linecol  <- "tomato"
-p1 <- p +
-  # geom_text_repel(data = dates1, direction = direction,
-  #                         mapping = aes(x, y, label = format(x, "%b %d")),
-  #                         hjust = hjust, vjust = vjust, angle = angle) +
-  geom_line(data = data_frame(x = ymd("2019-02-12"), y = c(ymin, ylinemax)),
-            mapping = aes(x, y),
-            col = linecol, size = linesize, lineend = "round") +
-  geom_point(data = dates1, mapping = aes(x, y))
-# +
-#   geom_point(data = data_frame(x = ymd("2019-02-12"), y = c(ymin+.01)),
-#             mapping = aes(x, y), col = "tomato")
-
-p2 <- p +
-  # geom_text_repel(data = dates2, direction = direction,
-  #                         mapping = aes(x, y, label = format(x, "%b %d")),
-  #                         hjust = hjust, vjust = vjust, angle = angle) +
-  geom_line(data = data_frame(x = ymd("2019-02-03"), y = c(ymin, ylinemax)),
-            mapping = aes(x, y),
-            col = linecol, size = linesize, lineend = "round") +
-  geom_point(data = dates2, mapping = aes(x, y))
-# + geom_point(data = data_frame(x = ymd("2019-02-03"), y = c(ymin+.01)),
-#             mapping = aes(x, y), col = "tomato")
-
-p3 <- p +
-  # geom_text_repel(data = dates3, direction = direction,
-  #                         mapping = aes(x, y, label = format(x, "%b %d")),
-  #                         hjust = hjust, vjust = vjust, angle = angle) +
-  xlab("Birthday") +
-  geom_line(data = data_frame(x = ymd("2019-01-01") + 190, y = c(ymin, ylinemax)),
-            mapping = aes(x, y),
-            col = linecol, size = linesize, lineend = "round") +
-  geom_point(data = dates3, mapping = aes(x, y))
-# + geom_point(data = data_frame(x = ymd("2019-01-01") + 190, y = c(ymin + .01)),
-#             mapping = aes(x, y), col = "tomato")
-grid.arrange(p1, p2, p3, ncol = 1)
-@
+\end{knitrout}
 \caption{Birthdays of our group of friends (black dots), and the average birthday (red line) progression for our group of friends, as friends keep arriving.}
 \label{birthday_example}
 \end{figure}
@@ -335,20 +174,11 @@ The real trouble begins when four more friends arrive. Due to a mild statistical
 First, the average birthday of July 9th is a summer day, and is nowhere near the birthday of any of the people in the group, who were all born in winter. Second, if the friends had started counting the days of the year at March 1st, just as good a day to start as the arbitrary January 1st, the resulting average birthday would have been completely different. Clearly, the strategy of consecutive labeling fails to accurately capture what we mean by `average'.
 
 \begin{figure}
-<<birthday_example_circle, echo = FALSE>>=
-rads <- as.numeric(dates3$x - ymd("2019-01-01")) * 2 * pi / 365
-ggplot() +
-  geom_line(data = data_frame(x = atan2(sum(sin(rads)), sum(cos(rads))), y = c(-.02, 0.12)),
-            mapping = aes(x, y), col = linecol, size = linesize) +
-  geom_point(data = data.frame(x = rads, y = .05), mapping = aes(x, y)) +
-  theme_void() +
-  circbayes:::gg_circular_elems(r = 1, start = 0, direction = 1) +
-  circbayes:::gg_inside_labels("months_abb", nticks = 12, labdist = .17)
-# +
-#   geom_point(data = data_frame(x = atan2(sum(sin(rads)), sum(cos(rads))), y = c(.01)),
-            # mapping = aes(x, y), col = "tomato")
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/birthday_example_circle-1} 
 
-@
+\end{knitrout}
 \caption{On the circle, the circular mean (red line) of the sample of birthdays (black dots)  is a natural central tendency.}
 \label{birthday_example_circle}
 \end{figure}
@@ -434,11 +264,11 @@ In the `average birthday' problem at the beginning of this introduction, it has 
 
 \begin{figure}
 \centering
-<<mu_example, fig.height=4/2, fig.width=6/2, out.width="5cm", out.height="5cm", strip.white=TRUE, fig.asp=1>>=
-par(oma = c(0, 0, 0, 0))
-gg_plotExampleRMu((c(56, 344, 77))*2*pi/360, alpha = 1)
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=5cm,height=5cm]{figure/mu_example-1} 
 
-@
+\end{knitrout}
 \caption{Example of obtaining the mean direction $\bar{\theta}$ and the mean resultant length $R$. The arrows inside the circle are unit vectors representing the circular observations. Two arrows are repeated outside the circle in the same color to show the summation of the unit vectors. The resultant vector (dashed line) has direction $\bar{\theta}$ and length $R$.}\label{exampleRMu}
 \end{figure}
 
@@ -612,87 +442,8 @@ Tot slot wordt in \textbf{Hoofdstuk~\ref{circbays}} het softwarepakket \pkg{circ
 
 \end{otherlanguage}
 
-
-
-\chapter{Dankwoord}
-
-\begin{otherlanguage}{dutch}
-
-Een aantal mensen direct of indirect bijgedragen aan het afronden van dit proefschrift. Hier wil ik hen graag bedanken.
-
-Ten eerste wil ik mijn dank uitspreken naar mijn promotoren. Irene, je bent \'echt een onwijs goede supervisor. Je wist wanneer je me moest bijsturen als ik teveel \textit{off on a tangent} ging, maar je had ook een ongelofelijk vertrouwen in mij en de projecten die ik verzon. Bovenal kwam ik altijd enthousiast uit onze meetings, was er oneindige ruimte om mezelf te ontwikkelen op de vlakken die ik wilde, en was het ook nog gezellig. Bedankt. Herbert, bedankt voor je enthousiasme en je gastvrijheid in de statistiekwereld.
-
-Mijn co-auteurs: Jolien, we zijn op veel vlakken antipodaal symmetrisch, maar ik heb enorm genoten van onze discussies, het zeldzaam hoge niveau waarop we elkaars werk konden begrijpen, en het verzinnen van artiestennamen voor je toekomste muziekcarri\'ere. Pieter, ik heb het gevoel dat door met jou te werken, ik ook leerde hoe het is voor anderen om met mij te werken. Bedankt voor ons ontzettend plezierige proces, je humor en je constante stroom creatieve idee\"en. Sven, ik heb met enorm veel plezier met je gewerkt in ons project over circulaire mediatie. Bedankt voor je energie.
-
-Ingmar, Daan en Stijn, jullie hebben me het \textit{waarom} van mijn proefschrift laten zien, door me mee te nemen in wat jullie zouden kunnen willen weten. Ontzettend bedankt daarvoor, en voor de fascinerende discussies over jullie domein en mijn domein.
-
-Mijn paranimfen, Bart en Fayette: Jullie zijn allebei bijzonder goed in meedenken en luisteren, en hebben me hiermee ontzettend geholpen. Bart, bedankt voor al onze koffietjes bij de Village, ik heb er echt heel veel aan gehad. Fayette, wat was het ontzettend fijn om met jouw creativiteit en vrolijkheid de kamer te delen.
-
-\end{otherlanguage}
-
-\vspace{.5cm}
-During this project I've had the pleasure to be surrounded by an exceedingly inspiring academic world. First, the department of Methods \& Statistics at Utrecht University: thanks for all the lovely conversations, the atmosphere and the openness. Second, I've had the opportunity to meet many fantastic people, whether at IOPS, ISBA, O'Bayes, ADISTA, BAYSM, CMStatistics, or any other conference or event: thanks so much for the engaging, stimulating and just plain fun conversations we've had. Also, thanks a lot to Arthur Pewsey for hosting my research visit to sunny C\'aceres, Spain.
-
-To Sanne, Anne, Erik-Jan, Duco, Ois\'in, Corine, Ayoub, Maria, Hidde, Sjoerd, Jeroen, Emmeke, Sander, Thomas, and anyone who ever joined our lunch conversations in the past: thanks for making the department not only an intellectually stimulating workplace, but also a very pleasant one. Also, I'm sorry for breaking my oath by handing in my dissertation before we scored 40 in lunch Jenga. I would love to make it up to you all one day.
-
-The same goes for all the other colleagues at the Methods \& Statistics department, who I've taught with, shared a room with, talked with, had dinner with, or worked with in any way. You are all really smart and cool people, and I'm really grateful for the memories I've made with you all along the way.
-
-\vspace{.5cm}
-
-Iedereen van mijn masterjaar van M\&S, met wie ik ooit dit statistiek-avontuur ingestapt ben: We hebben veel van elkaar geleerd, en ik ben blij dat ik jullie de afgelopen jaren nog veel gezien heb in het wereldje.
-
-Esther, bedankt voor de rol die je bent gaan spelen in mijn leven, waardoor je pas bij het illustreren van de kaft er achter kwam waar mijn proefschrift eigenlijk over ging. Maar ook bedankt voor de mooie illustratie zelf, natuurlijk!
-
-Mijn vrienden: Bruno, Jan, Bas, Michelle, Joeri, Ewout, Lisa, Joost, Romy, FW, Anne, Steffie, Casper, oud-huisgenoten, de donderdag-club, mensen van de Sunday Assembly, IOPS-borrelaars, YLL-maten, Young Statisticians, spelletjesmensen, feestjesmensen,  festivalmensen, en alle anderen, bedankt voor de ontspanning, de steun, de drankjes, de gesprekken, de dansjes en de gezelligheid.
-
-Loes, bedankt voor je aandacht naar mijn persoonlijke proces in het maken van dit proefschrift, en je vrolijke desinteresse in de inhoud ervan, waardoor ik op het eiland mijn hoofd echt h\'elemaal leeg kon maken. Johan, bedankt voor de fijne wandelingen door de de bossen van Radio Kootwijk. Maartje, bedankt voor de steun.
-
-Gief, Ella, Dowie, en de rest van de schoonfamilie/kerstfamilie: bedankt voor de buitengewoon warme ontvangst en de fijne kerstweken, die elk jaar een mooi moment van reflectie en nieuwe start waren.
-
-Tot slot: Lisa, van gekke dansjes tot het kopen van ons huis, je hebt heel de PhD lang kleur gegeven aan mijn leven. Ik kan me geen beter supportteam voorstellen. Bedankt voor de muziek, de warmte, het luisteren.
-
-
-
-\chapter{Curriculum Vitae}
-
-Kees Mulder was born on the 3$^{rd}$ of May, 1990, in Oegstgeest, the Netherlands. In 2011, he finished his BSc. in Psychology with a minor in Methodology \& Statistics. In 2012, he enrolled in the Master's programme \textit{Methods and Statistics of Social and Behavioural Sciences} at Utrecht University. During this time he worked at CITO and CentERdata as a (research) assistant, took part in an interdisciplinary Honours programme (the \textit{Young Leaders League}), took place on an education advisory committee, and was president of an interdisciplinary student society called the \textit{Louis Bonaparte Society}. In 2014, he finished the Master's \textit{cum laude}, with his Master's thesis \textit{Extending Bayesian Analysis of Circular Data to Comparison of Multiple Groups} being selected as one of three final nominees for Utrecht University's \textit{Best Master's Thesis award}.
-
-In 2014, Kees started a PhD on Bayesian Circular Statistics at Utrecht University. During his PhD, he also taught classes on programming in R, Data Science, and Structural Equation Modeling.
-
-In addition to research and teaching, Kees was active in Utrecht University's representational body for PhD's, \textit{Prout}, where he served as chair from 2016 - 2017. In addition, he took place on the board of the \textit{Young Statisticians}, the junior subdivision of the Dutch Society for Statistics, the \textit{VVS-OR}.
-
-As of April 2019, he works as a data science consultant at EY VODW.
-
-
-\newpage
-
-\section*{Publications}
-
-
-\noindent \textbf{Mulder, K.}, \& Klugkist, I. (2017). Bayesian estimation and hypothesis tests for a circular Generalized Linear Model. \textit{Journal of mathematical psychology}, 80, 4-14.
-
-\vspace{.3cm}
-
-\noindent Zerr, P., Gayet, S., \textbf{Mulder, K.}, Pinto, Y., Sligte, I., \& Van der Stigchel, S. (2017). Remapping high-capacity, pre-attentive, fragile sensory memory. \textit{Scientific reports}, 7(1), 15940.
-
-\vspace{.3cm}
-
-\noindent Klugkist, I., Cremers, J. \& \textbf{Mulder, K.} (2018). Bayesian analysis of circular data in social and behavioral sciences. In Ley, C. \& Verdebout, T. \textit{Applied Directional Statistics: Modern Methods and Case Studies} (pp. 156 - 199). Chapman \& Hall/CRC Press.
-
-\vspace{.3cm}
-
-\noindent Cremers, J., \textbf{Mulder, K.}, \& Klugkist, I. (2018). Circular interpretation of regression coefficients. \textit{British journal of mathematical and statistical psychology}, 71(1), 75-95.
-
-\vspace{.3cm}
-
-\noindent Veen, D., Stoel, D., Schalken, N., \textbf{Mulder, K.}, \& van de Schoot, R. (2018). Using the Data Agreement Criterion to Rank Experts' Beliefs. \textit{Entropy}, 20(8), 592.
-
 \bibliographystyle{apacite}
 \bibliography{C:/Dropbox/LiteratureCircular/CircularData}
-
-% \newpage
-% ~
-% \newpage
 
 
 \end{document}

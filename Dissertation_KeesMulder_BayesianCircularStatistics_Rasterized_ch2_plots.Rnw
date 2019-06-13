@@ -4,9 +4,9 @@
 \input{usepkg_newcommand.tex}
 \hypersetup{
 	colorlinks=true,
-	citecolor=blue,
-	linkcolor=red,
-	urlcolor=blue
+	citecolor=black,
+	linkcolor=black,
+	urlcolor=black
 }
 
 
@@ -21,10 +21,6 @@
 \usepackage{keyval}
 \usepackage{ae}
 \usepackage{color}
-
-\usepackage{pdfpages}
-\usepackage{pdflscape}
-
 \usepackage{hyperref}
 \usepackage{listings}
 \usepackage[T1]{fontenc}
@@ -110,8 +106,6 @@ knitr::opts_chunk$set(eval = TRUE,
 
 
 \begin{document}
-
-\includepdf[pages=1, landscape=true, fitpaper=true]{cover_dissertation_keesmulder_by_estherkuik-compressed.pdf}
 
 \frontmatter
 
@@ -224,6 +218,7 @@ Proefschrift Universiteit Utrecht, Utrecht. - Met samenvatting in het Nederlands
 % The studies in this thesis were funded by the Netherlands Organization for Scientific Research (project 452-12-010).
 
 % ISBN: 978-90-393-7103-9\\
+
 Cover illustration by Esther Kuik (\href{http://estherkuik.com/}{estherkuik.com}).
 
 Copyright ~ \textcopyright ~ 2018, K. Mulder. All Rights Reserved
@@ -524,7 +519,7 @@ Author contributions: KM and IK designed the study. KM developed the statistical
 \blfootnote{This chapter is submitted to Journal of Statistical Planning and Inference as Mulder, K., \& Klugkist, I. (tbd) Bayesian Tests for Circular Uniformity.
 
 Author contributions: KM and IK designed the study. KM developed the statistical methods, simulation study and software package. KM wrote the paper. IK provided feedback on written work.}
-\input{chapters/hypotest.tex}
+\input{chapters/hypotest_rasterized_plots.tex}
 
 \begin{changemargin}{5cm}
 \chapter{Mixtures of Peaked Power Batschelet Distributions for Circular Data  With Application to Saccade Directions}
@@ -613,7 +608,6 @@ Tot slot wordt in \textbf{Hoofdstuk~\ref{circbays}} het softwarepakket \pkg{circ
 \end{otherlanguage}
 
 
-
 \chapter{Dankwoord}
 
 \begin{otherlanguage}{dutch}
@@ -650,7 +644,6 @@ Loes, bedankt voor je aandacht naar mijn persoonlijke proces in het maken van di
 Gief, Ella, Dowie, en de rest van de schoonfamilie/kerstfamilie: bedankt voor de buitengewoon warme ontvangst en de fijne kerstweken, die elk jaar een mooi moment van reflectie en nieuwe start waren.
 
 Tot slot: Lisa, van gekke dansjes tot het kopen van ons huis, je hebt heel de PhD lang kleur gegeven aan mijn leven. Ik kan me geen beter supportteam voorstellen. Bedankt voor de muziek, de warmte, het luisteren.
-
 
 
 \chapter{Curriculum Vitae}

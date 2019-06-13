@@ -1,0 +1,414 @@
+\begin{abstract}
+Circular data are data measured in angles or directions, which occur in a wide variety of scientific fields.
+An often investigated hypothesis is that of circular uniformity, or isotropy.
+Frequentist methods for assessing the circular uniformity null hypothesis exist, but do not allow the user faced with an insignificant result to distinguish lack of power and support for the null hypothesis.
+Bayesian hypothesis tests, which solve this issue and several others, are developed here. 
+They are easy to compute and perform well, which is shown in a simulation.
+Two alternative hypotheses are considered. 
+One is based on the von Mises distribution and performs well against unimodal alternatives. Another is based on a kernel density, which acts as an omnibus test against all other scenarios.
+Assessing the performance of the tests using different priors, it is shown that they are powerful and allow more elaborate conclusions than classical tests of circular uniformity.
+\end{abstract}
+\newpage
+
+Circular data are measured in angles or directions. They are frequently encountered in scientific fields as diverse as life sciences \citep{mardianew}, behavioural biology \citep{bulbert2015danger}, cognitive psychology \citep{kaas2006haptic}, bioinformatics \citep{mardia2008multivariate}, political sciences \citep{gill2010} and environmental sciences \citep{arnold2006recent}. In psychology, circular data occur often in motor behaviour research \citep{mechsner2001perceptual, mechsner2007bimanual, postma2008keep, baayen2012test}, as well as in the application of circumplex models \citep{gurtman2003circumplex, gurtman2009exploring, Leary1957}. Circular data differ from linear data in the sense that circular data are measured in a periodical sample space. For example, an angle of $1^{\circ}$ is quite close to an angle $359^{\circ},$ although linear intuition suggests otherwise.
+
+A fundamental hypothesis of interest is that of circular uniformity. A test for circular uniformity can be used to assess a hypothesis of theoretical interest by itself, but can also be used as a preliminary assessment, because most tests performed in circular statistics are only valid if the data is non-uniform. Several methods for assessing circular uniformity exist in the frequentist framework. These will be reviewed in Section \ref{sec:freq}.
+
+In the rest of this paper, Bayesian hypothesis tests will be added to this arsenal. In order to create a Bayesian test of circular uniformity, the Bayes factor will be employed, which is often hailed as the standard way of performing a Bayesian hypothesis test \citep{kass1995bayes, jeffreys1961theory}. A major advantage of this Bayesian method is that through  specifying the alternative hypothesis and the associated prior, we can precisely quantify support for either the null hypothesis or the alternative hypothesis. Methods based on null hypothesis significance testing only signify whether or not the null hypothesis can be rejected, but never provide support in favor of the null hypothesis. In practice, failure to reject the null hypothesis in a frequentist test is often taken as evidence for the null. However, a failure to reject the null might just as well be caused by a lack of power, so that the evidence in the data is indifferent to circular uniformity. In contrast, the Bayesian hypothesis test developed here is able to provide support for the null hypothesis. This alleviates some of the well-described issues with null hypothesis significance testing, and is particularly useful for tests that are used as a preliminary assessment, such as circular uniformity tests. 
+
+ To compute the Bayes factor, the so-called marginal likelihood must be obtained for each hypothesis. The marginal likelihood is the normalizing constant of the posterior, and the key ingredient of the Bayes factor. To obtain the marginal likelihood one must specify the prior distribution of the parameters in each hypothesis. The null hypothesis (circular uniformity) has no parameters, so no prior is needed for it. The alternative hypothesis, however, requires specification of both a model for the data, would they be non-uniform, and second, a prior for the parameters in this model. This paper will investigate two alternative hypotheses, one based on the von Mises distribution and one based on a kernel density alternative. In addition, several priors will be investigated that can be used with each model.  
+
+The rest of the paper is structured as follows. A short review of frequentist tests of circular uniformity is provided in Section \ref{sec:freq}. The Bayesian circular uniformity test for a von Mises alternative is discussed in Section \ref{isotestvm}. The Bayesian circular uniformity test for a kernel density alternative, which functions as an omnibus test, is discussed in Section \ref{sec:KDE}. The methods are applied to example datasets in Section \ref{sec:ex}. Section \ref{sec:discussion} provides a discussion.
+
+\section{Frequentist tests of circular uniformity} \label{sec:freq}
+
+Here, we will shortly review frequentist tests of circular uniformity. Four commonly used tests are Kuiper's test \citep{kuiper1960tests}, Rayleigh's test \citep{mardia2009directional, brazier1994confidence}, Rao's test of equal spacing \citep{rao1976some} and Ajne's test \citep{ajne1968simple}. Perhaps the most common of these is the Rayleigh test. Let \( \bth = (\theta_i = 1, \dots, \theta_n) \) denote a set of data consisting of angles, and let the mean resultant length \( \bar{R} = n^{-1} \sqrt{ (\sum_{i=1}^n \cos \theta_i)^2 + (\sum_{i=1}^n \sin \theta_i)^2} \). Then the Rayleigh test statistic can be computed simply as \( 2 n \bar{R}^2,\) which has approximately a \( \chi^2_2 \) distribution. It can be shown that the Rayleigh test is the most powerful test against von Mises alternatives, as well as Projected Normal (PN) alternatives \citep{bhattacharyya1969hodges}. Although the Rayleigh test is consistent against unimodal alternatives, it is not consistent against alternatives that have resultant length \( \rho = 0,\) in particular distributions with antipodal symmetry \citep{mardia2009directional}.
+
+Another test is Kuiper's test \citep{kuiper1960tests}, which is based on the maximum difference between the theoretical and empirical distribution function. It is consistent against all alternatives to uniformity \citep{mardia2009directional}. 
+A similar test uses Watson's \( U^2 \) statistic \citep{watson1961goodness}, which is instead based on the \textit{mean} difference between the theoretical and empirical distribution function. 
+
+Several other tests for circular uniformity exist, among which Rao's equal spacing test \citep{rao1976some}, the range test \citep{laubscher1968distribution}, the Hodges-Ajne test \citep{hodges1955bivariate, ajne1968simple}, Ajne's \(A_n\) test \citep{ajne1968simple}, and the Hermans-Rasson test \citep{hermans1985new}. Somewhat more recently, a smooth test for circular uniformity was developed by \citet{bogdan2002data}. A test specifically targeting multimodal alternatives was developed by \citet{pycke2010some}.
+
+
+
+\section{Tests with a von Mises alternative} \label{isotestvm}
+
+In this section, a Bayesian hypothesis test for circular uniformity against a von Mises alternative will be developed. The von Mises distribution is a natural distribution on the circle, given by
+\begin{equation}
+\mathcal{M} (\theta \mid \mu, \kappa) = \left[ 2 \pi I_0 (\kappa) \right]^{-1} \exp \left\{ \kappa \cos (\theta - \mu) \right\},
+\end{equation}
+where \( \theta \in [0, 2\pi) \) is an angle, \( \mu \in [0, 2 \pi) \) is the mean direction, \( \kappa \in \mathbb{R}^+ \) is a concentration parameter and \( I_0(\cdot) \) is the modified Bessel function of the first kind and order zero.
+
+The test will be based on the Bayes factor, which is the ratio of two marginal likelihoods, given by
+\begin{equation}
+BF_{10} = \frac{ m_1( \bth ) }{ m_0( \bth ) } = \frac{\int_{\bph} p(\bph, \bth \mid H_1)  d\bph}{\int_{\bph} p(\bph, \bth \mid H_0)  d\bph},
+\end{equation}
+where \( \bth = \theta_1, \dots, \theta_n \) is a data set consisting of angles, and \( \bph \) is a vector of parameters belonging to the chosen model. For the von Mises distribution \( \bph =  ( \mu, \kappa )^T.\) Because the null hypothesis does not feature parameters and assigns equal probability to each data point, \( m_0(\bth) \) depends only on the sample size. The circular uniform distribution has \( p(\theta ) = (2 \pi )^{-1} \forall ~ \theta \in [0, 2\pi),\) so the marginal likelihood for \(H_0\) is obtained by
+\begin{equation}
+m_0 (\bth) = \prod_{i = 1}^n p(\theta_i) = (2 \pi )^{-n}.
+\end{equation}
+
+
+The marginal likelihood of \( H_1 \) is given by
+\begin{equation}
+m_1(\bth) = \int_{\bph} f(\bph, \bth \mid H_1)  d\bph = \int_0^{\infty}  \int_0^{2\pi} f(\mu, \kappa, \bth \mid H_1)  d\mu d\kappa,
+\end{equation}
+where
+\begin{equation}
+f(\mu, \kappa, \bth \mid  H_1) \propto p(\mu, \kappa \mid H_1) f(\bth \mid \mu, \kappa,  H_1)
+\end{equation}
+is the kernel of the posterior, where the prior \( p(\mu, \kappa \mid H_1) \) must still be chosen, and \( f(\mu, \kappa \mid \bth,  H_1) \) is the likelihood. The likelihood of the von Mises distribution is given by
+\begin{equation}
+f(\bth \mid \mu, \kappa,  H_1) = \prod_{i = 1}^n \mathcal{M} (\theta_i \mid \mu, \kappa) = \left[ 2 \pi I_0 (\kappa) \right]^{-n} \exp \left\{ R \kappa \cos (\bar{\theta} - \mu) \right\},
+\end{equation}
+where \( R \) is the resultant length and \( \bar{\theta} \) is the mean direction.
+
+For any prior \( p(\mu, \kp) \) that does not depend on \( \mu, \) the Bayes factor simplifies to
+\begin{align}
+BF_{10} % &= \frac{m_1(\bth)}{m_0(\bth)} \\
+&= (2 \pi)^n \int_0^{\infty} p(\mu, \kp) \int_0^{2\pi} \left[ 2 \pi I_0 (\kappa) \right]^{-n} \exp \left\{ R \kappa \cos (\bar{\theta} - \mu) \right\} d\mu d\kappa \\
+&= \int_0^{\infty} I_0 (\kappa)^{-n} p(\mu, \kp) \int_0^{2\pi}  \exp \left\{ R \kappa \cos (\bar{\theta} - \mu) \right\} d\mu d\kappa \\
+&= 2 \pi \int_0^{\infty}  p(\mu, \kp) \frac{I_0(R \kp)}{I_0 (\kappa)^n} d\kappa,
+\end{align}
+where the last step uses the fact that \( I_0(x) = [2 \pi]^{-1} \int_0^{2\pi} \exp\left\{ x \cos \theta \right\} d\theta\). Thus, computation of the Bayes factor requires only univariate integration.
+
+\subsection{Choosing priors}
+\label{sub:Priors}
+
+Choosing the prior for this hypothesis test is not trivial. In principle, the prior for \( \{ \mu, \kappa \} \) should capture our actual belief about the possible values of the parameters, given that the alternative hypothesis is true. Although researchers are free to determine their own prior for this test, we propose some general guidelines for the set of possible priors to be considered here. 
+
+First, it should be noted that choosing improper priors generally do not result in useful Bayesian hypothesis tests. Therefore, proper priors will be used.
+
+Second, if a test for circular uniformity is considered, the researcher will generally not already have an idea about the mean direction of the data if \( H_1 \) is true, because they are investigating whether there even is a preferred (mean) direction. Therefore, we suggest taking a circular uniform prior on \( \mu \). This is done by taking \( p(\mu) = [2 \pi]^{-1} \) and independent of \( \kp, \) so that \( p(\mu, \kp) = p(\mu) p(\kp) = p(\kp)/ (2\pi) \) and we can concern ourselves only with choosing the prior for \( \kp.\)
+
+Finally, a researcher that considers circular uniformity to be a reasonable hypothesis rarely expects strongly concentrated distributions, even if the alternative hypothesis were true. Therefore, we suggest setting a prior for \( \kappa \) that gives most of its probability to fairly low values of \( \kappa \). Should the data follow a concentrated distribution anyway, the test will be powerful regardless.  
+
+In practice, whether these expectations are reasonable should be assessed by the researcher themselves. However, taking this approach allows us to build default methods that work well in most research scenarios in which the test would be applied. In the following sections, different choices for priors are considered, and for each the resulting test is assessed.
+
+
+\subsection{Priors based on the conjugate prior}
+\label{sub:ConjugatePrior}
+
+A conjugate prior for the von Mises distribution was suggested by \citet{guttorp1988finding}, and is given by
+\begin{equation}
+p(\mu, \kappa) \propto I_0(\kappa)^{-c} \exp \left\{ R_0 \kappa \cos(\mu - \mu_0) \right\},
+\end{equation}
+where \( \mu_0, R_0, \) and \( c \) are the prior mean, prior resultant length, and prior 'sample size', respectively. As discussed previously, we would like to remove the necessity to choose a prior mean \( \mu_0.\) This can be done by putting a circular uniform prior on \( \mu_0 \) and integrating it out so that
+\begin{equation}
+p(\mu, \kappa) \propto \int_0^{2 \pi} [2\pi ]^{-1} I_0(\kappa)^{-c} \exp \left\{ R_0 \kappa \cos(\mu - \mu_0) \right\} d\mu_0 = \frac{I_0(R_0 \kappa)}{I_0(\kappa)^{c}},
+\end{equation}
+which only depends on \( \kp\). Then, all that remains is choosing values for \( R_0 \) and \( c \). It can easily be seen seen that imagining a single datapoint on the circle results in \( R_0 = 1 \) and \( c = 1,\) producing the constant prior on \(\kp\). Because the constant prior is improper and therefore invalid for hypothesis testing, we examine two valid options instead. %Our general approach will be to set the prior to be proportional to the likelihood of an imagined dataset with a limited amount of information.
+
+First, the prior used by \citet{mcvinish2008semiparametric} has \( R_0 = 0, c = 1, \) so that we obtain
+\begin{equation} \label{UIPrior} % Unit information prior
+p(\mu, \kappa) \propto I_0(\kappa)^{-1}.
+\end{equation}
+This prior will be referred to as prior \ref{UIPrior}, and is displayed in Figure \ref{fig:exampleprior}, in red.
+
+Second, the prior could be taken to be proportional to the likelihood of an imagined dataset \( \{ a, a + \pi/2 \},\) with \( a \) any angle. This imagined dataset has two angles at \( 90^\circ \) from one another. This results in \( R_0 = \sqrt{2}, c = 2 \), so we obtain
+\begin{equation} \label{RAPrior} % Right angle prior
+p(\mu, \kappa) \propto I_0\left(\sqrt{2} \kp \right) I_0(\kappa)^{-2}.
+\end{equation}
+This prior will be referred to as prior \ref{RAPrior}, and is displayed in Figure \ref{fig:exampleprior}, in blue. It can be seen that this prior has more mass at higher values of \( \kp.\)
+
+
+\begin{figure}
+\begin{center}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/ExampleConjPrior-1} 
+
+\end{knitrout}
+\end{center}
+\caption{Graphs of three different choices of priors for \(\kp\): Prior \ref{UIPrior} (red) has \( R_0 = 0, c = 1\), prior \ref{RAPrior} (blue) has \( R_0 = \sqrt{2}, c = 2\), and the Jeffreys prior (green) has \( \kp_u = 10\).}
+\label{fig:exampleprior}
+\end{figure}
+
+Denoting the normalizing constant of either prior by \[ g = 2 \pi \int_0^{\infty} I_0(R_0 \kappa)I_0(\kappa)^{-c} d\kappa, \] the marginal likelihood for \( H_1 \) for these priors is
+\begin{align}
+m_1(\bth) &= \int_0^{\infty}  \int_0^{2\pi} p(\mu, \kappa ) f (\bth \mid \mu, \kappa)  d\mu d\kappa \\
+&= g \left[ 2 \pi \right]^{-n} \int_0^{\infty}  \frac{I_0(R_0 \kappa)}{I_0(\kappa)^{c}}  I_0 (\kappa)^{-n} \int_0^{2\pi} \exp \left\{ R \kappa \cos \left( \bar{\theta} - \mu \right) \right\}  d\mu d\kappa \\
+&= g \left[ 2 \pi \right]^{-(n + 1)}  \int_0^{\infty}   I_0(R_0 \kappa) I_0(R \kappa) I_0(\kappa)^{-(n + c)}   d\kappa.
+\end{align}
+The Bayes factor in favor of the alternative is then
+\begin{equation}
+  BF_{10} = \frac{m_1(\bth) }{m_0(\bth)} = [2 \pi]^n m_1(\bth) = g \left[ 2 \pi \right]^{-1}  \int_0^{\infty}   I_0(R_0 \kappa) I_0(R \kappa) I_0(\kappa)^{-(n + c)} d\kappa.
+\end{equation}
+This can be computed by univariate numerical integration.
+
+\subsection{Jeffreys prior}
+\label{sub:jeffprior}
+
+The Jeffreys prior is a common choice for non-informative priors, especially in low-dimensional parameter spaces as is the case here. The Jeffreys prior is proportional to the square root of the determinant of the Fisher Information Matrix \( \mathcal{I}(\bph) \) for a single observation, so that for the von Mises distribution it is given by
+\begin{equation}
+  p(\bph) \propto \sqrt{ \text{det}\left[ \mathcal{I}(\bph) \right] } = \sqrt{\kp A(\kp) A'(\kp) },
+\end{equation}
+where \( A(\kp) = I_1(\kp) / I_0(\kp) \) and \( A'(\kp) = \frac{d}{d \kp} A(\kp).\)
+
+An attractive property of this prior is that it has \( p(\kp = 0) = 0 \). However, this prior is improper, which means it can not be used directly in hypothesis testing. Therefore, we suggest to take a truncation of this prior from above at some value \( \kp_u. \) A proper prior based on the Jeffreys prior is then given by
+\begin{equation}
+  p(\mu, \kp \mid \kp_u) = \frac{I(\kp < \kp_u) \sqrt{\kp A(\kp) A'(\kp) } }{2 \pi \int_0^{\kp_u} \sqrt{\kp A(\kp) A'(\kp)}  d\kp },
+\end{equation}
+where \( I(\cdot) \) is an indicator function. This prior with \( \kp_u = 10 \) is shown in Figure \ref{fig:exampleprior}, in green.
+
+To choose \( \kp_u, \) it might be thought of as an upper bound for the values of \( \kp \) for which we will be able to find support. If the data favors a value of \( \kp \) higher than \( \kp_u, \) the marginal likelihood of the alternative hypothesis \( H_1 \) will be underestimated, although \( H_1 \) will still be preferred. Conversely, it should be noted that even if the likelihood strongly suggests \( \kp < \kp_u \), the resulting Bayes Factor will still depend on \( \kp_u \) through the integral in the normalizing constant. The concern that a somewhat arbitrary choice must be made can be alleviated somewhat by performing a sensitivity analysis. In Section \ref{ssub:Simulation}, it will be shown that the hypothesis test using this prior performs well even for some fixed values of \( \kp_u.\)
+
+The Bayes Factor is given by
+\begin{align}
+  BF_{10} &= (2 \pi)^n \int_0^{\infty}  \int_0^{2\pi} p(\mu, \kappa ) f (\bth \mid \mu, \kappa)  d\mu d\kappa \\
+  &= \int_0^{\infty}  p(\mu, \kp) I_0(\kp)^{-n}    \int_0^{2\pi} \exp \left\{ R \kp \cos(\bar{\theta} - \mu) \right\}  d\mu d\kappa \\
+  &= 2 \pi \left[ \int_0^{\kp_u} \sqrt{\kp A(\kp) A'(\kp)} d\kappa \right]^{-1}  \int_0^{\kp_u}  \sqrt{\kp A(\kp) A'(\kp) }  I_0(R \kp) I_0(\kp)^{-n} d\kp.
+\end{align}
+
+
+\subsection{Simulation}
+\label{ssub:Simulation}
+
+In order to assess the performance of the Bayesian hypothesis tests with a von Mises alternative and the three priors discussed previously, a simulation study was performed.  One million datasets were sampled from the von Mises distribution with \( \kappa \) set to  \( \{ 0, 0.5, 1, 2, 5 \}, \) where \( \kappa = 0 \) was used three times more often as it represents \( H_0.\) Samples sizes were randomly selected from \( \{ 2, \dots, 15, 20, 30, \dots, 190, 200 \} \).
+
+
+
+\begin{figure}
+  \begin{subfigure}[t]{0.5\linewidth}
+    \centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/ErrorRatePlotConjugate-1} 
+
+\end{knitrout}
+    \caption{Prior \ref{UIPrior}.}\label{fig:ErrorRatePlotConjugate}
+  \end{subfigure}%
+  \begin{subfigure}[t]{0.5\linewidth}
+   \centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/rasterized/logBFplotConjugate-1} 
+
+\end{knitrout}
+    \caption{Prior \ref{UIPrior}.}\label{fig:logBFplotConjugate}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.5\linewidth}
+    \centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/ErrorRatePlotConjugate2-1} 
+
+\end{knitrout}
+   \caption{Prior \ref{RAPrior}.}\label{fig:ErrorRatePlotConjugate2}
+  \end{subfigure}%
+  \begin{subfigure}[t]{0.5\linewidth}
+   \centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/rasterized/logBFplotConjugate2-1} 
+
+\end{knitrout}
+    \caption{Prior \ref{RAPrior}.}\label{fig:logBFplotConjugate2}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.5\linewidth}\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/SimulationPlotJeff-1} 
+
+\end{knitrout}
+    \caption{Jeffreys prior with \(\kp_u = 20\).}\label{fig:simjefferror}
+  \end{subfigure}%
+  \begin{subfigure}[t]{0.5\linewidth}\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/rasterized/rainbowPlotJeff-1} 
+
+\end{knitrout}
+    \caption{Jeffreys prior with \(\kp_u = 20\).}\label{fig:simjeffbfs}
+  \end{subfigure}
+  \caption{Results of the simulation study for prior \ref{UIPrior} (top), prior \ref{RAPrior} (middle) and the Jeffreys prior (bottom) with \(\kp_u = 20\). The left plots show the proportion of simulations which  obtained a Bayes factor in favor of the alternative hypothesis (\(BF_{10} > 1\)). Error rates for the Rayleigh test with \(\alpha = .05\) are provided as dotted lines, with the nominal significance displayed as a gray line at \(.05\).   The right plots show a subsample of the log-Bayes factors obtained for different sample sizes \(n\) and \(\kp\), as well as a solid trendline computed from the full simulation showing the average log Bayes factor for each sample size.}
+  \label{fig:vmresults}
+\end{figure}
+
+Figure \ref{fig:vmresults} shows the performance of \( BF_{10} > 1 \) as a decision criterion for all priors, as well as a plot of the obtained log Bayes factors. In general, all three tests perform well, and are particularly good at correctly classifying data generated under the null hypothesis. Prior \ref{UIPrior} and prior \ref{RAPrior} show very similar performance, although prior \ref{RAPrior} is more prone to select \(H_0\). The Jeffreys prior with \( \kp_u = 20 \) is even more prone to select \(H_0.\) When data is almost uniform with \( \kp = 0.5,\) the tests need a large sample size to select \( H_1 \) more than half of the time (around \(n > 50\) for prior \ref{UIPrior} and prior \ref{RAPrior}, and \(n > 100\) for the Jeffreys prior with \(\kp_u = 20\)).
+
+Compared to the error rates of the Rayleigh test, the current test has better power in all situations but those with \( \kp = .5, n > 30\) and \(\kp = 0, n < 30\). For those cases, it can be seen in the plots on the right of Figure \ref{fig:vmresults} that the Bayes factors that are produced are somewhat indecisive, so they may not be taken as evidence in favor of either hypothesis at all. Also, it can be seen that if \( H_0 \) is true, \( p(H_0 \mid \bth ) \rightarrow 1 \) as \( n \rightarrow \infty,\) which is not the case for the Rayleigh test.
+
+It can be seen that in some cases, such as in \ref{fig:ErrorRatePlotConjugate} with \(\kappa = 0.5\), increasing the sample size from 1 to 10 actually decreases the probability of selecting \(H_1\), even though it is the true hypothesis. This is a known property of some Bayesian hypothesis tests. It should be noted that in these cases, the Bayes factor is shows indecision. 
+
+
+\section{Tests with a Kernel Density alternative}
+\label{sec:KDE}
+
+If the von Mises alternative is insufficient, the correct alternative distribution to test against is often unknown. A pure Bayesian approach could be to formulate a set of possible models, and choose between this set of alternatives. However, this requires attempting to fit an infinite set of models which might be hard to do in practice.
+
+Instead, it may be useful to fit a very flexible model as the alternative, which can mimic the true distribution well, so as to provide an omnibus test against many possible models. A kernel density fulfills this role, being able to approximate any density given enough data. Recent developments of kernel density methods for circular data have focused on kernel density bandwith selection and kernel regression  \citep{di2009local,  oliveira2012plug, di2013non, JSSv061i09}.
+
+Here, we will build a test for circular uniformity which uses a von Mises kernel density as the alternative. The pdf of the kernel density based on a dataset \( \bTh = \Theta_1, \dots, \Theta_n \) is given by
+\begin{equation}
+  f (\theta \mid \bTh, \kp) = \frac{1}{n} \sum_{i = 1}^n \mathcal{M} (\theta \mid \Theta_i, \kp).
+\end{equation}
+Our interest is to obtain a posterior for the bandwith \( \kp, \) which is the only free parameter. However, if the likelihood is specified as
+\begin{equation}
+ f(\bTh \mid \kp) = \prod_{j = 1}^n f (\theta_j \mid \bTh, \kp) = \prod_{j = 1}^n \sum_{i = 1}^n \mathcal{M} (\theta_j \mid \Theta_i, \kp).
+\end{equation}
+then \( \mathcal{M} (\theta_j \mid \Theta_i, \kp) \rightarrow \infty \) if \( i = j, \kp \rightarrow \infty. \) Therefore, following \citet{hall1987kernel}, we specify the likelihood in a Leave-one-out cross-validation sense, by setting
+\begin{equation}
+  f(\bTh \mid \kp) = \prod_{j = 1}^n \sum_{i \neq j } \mathcal{M} (\theta_j \mid \Theta_i, \kp).
+\end{equation}
+This leads to the posterior
+\begin{equation}
+  p(\kp \mid \bTh) \propto f(\kp \mid \bTh) p(\kp)
+\end{equation}
+where the prior for \( p(\kp) \) must still be set. Note that for this model, \( \kp \) has a different interpretation than in the von Mises, so a different prior is in order. Specifically, in the von Mises model \( \kp \) refers to the concentration of the full dataset, while in the kernel density model \( \kp \) refers to the concentration around each separate data point. Therefore, higher values of \( \kp \) should be considered likely a priori.
+
+The Bayes factor is given by
+\begin{align}
+  BF_{10} &= [2 \pi]^n \int_0^{\infty} p(\kp) \prod_{j = 1}^n \sum_{i \neq j } [2 \pi I_0 (\kp)]^{-1} \exp \left\{ \kp \cos(\theta_j - \Theta_i) \right\} d\kp \\
+           &=  \int_0^{\infty}  \frac{p(\kp)}{I_0(\kp)^n} \prod_{j = 1}^n \sum_{i \neq j }  \exp \left\{ \kp \cos(\theta_j - \Theta_i) \right\} d\kp,
+\end{align}
+which is once again computed by univariate numerical integration.
+
+For priors of the type discussed in Section \ref{sub:ConjugatePrior}, the Bayes factor for some \( R_0\) and \(c\) can be written as
+\begin{align}
+ BF_{10} &= \left[ \int_0^{\infty} I_0(R_0 \kp) I_0(\kp)^{-c} d\kp \right]^{-1} \times \\ &\int_0^{\infty} I_0(R_0 \kp) I_0(\kp)^{-(n+c)} \prod_{j = 1}^n \sum_{i \neq j }  \exp \left\{ \kp \cos(\theta_j - \Theta_i) \right\} d\kp.
+\end{align}
+
+Another good option for the kernel density model specifically is the Jeffreys prior discussed in \ref{sub:jeffprior}, as it allows tuning \( \kp_u \) to accomodate reasonably high values for the concentration. For this prior, the Bayes factor can be written as
+\begin{align}
+ BF_{10} &= \left[ 2 \pi \int_0^{\kp_u} \sqrt{\kp A(\kp) A'(\kp)} d\kp \right]^{-1} \times \\ & \int_0^{\kp_u} \frac{\sqrt{\kp A(\kp) A'(\kp) } }{I_0(\kp)^{n+1} } \prod_{j = 1}^n \sum_{i \neq j }  \exp \left\{ \kp \cos(\theta_j - \Theta_i) \right\} d\kp.
+\end{align}
+
+\subsection{Simulation}
+
+We assess the performance of the kernel based circular uniformity test for antipodal von Mises. The antipodal von Mises is an antipodally symmetric mixture of two von Mises distributions, where data was obtained by drawing from the pdf
+\begin{equation}
+  f(\theta \mid \mu, \kp) = \frac{1}{2} \mathcal{M} (\theta \mid \mu, \kp) + \frac{1}{2} \mathcal{M} (\theta \mid \mu + \pi, \kp).
+\end{equation}
+This alternative hypothesis is chosen to be especially hard for the von Mises based tests developed in Section \ref{isotestvm}. The setup in terms of sample sizes and chosen true values for \( \kp \) is the same as in Section \ref{ssub:Simulation}.
+
+Results for data generated from the antipodal von Mises distribution are displayed in Figure \ref{fig:simKDEBi}. It can be seen that the Rayleigh test performs abysmally, which is expected, because it is based on rejection of \( H_0 \) for large values of the resultant length, which for the antipodal von Mises is zero on average. Our method picks up the difference with reasonable power when data was generated with \( \kp > 2 \). In order to detect nonuniformity for antipodal von Mises data with \( \kp = 1, \) a very large sample is needed, but it must be noted that antipodal data with small \( \kp \) is almost uniform. Evidence in favor of \( H_0 \) is collected slowly, but with larger sample sizes, \( H_0 \) is selected more and more.
+
+
+
+
+\begin{figure}
+  \begin{subfigure}[t]{0.5\linewidth}\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/SimulationPlotKDEBi-1} 
+
+\end{knitrout}
+    \caption{}\label{fig:simKDEBierror}
+  \end{subfigure}%
+  \begin{subfigure}[t]{0.5\linewidth}\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/rasterized/rainbowPlotKDEBi-1} 
+
+\end{knitrout}
+    \caption{}\label{fig:simKDEBibfs}
+  \end{subfigure}
+  \caption{Performance for data from the antipodal von Mises distribution with various true values for \( \kp \). The left plot shows the proportion of simulations which obtained a Bayes factor in favor of the alternative hypothesis (\(BF_{10} > 1\)). Error rates for the Rayleigh test with \(\alpha = .05\) are provided as dotted lines, with that nominal significance displayed as a gray line at \(.05\). The right plot shows a subsample of the log Bayes factors obtained for different sample sizes \(n\) and \(\kp\), as well as a solid trendline computed from the full simulation showing the average log Bayes factor for each sample size.}\label{fig:simKDEBi}
+\end{figure}
+
+
+
+\section{Examples} \label{sec:ex}
+In this section, the method will be applied to two examples. 
+
+In a classic experiment on pigeon homing \citep{schmidt1963role}, the vanishing angles of homing pigeons were measured, with the initial question of whether the vanishing direction is circular uniform or follows some other circular distribution. Two datasets from this experiment are depicted in Figure \ref{fig:ex1}. In one experiment, also provided in \citet{fisher1995statistical}, fifteen homing pigeons were measured to have vanishing directions given by 
+\begin{align*}
+\{ 85^\circ, &135^\circ, 135^\circ, 140^\circ, 145^\circ, 150^\circ, 150^\circ, 150^\circ, \\ &160^\circ, 285^\circ, 200^\circ, 210^\circ, 220^\circ, 225^\circ, 270^\circ \},
+\end{align*} 
+shown in  Figure \ref{fig:ex1a}). In another dataset, provided in \citet{mardia2009directional}, ten pigeons were measured to have vanishing directions 
+\begin{align*}
+&\{ 55^\circ, 60^\circ, 65^\circ, 95^\circ, 100^\circ, 110^\circ, 260^\circ, 275^\circ, 285^\circ, 295^\circ\},
+\end{align*} 
+ shown in Figure \ref{fig:ex1b}).
+
+\begin{figure}
+  \begin{subfigure}[t]{0.5\linewidth}\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-2-1} 
+
+\end{knitrout}
+    \caption{Example data 1.}\label{fig:ex1a}
+  \end{subfigure}%
+  \begin{subfigure}[t]{0.5\linewidth}\centering
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/unnamed-chunk-3-1} 
+
+\end{knitrout}
+    \caption{Example data 2.}\label{fig:ex1b}
+  \end{subfigure}
+  \caption{The two example datasets. For each subfigure, the blue line between the center and the circle depicts the mean direction, while the gray line depicts \( 0^\circ\).}\label{fig:ex1}
+\end{figure}
+
+
+
+
+\subsection{Homing pigeon example 1}
+
+
+The results for the first dataset are given in Table \ref{tab:ex1}. For this dataset, reasonable hypotheses are that the data are either circular uniform (which we call \( H_0\)), or that the data follow a symmetric unimodal distribution, where we pick the von Mises distribution (which we call \( H_\mathcal{M} \) here). These two hypotheses are evaluated as discussed in Section \ref{sub:ConjugatePrior}, using prior \ref{UIPrior} given by \( p(\kappa) \propto I_0(\kappa)^{-1}\) because a low concentration is expected. Table \ref{tab:ex1} denotes the results of our hypothesis test, as well as the Rayleigh test for comparison. The log marginal likelihood of \( H_0 \) is -27.57, while the log marginal likelihood of \( H_\mathcal{M} \) is -23.92, so \( H_\mathcal{M} \) is most supported by the data. In fact, the Bayes factor in favor of \( H_\mathcal{M} \) is 38.54, so that the posterior probability of \( H_\mathcal{M} \) is 0.975, which constitutes strong support for this hypothesis.
+
+\begin{table}[b]
+\centering
+\caption{Results of example 1. } 
+\label{tab:ex1}
+\begin{tabular}{rrrrr}
+  \hline
+Bayes Factor & $p(H_0  \mid \bth)$ & $p(H_\mathcal{M} \mid \bth)$ & Rayleigh Statistic & Rayleigh  p-value \\ 
+  \hline
+38.542 & 0.025 & 0.975 & 0.637 & 0.001 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+
+
+\subsection{Homing pigeon example 2} \label{sec:ex2}
+
+
+
+
+
+For the second dataset, the hypothesis that the data is bimodal is also reasonable, although we might not want to assume antipodal symmetry. To demonstrate the flexibility of the Bayesian approach, we evaluate three hypotheses jointly. The hypotheses are circular uniformity \((H_0)\), the von Mises distribution \((H_\mathcal{M})\), and the kernel density alternative \((H_k)\) described in Section \ref{sec:KDE}. For the von Mises distribution, the same conjugate prior is used as before, \( p(\kp) \propto I_0(\kp)^{-1}.\) For the kernel density alternative, higher concentrations are more plausible than for the von Mises hypothesis, because dispersion in the final kernel density model is not exclusively determined by \( \kp \), but also by the spread of the data. Therefore, we pick the Jeffreys prior here, truncated above at \( 40.\) In a small sensitivity analysis for the truncation value (not reported further), the Bayes factor was robust to truncation values above 20, although setting the value extremely high will influence the marginal likelihood, and the inference as a result.
+
+In order to compare the relative probability of each hypothesis, posterior model probabilities were computed. When choosing between a set of \( p \) models, we can compute the posterior model probability of model \( i,\) assuming equal prior model probabilities, as
+\begin{equation}
+p(H_i \mid \bth) = \frac{m_i(\bth)}{\sum_{j = 1}^p m_j(\bth)},
+\end{equation}
+where \( m_a(\bth)\) denotes the marginal likelihood of model \( H_a.\) This will provide the relative probabilities of the models that are assessed.
+
+Results are displayed in Table \ref{tab:ex2}. The Rayleigh test is not significant (\( p = 0.62\)), suggesting no departure from uniformity. In contrast, our comparison of hypotheses shows a preference for the kernel density alternative, giving it a posterior model probability of 0.954. This can be seen as evidence that the data generation distribution is likely neither the circular uniform distribution nor the von Mises distribution. Rather, the correct model was likely not included in the set of models that were assessed, which should motivate the researcher to further investigate possible models. This result is easy to interpret and understand, and provides a more complete picture than the usual frequentist test.
+
+
+\begin{table}[btp]
+\centering
+\caption{Results of example 2. } 
+\label{tab:ex2}
+\begin{tabular}{rrrrr}
+  \hline
+$p(H_0 \mid \bth)$ & $p(H_\mathcal{M}  \mid \bth)$ & $p(H_k \mid \bth)$ & Rayleigh Statistic & Rayleigh  p-value \\ 
+  \hline
+0.034 & 0.012 & 0.954 & 0.223 & 0.620 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+
+\section{Discussion} \label{sec:discussion}
+
+Bayesian hypothesis tests for assessing circular uniformity were developed in this paper. The Bayesian approach provides three major advantages for this type of hypothesis. First, the hypothesis of circular uniformity is precisely the type of hypothesis which might be true in reality, so that we would want to choose \( H_0 \) if the data supports it. The available frequentist tests do not support this, as an insignificant \(p\)-value does not allow us to draw conclusion on whether \(H_0\) is true. Second, the Bayesian hypothesis test allows us to quantify the strength of the evidence, either in an odds ratio in the Bayes factor, or in an intuitive probability in the posterior model probability, which is more informative than the simple dichotomous decisions provided by null hypothesis tests. Third, the Bayesian framework allows us to add additional hypotheses to the comparison quite easily. In example 2 in Section \ref{sec:ex2}, this is used by having the kernel density alternative effectively act as a "none of the above" category, motivating the researcher to search for a model that fits the data better.
+
+Among the most central critiques of the Bayesian method (and Bayesian testing in particular) lies the difficulty in choosing priors, as this seemingly requires us to know in advance what distribution the data may have should the alternative hypothesis be true. Moreover, the conclusions drawn in Bayesian hypothesis tests are often highly dependent on seemingly arbitrary quantities, most notably the parameters of the prior distribution. However, when choosing a frequentist test for circular uniformity, one is faced with a plethora of tests (see Section \ref{sec:freq}) which are each most powerful against different alternatives. This choice closely mirrors the choice of the prior in the alternative hypothesis of a Bayesian hypothesis test. For example, this can be seen in \citet{landler2018circular}, where different tests are recommended for different expected alternative distributions. In either case, we must use our expectations of the distribution of the data, should the alternative hypothesis be true. Furthermore, in Section \ref{sub:Priors} it was shown how the selection of priors can be dealt with to circumvent the concerns about their influence on the results. 
+
+Beyond circular uniformity, previously Bayesian analyses of circular models have been investigated from several viewpoints. Bayesian model assessment has been investigated for wrapped models \citep{ravindran2011bayesian}, projected normal models \citep{nunez2015bayesian} and semiparametric intrinsic models \citep{bhattacharya2009bayesian, george2006semiparametric}. However, the only previously discussed Bayesian test for circular uniformity the authors are aware of is in \citet{mcvinish2008semiparametric}, where the alternative hypothesis is a Dirichlet process mixture of triangular distributions. Compared to that work, our focus is on adding parametric alternatives, simplifying computation, assessing performance of the Bayes factor, developing accessible computational tools and comparison of this method to frequentist methods, both conceptually and in a simulation study. Computation involved in evaluating the marginal likelihood of our models has been reduced to simple univariate numerical integration, which makes running these tests more straightforward and markedly faster. Also, the tools used in this paper are easily available from R through the package \href{https://github.com/LINK_BLINDED/BayesCircIsotropy}{\texttt{BayesCircIsotropy}}, available on GitHub.
+
+Assessing the performance of the method, it was shown that the test is often powerful in selecting the correct model, both for the data from the null hypothesis as well as the alternative. The main difficulty in practice, as is often the case in Bayesian analyses, is selecting a prior. In general, choosing a prior with larger variance will allow us to find support for a larger set of true models, but required sample size to find this support will increase. As is shown in the simulation, some default options perform quite well in common research settings. In practice, it is often advisable to perform a prior sensitivity analysis.
+
+Although the philosophical underpinnings of Bayesian hypothesis testing are not the focus of this paper, we will shortly connect the current work with the ongoing discussion. The Bayesian framework is sometimes touted as inductive, which would suggest Bayesian model comparison is sufficient to draw scientific conclusions from data. Recently, \citet{gelman2013philosophy} refute this claim outright and advocate model checking, as models are usually wrong. We generally follow the view of \citet{morey2013humble} and note that tools developed here are useful to give preference between models, but do not necessarily provide inductive evidence in favor of the model assessed, such as the von Mises model. The kernel density alternative presented in Section \ref{sec:KDE} functions as a form of model checking, circumventing the step of deciding on test statistics to be used in a posterior predictive check, or deciding on a specific alternative hypothesis to test against.
+
+Finally, the approach of this paper is to apply Bayesian hypothesis testing to basic circular data analyses. Future work might attempt to obtain easily computable marginal likelihoods for more complex models. In circular data analysis, model selection is an important avenue that requires more attention. 
+

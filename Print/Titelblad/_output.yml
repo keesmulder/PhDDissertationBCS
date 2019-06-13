@@ -1,0 +1,11 @@
+bookdown::pdf_book:
+  includes:
+    in_header: Latex/preamble.tex
+    before_body: Latex/before_body.tex
+    #after_body: Latex/after_body.tex
+    toc: true
+  keep_tex: true
+  #dev: "cairo_pdf"
+  fig_caption: true
+  latex_engine: pdflatex
+  number_sections: true

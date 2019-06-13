@@ -1,0 +1,626 @@
+\documentclass[12pt, a4paper]{book}\usepackage[]{graphicx}\usepackage{xcolor}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+% Commands and packages from the papers.
+\input{usepkg_newcommand.tex}
+\hypersetup{
+	colorlinks=true,
+	citecolor=blue,
+	urlcolor=blue
+}
+
+
+\usepackage[dutch, english]{babel}
+
+
+% Extra packages.
+\usepackage{graphicx}
+\usepackage{appendix}
+\usepackage{natbib}
+\usepackage{fancyvrb}
+\usepackage{keyval}
+\usepackage{ae}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage[T1]{fontenc}
+\usepackage{titling}
+\newcommand{\subtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip0.5em}%
+}
+
+
+% Add abstract environment to book.
+\newcommand\abstractname{Summary}  %%% here
+\makeatletter
+\def\blfootnote{\xdef\@thefnmark{}\@footnotetext}
+\makeatother
+\makeatletter
+  \newenvironment{abstract}{%
+        \begin{center}%
+          {\bfseries \abstractname\vspace{-.5em}\vspace{\z@}}%
+        \end{center}%
+        \begin{scriptsize}
+        \quotation
+      }{\endquotation \end{scriptsize}}
+\makeatother
+
+% Manual additions to automatic newcommands.
+\DeclareMathOperator{\atantwo}{atan2}
+
+\newenvironment{changemargin}[1]{
+  \begin{list}{}{
+    \setlength{\voffset}{#1}
+  }
+  \item[]}{\end{list}}
+
+%%% Extra options to get JSS paper working.
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+
+\let\proglang=\textsf
+\newcommand{\pkg}[1]{\textbf{#1}}
+
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{fontshape=sl}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{}
+\DefineVerbatimEnvironment{Scode}{Verbatim}{fontshape=sl}
+\newenvironment{Schunk}{}{}
+\DefineVerbatimEnvironment{Code}{Verbatim}{}
+\DefineVerbatimEnvironment{CodeInput}{Verbatim}{fontshape=sl}
+\DefineVerbatimEnvironment{CodeOutput}{Verbatim}{}
+\newenvironment{CodeChunk}{}{}
+
+\setkeys{Gin}{width=0.8\textwidth}
+
+
+\title{Bayesian Circular Statistics}
+\subtitle{von Mises-based solutions for practical problems}
+
+\author{Kees Mulder}
+
+
+
+
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\frontmatter
+
+\pagenumbering{gobble}
+
+\begin{center}
+\huge{\textbf{Bayesian Circular Statistics}}
+
+\Large{von Mises-based solutions for practical problems}
+
+\vspace*{1cm}
+
+\large{\textbf{Bayesiaanse Circulaire Statistiek}}
+
+\normalsize{Oplossingen voor praktische problemen gebaseerd op de von Mises-verdeling}
+
+\vspace*{.3cm}
+
+\normalsize{(met een samenvatting in het Nederlands)}
+
+
+
+\vspace*{2cm}
+
+\Large{\textbf{Proefschrift}}
+
+\vspace*{3cm}
+
+\normalsize
+
+ter verkrijging van de graad van doctor aan de
+
+Universiteit Utrecht
+
+op gezag van de
+
+rector magnificus, prof.dr. H.R.B.M. Kummeling,
+
+ ingevolge het besluit van het college voor promoties
+
+in het openbaar te verdedigen op
+
+\vspace*{.5cm}
+vrijdag 21 juni 2019 des middags te 4.15 uur
+
+
+\vspace*{1.5cm}
+
+door
+
+
+\vspace*{1.5cm}
+
+\Large{\textbf{Kees Tim Mulder}}
+\normalsize
+
+\vspace*{1cm}
+
+geboren op 3 mei 1990
+
+te Oegstgeest
+
+\end{center}
+
+
+\newpage
+
+\pagestyle{plain}
+\textbf{Promotoren:}
+
+Prof.dr. I.G. Klugkist
+
+Prof.dr. H.J.A. Hoijtink
+
+
+\vspace*{\fill}
+
+\noindent The studies in this thesis were funded by the Netherlands Organization for Scientific Research (project 452-12-010).
+% \newpage
+%
+%
+% \pagestyle{plain}
+% \textbf{Beoordelingscommissie:}
+%
+%
+%
+% \vspace*{\fill}
+%
+% Mulder, Kees
+%
+% Bayesian Circular Statistics; von Mises-based solutions for practical problems
+%
+% Proefschrift Universiteit Utrecht, Utrecht. - Met lit. opg. - Met samenvatting in het Nederlands.
+%
+% The studies in this thesis were funded by the Netherlands Organization for Scientific Research (project 452-12-010).
+%
+% % ISBN: 978-90-393-7103-9\\
+% % Printing \& Cover Design: Ridderprint BV\\
+% Copyright \textcopyright 2018, K. Mulder. All Rights Reserved
+%
+
+% \newpage
+%
+% \maketitle
+%
+% \tableofcontents
+%
+%
+%
+% \chapter{Introduction}
+% \label{intro}
+%
+% In a small caf\'e in the historical city center, three long-time friends meet for dinner. After some chit-chat, one of the friends, in a philosophical mood, asks: ``\textit{Hey, I wonder what our average birthday is?"}
+%
+% Pondering over this somewhat odd question, the friends first conclude that the question is clearly more reasonable than a nonsensical question such as ``\textit{What is the average of three cows and a goat?}". Then again, a question such as ``\textit{What is the average of 5, 13, and 7?}" is obviously much easier to answer, as the object (or, \textit{data}) to be averaged is simply a real number. As often happens with seemingly hard-to-answer puzzles, the question stuck in the mind, and the friends end up discussing the issue for two hours\footnote{This true story was relayed to me by my friend and colleague Erik-Jan van Kesteren.}.
+%
+%
+% \begin{figure}
+% <<birthday_example, fig.height = 3/1.5, fig.width = 8/1.5, echo = FALSE>>=
+% dates3 <- data_frame(x = c(ymd(c("2019-02-03", "2019-02-07", "2019-02-26",
+%                                  "2019-01-07", "2019-12-05", "2019-12-06",
+%                                  "2019-12-16", "2019-12-26"))),
+%                      y = 0)
+% # brks <- seq(ymd(c("2019-01-01")), ymd(c("2020-01-01")), length.out = 13)
+%
+%
+% dates1 <- dates3[1:3, ]
+% dates2 <- dates3[1:4, ]
+%
+% brks <- ymd(c(paste0("2019-", 1:12, "-01"), "2020-01-01"))
+%
+%
+%
+% ymin <- -.05
+% ymax <- .2
+%
+% p <- ggplot() +
+%   scale_y_continuous(expand = c(0, 0), limits = c(ymin, ymax)) +
+%   scale_x_date(labels = scales::date_format("%b"),
+%                breaks = brks,
+%                limits = ymd(c("2019-01-01","2019-12-31"))) +
+%   xlab("") +
+%   theme_classic() +
+%     theme(axis.line.y.left = element_line(colour = "white"),
+%           axis.ticks.y = element_blank(),
+%           axis.title.y = element_blank(),
+%           axis.text.y =  element_blank())
+%
+% hjust <- 1
+% vjust <- .5
+% angle <- 0
+% ylinemax <- 0.2
+% direction <- "both"
+% linesize <- 1.6
+% linecol  <- "tomato"
+% p1 <- p +
+%   # geom_text_repel(data = dates1, direction = direction,
+%   #                         mapping = aes(x, y, label = format(x, "%b %d")),
+%   #                         hjust = hjust, vjust = vjust, angle = angle) +
+%   geom_line(data = data_frame(x = ymd("2019-02-12"), y = c(ymin, ylinemax)),
+%             mapping = aes(x, y),
+%             col = linecol, size = linesize, lineend = "round") +
+%   geom_point(data = dates1, mapping = aes(x, y))
+% # +
+% #   geom_point(data = data_frame(x = ymd("2019-02-12"), y = c(ymin+.01)),
+% #             mapping = aes(x, y), col = "tomato")
+%
+% p2 <- p +
+%   # geom_text_repel(data = dates2, direction = direction,
+%   #                         mapping = aes(x, y, label = format(x, "%b %d")),
+%   #                         hjust = hjust, vjust = vjust, angle = angle) +
+%   geom_line(data = data_frame(x = ymd("2019-02-03"), y = c(ymin, ylinemax)),
+%             mapping = aes(x, y),
+%             col = linecol, size = linesize, lineend = "round") +
+%   geom_point(data = dates2, mapping = aes(x, y))
+% # + geom_point(data = data_frame(x = ymd("2019-02-03"), y = c(ymin+.01)),
+% #             mapping = aes(x, y), col = "tomato")
+%
+% p3 <- p +
+%   # geom_text_repel(data = dates3, direction = direction,
+%   #                         mapping = aes(x, y, label = format(x, "%b %d")),
+%   #                         hjust = hjust, vjust = vjust, angle = angle) +
+%   xlab("Birthday") +
+%   geom_line(data = data_frame(x = ymd("2019-01-01") + 190, y = c(ymin, ylinemax)),
+%             mapping = aes(x, y),
+%             col = linecol, size = linesize, lineend = "round") +
+%   geom_point(data = dates3, mapping = aes(x, y))
+% # + geom_point(data = data_frame(x = ymd("2019-01-01") + 190, y = c(ymin + .01)),
+% #             mapping = aes(x, y), col = "tomato")
+% grid.arrange(p1, p2, p3, ncol = 1)
+% @
+% \caption{Birthdays of our group of friends (black dots), and the average birthday (red line) progression for our group of friends, as friends keep arriving.}
+% \label{birthday_example}
+% \end{figure}
+%
+%
+% Thankfully, the friends are all born in the month February, on February 3, 7, and 26 to be precise. Therefore, they now decide to celebrate their triple birthday on their average birthday of February 12th, a simple average of the three days. However, just as the three friends rejoice the imminent financial benefits of throwing not three birthday parties but one, more of their friends start arriving.
+%
+% The first new arrival has her birthday on January 7. Not a problem, conclude the friends. They come up with the scheme of labeling all days in the year consecutively, and averaging these. So, they average the new arrival's score of 7 with their birthdays, which are now labeled 34, 38, and 57. The new average is 34, which translates back to an average birthday of February 3rd. Content, the friends continue their dinner, although they are left with the sneaking suspicion that they have cheated, somehow.
+%
+%
+%
+%
+% The real trouble begins when four more friends arrive. Due to a mild statistical anomaly\footnote{The probability of this is described in a famous statistical problem, which also happens to be about birthdays (see \url{https://en.wikipedia.org/wiki/Birthday_problem}).}, they all happen to be born in December, on the 5th, the 6th,  16th, and 21st. Now, the strategy of consecutively labeling all the days in the year not only has become excessively laborious\footnote{Not to mention inevitable issues with leap years, although we will ignore those here.}, it also leads to some odd conclusions. The average of 7, 34, 38, 57, 339, 339, 350, and 355 is 190. This 190 translates to back to the day of July 9, which baffles the group of friends for two reasons.
+%
+% First, the average birthday of July 9th is a summer day, and is nowhere near the birthday of any of the people in the group, who were all born in winter. Second, if the friends had started counting the days of the year at March 1st, just as good a day to start as the arbitrary January 1st, the resulting average birthday would have been completely different. Clearly, the strategy of consecutive labeling fails to accurately capture what we mean by `average'.
+%
+% \begin{figure}
+% <<birthday_example_circle, echo = FALSE>>=
+% rads <- as.numeric(dates3$x - ymd("2019-01-01")) * 2 * pi / 365
+% ggplot() +
+%   geom_line(data = data_frame(x = atan2(sum(sin(rads)), sum(cos(rads))), y = c(-.02, 0.12)),
+%             mapping = aes(x, y), col = linecol, size = linesize) +
+%   geom_point(data = data.frame(x = rads, y = .05), mapping = aes(x, y)) +
+%   theme_void() +
+%   circbayes:::gg_circular_elems(r = 1, start = 0, direction = 1) +
+%   circbayes:::gg_inside_labels("months_abb", nticks = 12, labdist = .17)
+% # +
+% #   geom_point(data = data_frame(x = atan2(sum(sin(rads)), sum(cos(rads))), y = c(.01)),
+%             # mapping = aes(x, y), col = "tomato")
+%
+% @
+% \caption{On the circle, the circular mean (red line) of the sample of birthdays (black dots)  is a natural central tendency.}
+% \label{birthday_example_circle}
+% \end{figure}
+%
+%
+%
+% So what happened here? Within the month of February, the days nicely follow each other, and the average seems to makes sense. But when we expand our scope to the full year, a problem arises. When the year progresses to its final day, the day of the year rolls around to the first day of the new year. The moment the previous year ends and the moment the new year begins are one and the same, so the beginning and end of the year are tied together. The day of the year is, in this sense, periodic (or \textit{cyclical}), and it is exactly this periodicity which makes the friend group's attempts at creating a sensible average fail.
+%
+% So, the friends go home unsatiated, mulling over possible solutions every once in a while in the weeks to follow. However, we will see that the solution to this problem is much simpler if we think of the days of the year not on the real line, but on the circle (see Figure \ref{birthday_example_circle}). Because the ends of the scale (December 31 and January 1) are now connected correctly, there is no longer ambiguity about the average.
+%
+%
+% \section*{Circular data}
+%
+% As it turns out, this `average birthday' problem is not as frivolous as it seems at first glance.  A birthday is simply an example of an observed day of the year. Throughout statistics, examples can be found where the interest is in statistical modeling and prediction when in a year certain events occur. One example is modeling the distribution of extreme weather events (such as hurricanes) over the year. In contrast, the question of whether extreme weather events have increased in number over the last 30 years is quite different, because it is interested in the linear aspects of time, that is, temporal trends over multiple years. If we wish to truly understand extreme weather events, both parts must be understood, although the linear temporal aspects have traditionally received more attention.
+%
+% Instead of yearly periodic data, one can also consider hours of the day, days of the week, days of the month, and so forth. In fact, many occurences of events are governed in some way by a periodical process, which must be taken into account when modeling if we wish to understand and control this process. For example, the number of patients arriving at the emergency room of a hospital differs strongly over the hours of the day.
+%
+% In fact, temporal data is just one example of measurements on a periodic scale. Another major source are directly observed directions or angles, for example measured by the compass in degrees. For example, one might consider movement directions of animals, or orientations of rock formations. These more directly provide us with data that is periodic. That is, two directions of $1^\circ$ and $359^\circ$ are very close, but this is not immediately apparent from the numerical values.
+%
+% Besides directly observing circular data, in some cases it has turned out to be beneficial to transform a linear problem into a circular one. A prime example is the use of circumplex scales in psychology \citep{gurtmancircumplex}. Such scales extract a circular observation from a questionnaire, by means of a latent factor analysis method which imposes a circular structure on the correlation matrix \citep{browne1992circumplex}. While usually latent factors are represented by linear variables, the circumplex structure can in some cases provide a simpler and more interpretable description of the underlying latent factors.
+%
+% Regardless of the origin of the data, any data whose sample space is periodic requires us to  take into account the periodicity during analysis. This periodic type of data is what is generally referred to as \textit{circular data} (or rarely \textit{angular data}), and this dissertation consists of methods to treat circular data problems.
+%
+% \subsection*{Applications}
+%
+% Interestingly, circular data tend to be encountered in a niche of almost every scientific field. Therefore, circular statistics are used by a large number of somewhat disconnected research communities. These communities partly use their own specialized circular data methods, but also build on the general framework of circular statistics. To build some intuition for the variety of research for which circular models are used, we will recap a few examples of circular data applications here.
+%
+% In meteorology, one is often concerned with modeling wind directions \citep{bowers2000directional}. Wind directions can be directly measured, for example using a wind vane. A question of interest could be whether a certain condition, such as the SO2 concentration, is related to the observed wind direction \citep{garcia2013exploring}. Another question is to extract underlying groups of wind direction, using mixture models \citep{masseran2013fitting}.
+%
+% In biology, circular data can arise while investigating vanishing directions of birds. For example, in one experiment, the question of interest how homing pigeons use magnetic information to navigate \citep{gagliardo2008navigational}. To this end, groups of homing pigeons were subjected to sections of their nerves in different ways. Their navigational ability was compared to a control group by measuring in what direction the pigeons would fly when released. A different circular distribution, here, tells us that the bisected nerve is useful in navigation.
+%
+% In political science, quantifying how average crime times differ between cities can influence policy \citep{gill2010}. Here, the problem requires us to model the crime times over the hours of the day, and infer in what way cities differ in their crime time patterns.
+%
+% Other examples can be found in fields such as aerospace \citep{kurz2017deterministic},  machine learning \citep{gopal2014mises}, signal processing \citep{traa2013wrapped}, behavioural biology \citep{nunez2018bayesian}, life sciences \citep{mardianew}, behavioural biology \citep{bulbert2015danger} and environmental sciences \citep{lagona2016regression, lagona2015hidden, arnold2006recent}.
+%
+%  While these problem vary wildly in flavor, all require a toolkit that can deal with circular data. In this dissertation, most motivating examples come from the field of social and behavioural sciences, where circular data is obtained from eye movements \citep{tatler2009prominence}, experimental designs in  motor behaviour research \citep{mechsner2001perceptual, kaas2006haptic, mechsner2007bimanual, postma2008keep} and the aforementioned circumplex models \citep{Leary1957, gurtman2003circumplex,  gurtman2009exploring}, to name a few.
+%
+%
+% \subsection*{Units}
+%
+% A circular observation, which we will usually denote by $\theta$, can be represented mathematically in a variety of ways. Among the most common are degrees, hours, unit vectors, complex numbers and radians. Degrees ($\theta \in [0^\circ, 360^\circ)$) are generally obtained from the compass, while hours are usually measured on a 24-hour clock, so $\theta \in [$0:00, 24:00$)$.
+%
+% In some cases, thinking of angles as unit vectors is also beneficial. In this representation, we have a bivariate vector $\bx = \{x_1, x_2\}^T = \{\cos\theta, \sin\theta\}^T,$ and the restriction that the Euclidean norm $\vert\vert \bx \vert\vert = \sqrt{x_1^2 + x_2^2} = 1.$
+%
+% An angle can also be represented as a complex number $\cos\theta + i \sin \theta,$ where $i$ is the imaginary unit. This can be elegant, particularly because by Euler's formula we have $\cos\theta + i \sin \theta = e^{i\theta},$ which provides a natural mapping between bivariate and univariate representation of angles.
+%
+% Representing circular observations as radians, where $\theta \in [-\pi, \pi),$ is both ubiquitous and generally advantageous, for both mathematical and computational purposes. Therefore, throughout this dissertation circular observations will usually be represented as radians.
+%
+%
+% \section*{Circular statistics}
+%
+% Techniques for both descriptive and inferential analysis of circular data can be found in a branch of statistics called \textit{circular statistics}. Circular statistics can also be seen as a subfield of \textit{directional statistics}, where one considers analysis of data found on (hyper-)spheres. Because the circle is a special case of the hypersphere, methods from directional statistics are often also applicable to circular statistics.
+%
+% In this section, we will provide a short introduction to circular statistics by first recapping some important literature, then describing three major approaches to dealing with circular data, and finally discussing circular descriptive and summary statistics.
+%
+% \subsection*{Literature}
+%
+% A limited number of books have been written on the topic of (frequentist) circular and directional statistics. The seminal technical work is \citet{mardia2009directional}. A more practical handbooks are given by \citet{fisher1995statistical} and a more recent book by \citet{pewsey2013circular} focusing on running circular data models in \proglang{R}. Very recently, two more books have been published, one focusing recent statistical developments for directional data \citep{ley2017modern}, another on recent applications of directional statistics \citep{ley2018applied}. Other books exist with a more specialized focus, such as \citet{batschelet1981circular} and \citet{jammalamadaka2001topics}.
+%
+% \subsection*{Approaches}
+%
+% Three major distinct approaches for analysis of circular data are available in the literature.
+%
+% The first is the \textit{intrinsic} approach, where distributions are defined directly on the circle. The most popular of these is the von Mises distribution \cite{von1918ganzzahligkeit}, given by
+% \begin{equation}
+% \mathcal{M}(\theta \mid \mu, \kappa) = \frac{1}{2 \pi I_0(\kappa)} \exp\{\kappa \cos(\theta - \mu)\},
+% \end{equation}
+% where $\mu$ is the mean direction parameter, $\kp$ is a concentration parameter, and $I_0(\cdot)$ is the modified Bessel function of the first kind and order zero. Note that in this probability density function, the cosine guarantees the probability being periodic over the circle.
+%
+% The second is the  \textit{embedding} (or \textit{projecting}) approach \citep{presnell1998projected, Nunez-Antonio2005}, where the circular observations are assumed to be projections of unobserved bivariate observations to the circle. That is, we assume there is some latent random variable $r$ for each circular observation $\theta,$ and that $(r \cos\theta, r \sin\theta)^T \in \mathbb{R}^2$  has a bivariate distribution on the Euclidean plane, usually the bivariate Normal distribution. The main advantage is that this approach allows us to use bivariate models with circular observations. A disadvantage is that we must deal with the latent variable $r$, which makes computation slightly more difficult.
+%
+% Thirdly, there is the \textit{wrapping} approach, where distributions on the real line are wrapped around the circle \citep{ferrari2009wrapping}. In this framework,  we represent the circular observation as $\theta = x ~\text{mod} ~ 2\pi,$ where \(x \in \mathbb{R}\). This means that univariate distributions can be adapted for use with circular observation, leading for example to the Wrapped Normal distribution. However, for inference this means introducing a latent variable, as in the embedding approach. For the wrapping approach, this latent variable can be seen as some integer $k \in \mathbb{Z},$ and $x = \theta + 2\pi k.$ Similar to the projected approach, this means that we pay for the flexibility of using regular univariate models by the burden of modeling a latent variable.
+%
+% Arguably, a fourth approach exists and is quite common, which is to simply ignore the circular structure of the data and apply regular linear methods, perhaps after some helpful rotations. If the data is concentrated on the circle, such an approach may not have such dire consequences, and can serve as a good approximation to a method that correctly takes the circular nature of the data into account. However, the more the data is spread out over the circle, the more such approaches distort our view of reality.
+%
+% In this dissertation, focus will be almost entirely on the intrinsic approach. More specifically, we will employ the von Mises distribution and distributions derived from the von Mises distribution throughout, for several reasons. First, the von Mises distribution is of fairly simple mathematical form. Second, the von Mises distribution has directly interpretable parameters. Third, Bayesian inference for the von Mises distribution has recently become more computationally feasible, mostly due to work by \citet{forbes2015fast}. Lastly, Bayesian inference is also facilitated by the fact that conjugate priors are available \citep{mardia1976bayesian}.
+%
+%
+% \subsection*{Descriptive and summary statistics}
+%
+%
+% In the `average birthday' problem at the beginning of this introduction, it has become clear that circular data require a new definition of the mean. The variance also requires a new definition. These are called the mean direction (often written $\bar{\theta}$) and circular variance. Only the main descriptive and summary statistics will be provided here. For a full overview, see  \citet{mardia2009directional}.
+%
+% \begin{figure}
+% \centering
+% <<mu_example, fig.height=4/2, fig.width=6/2, out.width="5cm", out.height="5cm", strip.white=TRUE, fig.asp=1>>=
+% par(oma = c(0, 0, 0, 0))
+% gg_plotExampleRMu((c(56, 344, 77))*2*pi/360, alpha = 1)
+%
+% @
+% \caption{Example of obtaining the mean direction $\bar{\theta}$ and the mean resultant length $R$. The arrows inside the circle are unit vectors representing the circular observations. Two arrows are repeated outside the circle in the same color to show the summation of the unit vectors. The resultant vector (dashed line) has direction $\bar{\theta}$ and length $R$.}\label{exampleRMu}
+% \end{figure}
+%
+% To compute the mean direction, each angle in a circular dataset can be viewed as a vector of length 1 in direction $\theta_i$. As illustrated in Figure \ref{exampleRMu}, the summation of these vectors results in a vector in direction $\bar{\theta}$ which has length $R$. The mean direction $\bar{\theta}$ is an unbiased estimator of the mean direction of the von Mises distribution $\mu$.
+%
+% The resultant length $R$ may be directly obtained from
+% $$ R = \sqrt{\left(\sum_{i=1}^{n} \cos \theta_i \right)^2 + \left(\sum_{i=1}^{n} \sin \theta_i \right)^2},$$
+% which increases with concentration and sample size. For the von Mises distribution, $R$ is a sufficient statistic for $\kappa$.
+%
+% The mean resultant length can be computed as $\bar{R} = R/n$, which is a metric of concentration independent of the sample size. The mean resultant length is used to compute the circular variance, which is defined as $1 - \bar{R}.$
+%
+%
+%
+%
+%
+% \section*{Bayesian statistics}
+%
+% The methods in this dissertation are almost all Bayesian methods. A discussion of the merits and downfalls of the frequentist or Bayesian approaches to statistics is beyond the scope of this work. However, we discuss how this work can be placed within current developments in the field of Bayesian circular statistics, and highlight how Bayesian circular statistics may be advantageous above frequentist circular statistics.
+%
+% Among the earliest developments in Bayesian circular statistics was the development of conjugate priors for the von Mises distribution \citep{mardia1976bayesian}. Since then, a variety of Bayesian circular methods have been developed, such as Markov chain Monte Carlo (MCMC) methods for the von Mises distribution \citep{damien1999fullbayes, forbes2015fast}, regression with von Mises residuals \citep{gill2010}, wrapped models \citep{ravindran2011bayesian}, semiparametric circular regression \citep{george2006semiparametric, mcvinish2008semiparametric, Bhattacharya2009}, small area estimation \citep{hernandez2016hierarchical} and hierarchical regression with Projected Normal residuals \citep{nunez2011bayesian, nunez2014bayesian}. As of this writing, no books have been published that specifically focus on Bayesian circular statistics. However, Bayesian methods offer several appealing properties specific to circular statistics.
+%
+% First, Bayesian statistics allows us to include prior knowledge on the parameters of the model. While prior knowledge on the current research question may or may not be available, sometimes prior knowledge is available at the level of the model, for example because the model produces nonsensical data for certain parameter values (as seen in Chapter \ref{circglm}, for example).
+%
+% Second, Bayesian algorithms such as MCMC allow us to trivially obtain inference for functions of parameters. This can be exploited to fit a model using parameters which are easy to work with computationally and mathematically, while providing results for functions of parameters that are interpretable (for example, this is used for the Batschelet-type models of Chapter \ref{flexcmix}).
+%
+% Third, Bayesian hypothesis testing provides a very flexible toolbox providing model comparison. This approach can be seen as symmetric in the sense that in Bayesian Hypothesis Testing (BHT), all hypotheses under consideration can be selected as the most likely hypothesis. In contrast, in traditional frequentist Null Hypothesis Significance Testing (NHST), the null hypothesis is special in that it can never be chosen as more likely than the alternative hypothesis, as it can only be rejected or non-rejected. Bayesian Hypothesis testing provides a unified framework for selecting either hypothesis under consideration. This framework is exploited in Chapters~\ref{circglm}, \ref{hypotest}, \ref{flexcmix}, and \ref{circbays}. % It should be noted that for this major advantage, the price to pay is the necessity to define a proper prior for all parameters in each model.
+%
+% Finally, in statistical inference, we are generally concerned with not just parameter estimation, but also quantification of the uncertainty around the parameter estimates. However, some circular models are of such mathematical form that it is hard to derive frequentist standard errors. The Bayesian approach naturally takes into account the uncertainty around the parameters of a model.
+%
+% \section*{Aims \& Outline}
+%
+% The goal of this dissertation is to develop Bayesian methods for circular statistics which solve practical research problems. To this end, it has been a goal to develop collaborations with researchers and organizations working in domains which encounter circular data. Two subgoals can be identified.
+%
+% First, a solid foundation must be built for the use of Bayesian circular statistics. That is, the properties of these methods must be well-studied and understood. In addition, to allow applied researchers to employ these methods, they must also be available in user-friendly software packages. To this end, the vast majority of methods in this dissertation is available in easy-to-use \proglang{R} packages.
+%
+% Second, specialized models must be developed which are useful for specific problems. While for some problems one can build on general methods for basic questions, researchers often require statistical methods that are geared toward the specific structure of their data or the research questions. Bayesian solutions for a selection of such problems are presented throughout this work.
+%
+% These goals will be prevalent throughout the following six chapters of this dissertation. The chapters will be shortly described here.
+%
+% In \textbf{Chapter~\ref{circglm}}, regression with a circular outcome is addressed. A Bayesian version of the circular regression model by \citet{fisher1992regression} is developed. This model is essentially a Generalized Linear Model (GLM) where a linear prediction is mapped onto a circular outcome space, while the residuals have the von Mises distribution. It is shown that if we add categorical variables as dummy variables into the model, that the shape of the regression function is dependent on the arbitrary labeling of the groups.
+% %This is undesirable, as it should not matter whether we choose a labeling of, say, $A = 0, B = 1$ or another labeling of $A = 1, B = 0.$
+% Therefore, an alternative version of this model is proposed, which circumvents this issue. Bayesian inference and hypothesis testing for this model is developed and investigated by means of a simulation study. An example is provided from the field of cognitive psychology, where an experimental design for measurement of haptic ability leads to circular observations \citep{van2013superior}.
+%
+% Bayesian hypothesis tests for circular uniformity are developed in \textbf{Chapter~\ref{hypotest}}. Testing circular uniformity is a clear example of a hypothesis testing setting where one might be interested in finding evidence in favor of the null hypothesis. This chapter investigates a selection of proper priors and alternative hypotheses for Bayesian hypothesis tests of circular uniformity. Their performance is investigated by means of a simulation study.
+%
+% The following three chapters, \textbf{Chapters~\ref{flexcmix}, \ref{revrjump}, and \ref{dpm_crim}}, all represent research projects which have emerged from collaborations with researchers which provided motivating data examples for which no satisfactory methods were available previously.
+%
+% \textbf{Chapter~\ref{flexcmix}} is motivated by an example from eye movement research, previously published on in \citet{van2016infants}. In eye movement research, a saccade is the jump one makes from one fixation point to another. The direction of a saccade is one of the properties of interest, and our goal is to adequately model a distribution of saccade directions. In the motivating example, we are interested in quantifying the differences between infants and adults in their respective saccade direction distribution. To do this, a Batschelet Mixture model is developed that captures the multimodal and peaked nature of saccade distributions. The version of the Inverse Batschelet distribution in \citet{jones2012inverse} fits the peaked nature of the data, but is difficult to compute due because of its mathematical form. We propose an alternative Batschelet distribution which has a similar shape, but is much simpler to compute. Using bridge sampling \citep{meng1996simulating, gronau2017tutorial}, Bayes factors can be computed for these models. The model is then applied to saccade direction data, and it is shown that the original research question can now be directly evaluated.
+%
+% A different approach to extending circular mixture models is taken in \textbf{Chapter~\ref{revrjump}}. While for saccade direction data the number of components of the mixture can usually be treated as known, this is not always the case. Here, we are motivated by a dataset containing music listening behaviour of a large sample of users of a streaming website. The goal here is to predict for each hour of the day the probability that a certain genre will be listened to. To this end, the temporal distribution of music listening for each genre must be inferred. A mixture model is appropriate, but the number of components can not easily be prespecified a priori. Therefore, the reversible jump MCMC sampler \citep{richardson1997bayesian} is applied, as this method allows the MCMC sampler to jump between mixture models of different dimension (that is, number of components). As a result, we can infer the number of components. We develop the required steps to apply this sampler for circular data, and apply this new sampler to the music listening data.
+%
+% The motivating example in \textbf{Chapter~\ref{dpm_crim}} comes from the field of criminology. In crime modeling, a large amount of attention is devoted to spatial modeling of crime, while temporal differences receive comparatively less attention. However, understanding at which hour of the day crimes occur is essential in both understanding and predicting crime. However, for many types of crime, such as burglary and theft, crime times are usually not directly observed (as the offender is actively trying to not be observed). Therefore, crime times are usually interval-censored circular observations, which are called \textit{aoristic data.} Some descriptive analysis methods for aoristic data have been developed \citep{ashby2013comparison}. We extend these methods by showing their limitations and developing methods for full statistical inference from aoristic data. Circular statistical models can be fit using the aoristic likelihood approach. Further, we develop nonparametric methods for density estimation of aoristic data, based on Bayesian Dirichlet Process Mixture models, with the von Mises as the base distribution.
+%
+% The final chapter, \textbf{Chapter~\ref{circbays}}, is an overview of the package \pkg{circbayes}. This package is a collection of  models for Bayesian circular statistics, some of which have been developed in previous chapters. Any researcher interested in applying the methods in this work would do well to start with this chapter, as it provides a short introduction and comparison of different models for Bayesian circular statistics. We show how to perform Bayesian inference for several models, including von Mises, Batschelet, Projected Normal, circular regression, mixture models, and Dirichlet Process Mixture models. The package also includes methods to perform Bayesian hypothesis testing between any of the models included.
+% %To do this, it often performs bridge sampling, using the \proglang{R} package \pkg{bridgesampling} \citep{gronau2017bridgesampling}.
+% As a result, it is able to perform Bayesian versions of most hypothesis tests common in frequentist circular statistics. With this toolbox, we hope to have provided an accessible entrypoint for the use of Bayesian circular statistics.
+%
+%
+%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \mainmatter
+% \chapter{Bayesian Estimation and Hypothesis Tests for a Circular GLM}
+% \chaptermark{Bayesian Circular GLM}
+% \label{circglm}
+%
+% \blfootnote{This chapter is published as Mulder, K., \& Klugkist, I. (2017). Bayesian estimation and hypothesis tests for a circular Generalized Linear Model. \textit{Journal of Mathematical Psychology, 80}, 4–14. \url{https://doi.org/10.1016/j.jmp.2017.07.001}.
+%
+% Author contributions: KM and IK designed the study. KM developed the statistical methods, simulation study and software package. KM wrote the paper. IK provided feedback on written work.}
+%
+% \input{chapters/circ_glm.tex}
+% % APPENDIX
+% \begin{subappendices}
+% \input{chapters/circ_glm_appendix.tex}
+% \end{subappendices}
+%
+%
+%
+% \chapter{Bayesian Tests for Circular Uniformity}
+% \chaptermark{Bayesian Circular Uniformity Tests}
+% \label{hypotest}
+%
+% \blfootnote{This chapter is submitted to Journal of Statistical Planning and Inference as Mulder, K., \& Klugkist, I. (tbd) Bayesian Tests for Circular Uniformity.
+%
+% Author contributions: KM and IK designed the study. KM developed the statistical methods, simulation study and software package. KM wrote the paper. IK provided feedback on written work.}
+% \input{chapters/hypotest.tex}
+%
+% \begin{changemargin}{5cm}
+% \chapter{Mixtures of Peaked Power Batschelet Distributions for Circular Data  With Application to Saccade Directions}
+% \chaptermark{Peaked Circular Mixtures}
+% \label{flexcmix}
+%
+% \blfootnote{This chapter is submitted to Journal of Mathematical Psychology as Mulder, K., Klugkist, I., van Renswoude, D. \& Visser, I. (tbd) Mixtures of Peaked Power Batschelet Distributions for Circular Data  With Application to Saccade Directions.
+%
+% Author contributions: KM, DVR, IV and IK developed the goals for the study. KM developed the statistical methods, simulation study and software package. DVR and IV provided the data for the motivating example. KM wrote the paper. IK, IV and DVR provided feedback on written work.}
+% \end{changemargin}
+%
+% \input{chapters/flexcmix.tex}
+% % APPENDIX
+% \newpage
+% \begin{subappendices}
+% \input{chapters/flexcmix_appendix.tex}
+% \end{subappendices}
+%
+% \chapter{Bayesian inference for mixtures of von Mises distributions using the Reversible Jump MCMC sampler}
+% \chaptermark{Reversible Jump vM-Mixture}
+% \blfootnote{This chapter is submitted to Journal of Statistical Computation and Simulation as Mulder, K., Jongsma, P., Klugkist, I. (tbd) Bayesian inference for mixtures of von Mises distributions using the Reversible Jump MCMC sampler.
+%
+% Author contributions: KM, PJ and IK designed the study. PJ and KM developed the statistical methods. PJ programmed the sampler and performed the simulation study. KM and PJ wrote the paper. KM and IK provided feedback on written work.}
+%
+% \label{revrjump}
+% \input{chapters/revrjump.tex}
+%
+%
+% \chapter{Inference for Interval-Censored Circular Data With Application to Crime Times}
+% \chaptermark{Interval-Censored Circular Data}
+% \label{dpm_crim}
+% \blfootnote{This chapter is in preparation for submission to Journal Quantitative Criminology as Mulder, K. and Ruiter, S. (tbd) Dealing With Partially Observed Crime Times.
+%
+% Author contributions: KM and SR designed the study. KM developed the statistical methods, created the software package and performed the analyses. KM wrote the paper. SR provided the motivating data example and gave feedback on written work.}
+%
+% \input{chapters/dpm_crim.tex}
+% \begin{subappendices}
+% \input{chapters/dpm_crim_appendix.tex}
+% \end{subappendices}
+%
+% \chapter{circbayes: An R package for Bayesian circular statistics}
+% \chaptermark{R Package circbayes}
+% \blfootnote{This chapter is in preparation for submission to Journal of Statistical Software as Mulder, K., Cremers, J. and Klugkist, I. (tbd) \pkg{circbayes}: An \proglang{R} package for Bayesian circular statistics.
+%
+% Author contributions: KM developed the new software package, building on packages by KM and JC. KM wrote the paper. IK and JC gave feedback on written work.}
+%
+% \label{circbays}
+% \input{chapters/circbays.tex}
+%
+% \backmatter
+%
+%
+%
+% \chapter{Nederlandse samenvatting}
+%
+% \begin{otherlanguage}{dutch}
+%
+% Circulaire data bevinden zich op een periodieke schaal. Dat wil zeggen, een circulaire observatie is gemeten in richtingen of hoeken, waarbij de uiteinden van de schaal naast elkaar liggen, zoals bijvoorbeeld $359^\circ$ en $0^\circ$ dat doen. Zo kun je bijvoorbeeld denken aan het probleem van het bepalen van de gemiddelde verjaardag van een groep vrienden. Omdat het jaar na 31 december direct doorgaat naar 1 januari, is het moeilijk om een intuitief gemiddelde uit te rekenen. Simpelweg het aantal dagen tellen vanaf 1 januari en die aantallen middelen lijkt een redelijke aanpak, maar levert rare resultaten op als bijvoorbeeld twee mensen in januari en december zijn geboren: dan ligt hun gemiddelde verjaardag in de zomer. Voor circulaire data zijn dus aparte statistische methoden nodig.
+%
+% We komen deze circulaire data tegen in een verscheidenheid aan vakgebieden. Zo kun je denken aan observaties van windrichtingen,  het uur van de dag waarop een patienten op de eerste hulp binnen komen of de richting waarop een kikker wegduikt als hij door een vogel of een slang wordt bedreigd (voor wie benieuwd is: van een slang weg, maar naar een vogel toe in de hoop er onderdoor te glippen \citep{bulbert2015danger}). In sociale wetenschappen voegen we daar bijvoorbeeld ook nog de zogeheten \textit{circumplexmodellen} aan toe, waarvan de roos van Leary \citep{Leary1957} een van de bekendste voorbeelden is. Circumplexmodellen zijn latente factormodellen, waarbij een onobserveerbare eigenschap ge\"extraheerd wordt uit een vragenlijst. Echter, waar normaal gesproken de latente factoren als re\"eele getallen worden weergegeven, worden ze in een circumplex model weergegeven als een circulaire variabele, door in de correlatiematrix een circulaire ordening te vereisen \citep{browne1992circumplex}. Dit levert voor sommige psychologische constructen een meetinstrument op met minder parameters waarvan de interpretatie makkelijker is.
+%
+% Deze verschillende voorbeelden leveren obervaties $\theta$ op, die vervolgens gemeten zijn in bijvoorbeeld graden ($\theta \in [0^\circ - 360^\circ)$), uren van de dag (op de 24-uursklok, dus $\theta \in [$0:00$ - $24:00)), eenheidsvectoren of radialen.
+%
+% De tak van de statistiek zich bezig houdt met analyse van circulaire data wordt \textit{circulaire statistiek} genoemd. De circulaire statistiek biedt een nieuwe definitie van het gemiddelde en de variantie. Het circulaire gemiddelde, de \textit{gemiddelde richting}, van de data $\boldsymbol{\theta} = \{\theta_1, \dots, \theta_n\}$ wordt berekend door te kijken naar de richting waar de resultante vector $(\sumin\cos\theta_i, \sumin\sin\theta_i)^T$ wijst (voor een voorbeeld, zie Figuur~\ref{exampleRMu} voorin dit boek). De variantie is gerelateerd aan de lengte $R$ van de resultante vector. Voorbij deze basis bestaat het veld van circulaire statistiek uit een grote vari\"eteit van modellen voor verschillende onderzoeksvragen, zoals regressiemodellen, hypothesetoetsen en het schatten van multimodale kansverdelingen. Voor een overzicht, zie \citet{fisher1995statistical}, \citet{mardia2009directional} of \citet{pewsey2013circular}.
+%
+% Het doel van dit proefschrift is om Bayesiaanse circulaire statistiek te ontwikkelen waarmee praktische problemen opgelost kunnen worden. Daarom is contact gezocht met verscheidene onderzoekers die werken met circulaire data. Hierin zijn twee subdoelen te onderscheiden.
+%
+% Eerst moeten de eigenschappen van basale Bayesiaanse circulaire methoden worden bestudeerd en begrepen. Daarnaast moeten deze methoden beschikbaar zijn in makkelijk te gebruiken software-pakketten, zodat uitgebreide kennis van wiskundige statistiek geen vereiste is om de modellen te kunnen draaien. Om dit te bewerkstelligen zijn voor het merendeel van de methoden in deze dissertatie gebruikersvriendelijke softwarepakketen gemaakt in de statistische programmeertaal \proglang{R}.
+%
+% Ten tweede is het belangrijk om gespecialiseerde methoden te ontwikkelen voor specifieke problemen. In dit proefschrift worden een aantal problemen van toegepaste onderzoekers in sociale wetenschappen opgelost aan de hand van geavanceerde Bayesiaanse circulaire statistiek.
+%
+% Deze doelen zullen aangepakt worden in een zestal hoofdstukken. Hierna volgt een kort overzicht van de belangrijkste bevindingen van elk.
+%
+% In \textbf{Hoofdstuk~\ref{circglm}} ontwikkelen we regressiemodellen met een circulaire uitkomst. Dit leidt tot een Bayesiaanse versie van het circulaire regressiemodel van \citet{fisher1992regression}, in essentie een circulaire vorm van het gegeneraliseerde lineaire model (GLM). Omdat het oorspronkelijke model een andere vorm aanneemt als de arbitraire labeling van categorische predictoren wordt veranderd, passen we dit model aan door categorische predictoren apart te behandelen. Daarnaast wordt Bayesiaanse inferentie mogelijk gemaakt, zowel schatting als hypothesetoetsing, door middel van \textit{Markov Chain Monte Carlo} (MCMC) methoden. Dit nieuwe model wordt toegepast op een voorbeeld uit de cognitieve psychologie.
+%
+% \textbf{Hoofdstuk~\ref{hypotest}} behandelt Bayesiaanse hypothesetoetsen voor circulaire uniformiteit. Bayesiaanse hypothesetoetsen hebben het voordeel dat ze niet alleen een verwerping of niet-verwerping van een nulhypothese kunnen opleveren, maar ook evidentie kunnen vinden voor het aannemen van de nulhypothese. Dit is een gewenste eigenschap als we testen of een circulaire dataset uniform verdeeld is over de cirkel of niet. We ontwikkelen verschillende hypothesetoetsen, en testen deze in een simulatiestudie.
+%
+% In het volgende hoofdstuk, \textbf{Hoofdstuk~\ref{flexcmix}}, worden modellen ontwikkeld aan de hand van een voorbeeld uit oogbewegingenonderzoek. In dit onderzoek krijgen baby's en volwassenen foto's te zien waar ze kortstondig vrijelijk op mogen rondkijken. We zijn hier geinteresseerd in verchillen in oogbewegingengedrag tussen deze twee groepen, baby's en volwassenen. Een van de aspecten is hoe de richtingen van oogbewegingen, die \textit{saccades} worden genoemd, verdeeld zijn. Hiervoor is een circulaire kansverdeling nodig die de multimodale natuur van deze data (men kijkt voornamelijk precies naar boven, links, rechts, en onder) goed kunnen vatten. Daarnaast zijn de toppen van de componenten sterk gepiekt. Om deze data te kunnen modelleren worden Batschelet-type mixture-modellen ontwikkeld, waarmee de multimodale en gepiekte eigenschappen van de data goed kunnen worden gevat. Omdat deze modellen computationeel erg intensief zijn, wordt een alternatief voorgesteld dat vele malen sneller te berekenen is. Hiermee kunnen de vragen die de onderzoekers hebben direct getoetst worden.
+%
+% In \textbf{Hoofdstuk~\ref{revrjump}} worden ook mixture-modellen gebruikt, maar deze worden toegepast in een veld waar het niet makkelijk is om het aantal benodigde mixture-componenten van te voren vast te stellen. Het voorbeeld bestaat uit muziekluisterdata, waarbij de vraag is op welke tijd van de dag men luistert naar welk muziekgenre. We modelleren dit met een mixture-model, waarbij elk mixture-component een groep observaties modelleert dat zich rond een bepaald moment op de dag samenschoolt. Je kunt je bijvoorbeeld  voorstellen dat een genre als `Techno' door een bepaalde groep gebruikers tijdens het werken wordt beluisterd, terwijl een andere groep gebruikers dit genre slechts 's nachts luistert. Omdat deze componenten daarmee een aspect van dynamisch gedrag uit de maatschappij verklaren, en dit gedrag per genre verschilt, hebben we een methode nodig die ook kan leren over het benodigde aantal mixture-componenten waaruit de data bestaat. Om dit te doen gebruiken we het \textit{reversible jump} (`omkeerbare sprong') algoritme \citep{richardson1997bayesian}. Deze aanpak zorgt ervoor dat ons mixture-model directe inferentie kan uitvoeren op het aantal benodigde componenten. Dit levert een flexibele methode die nieuwe inzichten oplevert voor de muziekluisterdata.
+%
+% Het voorbeeld in \textbf{Hoofdstuk~\ref{dpm_crim}} komt uit de criminologie. Sommige strafbare feiten komen veel vaker op bepaalde tijden van de dag voor dan op andere tijden. Fietsendiefstal op het station komt bijvoorbeeld 's nachts veel meer voor dan midden op de dag. Echter, als we de geobserveerde tijden willen modelleren lopen we tegen een probleem aan: er zijn meestal geen geobserveerde tijden, omdat een dief nu juist probeert om niet te worden geobserveerd. De data bestaat dus uit intervallen van tijd, bijvoorbeeld 08:20 - 17:50, waarin het slachtoffer niet bij het gestolen object aanwezig was. Dit komt voor als het slachtoffer om 08:20 de fiets parkeert en om 17:50 terugkomt om te zien dat de fiets is gestolen. Dit soort data heet \textit{aoristische} data. Hiervoor zijn basale descriptieve tools ontwikkeld \citep{ashby2013comparison} in de criminologie. We laten zien dat zulke methoden nuttig zijn om de data te plotten, maar de variantie overschatten van de kansverdeling van de diefstaltijden. Daarom ontwikkelen wij methoden voor statistische inferentie van aoristische data. We laten zien hoe een circulaire kansverdeling kan worden geschat aan de hand van aoristische data. Daarnaast ontwikkelen we Bayesiaanse \textit{Dirichlet Process Mixture}-modellen, die ook de multimodale vormen van realistische aoristische data goed kunnen vatten.
+%
+% Tot slot wordt in \textbf{Hoofdstuk~\ref{circbays}} het softwarepakket \pkg{circbayes} gepresenteerd, waarmee Bayesiaanse circulaire statistiek kan worden uitgevoerd. Hierin vinden we veel basale modellen, alsmede sommige modellen die in eerdere hoofdstukken zijn gepresenteerd. Zo zitten er methoden in voor von Mises, Batschelet en \textit{Projected Normal} verdelingen, alsmede circulaire regressiemodellen, mixture-modellen en Dirichletprocesmodellen. Daarnaast kunnen deze modellen met elkaar worden vergeleken aan de hand van Bayesiaanse hypothesetoetsen, door gebruik te maken van het \proglang{R} pakket \pkg{bridgesampling} \citep{gronau2017bridgesampling}. Hierdoor zijn van de meeste frequentistische circulaire hypothesetoetsen ook Bayesiaanse versies beschikbaar in dit pakket. Met deze gereedschapsdoos hopen we dat toegepaste onderzoekers een toegankelijke ingang hebben in het gebruik van Bayesiaanse circulaire statistiek.
+%
+% \end{otherlanguage}
+%
+% \bibliographystyle{apacite}
+% \bibliography{C:/Dropbox/LiteratureCircular/CircularData}
+
+
+\end{document}
